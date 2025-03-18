@@ -1,6 +1,8 @@
+import SignUpContents from "../views/signup/SignUpContents";
+
 function SignUp() {
     return (
-        <h2>회원가입 페이지입니다.</h2>
+        <SignUpContents/>
     )
 }
 export default SignUp
