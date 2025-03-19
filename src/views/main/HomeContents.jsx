@@ -382,23 +382,24 @@ const HomeContents = () => {
       .then((res) => res.json())
       .then((data) => {
         const postData = Object.values(data).map((item) => ({
-          id: item.board_id,
-          sellerUid: item.user_id,
-          regionSi: regionMap[item.local_si] || "알 수 없음",
-          regionGu: guMap[item.local_gu] || "알 수 없음",
+          id: item.boardId,
+          sellerUid: item.userId,
+          regionSi: regionMap[item.localSi] || "알 수 없음",
+          regionGu: guMap[item.localGu] || "알 수 없음",
           title: item.title,
           content: item.content,
           category: item.category,
-          type: item.board_type,
-          clickCnt: item.click_count,
-          reportCnt: item.report_cnt,
+          type: item.boardType,
+          clickCnt: item.clickCount,
+          reportCnt: item.reportCount,
           price: item.price || 0,
           seller: item.seller || "알 수 없음",
-          regionDong: `${regionMap[item.local_si] || ""} ${
-            guMap[item.local_gu] || ""
+          regionDong: `${regionMap[item.localSi] || ""} ${
+            guMap[item.localGu] || ""
           }`,
           image: item.image || "/no-image.png",
         }));
+        console.log("데이터:", data);
         setPosts(postData);
         setFilteredPosts(postData);
       })
@@ -472,7 +473,7 @@ const HomeContents = () => {
               </select>
             )}
 
-            <SidebarTitle>카테고리</SidebarTitle>
+            <SidebarTitle>견종</SidebarTitle>
             {Object.entries(CATEGORY_ID).map(([key, category]) => (
               <SidebarLabel key={key}>
                 <SidebarInput
@@ -500,8 +501,10 @@ const HomeContents = () => {
           )}
 
           {/* 게시글 리스트 */}
+
           <ProductList>
             {displayedPosts.map((post) => {
+              console.log(post);
               const opacity = user?.is_admin
                 ? Math.min(post.reportCnt / 20, 1)
                 : 0;
