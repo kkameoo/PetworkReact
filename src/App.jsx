@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import Header from "./components/Header";
 import DetailPage from "./views/detail/DetailPage";
+import Board from "./pages/Board";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/signup" element={<SignUp />} />
         <Route path="/:postId" element={<DetailPage />} />
         <Route path="/Detail" element={<DetailPage />} />
+        <Route path="/board" element={<Board />} />
       </Routes>
     </>
   );

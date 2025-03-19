@@ -4,22 +4,22 @@ import styled from "styled-components";
 // 스타일 컴포넌트들
 const Container = styled.div`
   height: 100vh;
-  background-color: #e5e7eb;
+  /* background-color: #e5e7eb; */
   display: flex;
   flex-direction: column;
 `;
 
-const LoginFormWrapper = styled.div`
+const FormWrapper = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const LoginForm = styled.div`
+const Form = styled.div`
   width: 100%;
   max-width: 32rem;
-  background-color: #d1d5db;
+  /* background-color: #d1d5db; */
   padding: 32px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -30,8 +30,8 @@ const Title = styled.h1`
   font-weight: bold;
   text-align: center;
   margin-bottom: 24px;
-  background-color: #6b7280;
-  color: white;
+  background-color: #2dad42;
+  color: #000000;
   padding: 16px;
   border-radius: 8px;
 `;
@@ -75,7 +75,7 @@ const Button = styled.button`
   &:hover {
     background-color: #f3f4f6;
   }
-`;
+`
 
 function LoginContents() {
   const [username, setUsername] = useState("");
@@ -88,8 +88,8 @@ function LoginContents() {
   return (
     <Container>
       {/* 로그인 폼 */}
-      <LoginFormWrapper>
-        <LoginForm>
+      <FormWrapper>
+        <Form>
           <Title>로그인</Title>
           <InputWrapper>
             <div>
@@ -113,8 +113,8 @@ function LoginContents() {
             <Button onClick={handleLogin}>로그인</Button>
             <Button isSignup>회원가입</Button>
           </InputWrapper>
-        </LoginForm>
-      </LoginFormWrapper>
+        </Form>
+      </FormWrapper>
     </Container>
   );
 }
