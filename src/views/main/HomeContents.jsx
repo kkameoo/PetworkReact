@@ -135,11 +135,6 @@ export const ProductTitle = styled.h4`
   color: #333;
 `;
 
-export const Price = styled.div`
-  color: #00bfff;
-  font-weight: bold;
-`;
-
 export const Seller = styled.div`
   font-size: 14px;
   color: #777;
@@ -521,7 +516,6 @@ const HomeContents = () => {
                   <ReportOverlay style={{ backgroundColor }} />
                   <ProductImage src={post.image} alt={post.title} />
                   <ProductTitle>{post.title}</ProductTitle>
-                  <Price>{post.price.toLocaleString()} 원</Price>
                   <Seller>판매자: {post.seller}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{CATEGORY_ID[post.category]}</Seller>
