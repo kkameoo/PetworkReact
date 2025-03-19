@@ -44,17 +44,17 @@ const DetailPage = () => {
         : "날짜 없음";
 
       const postData = {
-        id: data.board_id,
-        sellerUid: data.user_id,
-        regionSi: data.local_si,
-        regionGu: data.local_gu,
+        id: data.boardId,
+        sellerUid: data.userId,
+        regionSi: data.localSi,
+        regionGu: data.localGu,
         title: data.title,
         image: data.post_photo, // 이미지 필드 보완
         content: data.content,
         category: data.category,
-        type: data.board_type,
-        clickCnt: data.click_count,
-        reportCnt: data.report_cnt,
+        type: data.boardType,
+        clickCnt: data.clickCount,
+        reportCnt: data.reportCount,
         updateTime: formattedDateTime,
         seller: data.nickname,
       };
@@ -67,7 +67,7 @@ const DetailPage = () => {
 
   // 뒤로가기
   const onBack = () => {
-    navigate("/list");
+    navigate("/");
   };
 
   useEffect(() => {

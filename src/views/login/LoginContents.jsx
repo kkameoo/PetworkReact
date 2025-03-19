@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 // 스타일 컴포넌트들
 const Container = styled.div`
@@ -56,7 +57,7 @@ const Input = styled.input`
   width: 100%;
   background-color: white;
   font-size: 16px;
-  box-sizing: border-box;  /* 패딩과 보더를 포함한 크기 설정 */
+  box-sizing: border-box; /* 패딩과 보더를 포함한 크기 설정 */
 `;
 
 const Button = styled.button`
@@ -75,39 +76,80 @@ const Button = styled.button`
   &:hover {
     background-color: #f3f4f6;
   }
-`
+`;
 
 function LoginContents() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const API_USER_URL = `http://localhost:8087/api/user`;
 
-  const handleLogin = () => {
-    console.log("Logging in with", { username, password });
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  // 뒤로가기 버튼
+  const onBack = () => {
+    navigate("/");
+  };
+
+  const handleLogin = async () => {
+    // e.preventDefault();
+
+    try {
+      const response = await fetch(API_USER_URL + `/login`, {
+        credentials: "include",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // ✅ 세션 유지
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+      console.log("data", data);
+
+      navigate("/");
+      if (!response.ok) {
+        throw new Error("로그인 실패");
+      }
+    } catch (error) {
+      console.error("로그인 오류", error);
+      setError("서버 오류가 발생했습니다.");
+    }
   };
 
   return (
     <Container>
       {/* 로그인 폼 */}
       <FormWrapper>
-        <Form>
+        <Form onSubmit={handleLogin}>
+          <button onClick={onBack} className="login-back-button" />
           <Title>로그인</Title>
           <InputWrapper>
             <div>
               <Label>아이디</Label>
-              <Input 
-                type="text" 
-                placeholder="아이디 입력" 
-                value={username} 
-                onChange={(e) => setUsername(e.target.value)} 
+              <Input
+                type="text"
+                placeholder="이메일 입력"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
               />
             </div>
             <div>
               <Label>비밀번호</Label>
-              <Input 
-                type="password" 
-                placeholder="비밀번호 입력" 
-                value={password} 
-                onChange={(e) => setPassword(e.target.value)} 
+              <Input
+                type="password"
+                placeholder="비밀번호 입력"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
               />
             </div>
             <Button onClick={handleLogin}>로그인</Button>

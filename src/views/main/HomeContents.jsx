@@ -217,7 +217,6 @@ const regionMap = {
   23: "가평군",
   24: "포천시",
   25: "인천시",
-  26: "의왕시",
 };
 
 const guMap = {
@@ -353,29 +352,30 @@ const HomeContents = () => {
   const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // 로그인 상태 확인
-  //   const checkLoginStatus = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:8087/api/user/session", {
-  //         method: "GET",
-  //         credentials: "include",
-  //       });
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         setIsLoggedIn(true);
-  //         setUser(data);
-  //       } else {
-  //         setIsLoggedIn(false);
-  //       }
-  //     } catch (error) {
-  //       console.error("로그인 상태 확인 실패:", error);
-  //       setIsLoggedIn(false);
-  //     }
-  //   };
+  //   로그인 상태 확인
+  const checkLoginStatus = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/user/session", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIsLoggedIn(true);
+        setUser(data);
+        console.log(data + "세션정보");
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      console.error("로그인 상태 확인 실패:", error);
+      setIsLoggedIn(false);
+    }
+  };
 
-  //   useEffect(() => {
-  //     checkLoginStatus();
-  //   }, []);
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
 
   useEffect(() => {
     fetch(API_POST_URL)
