@@ -20,6 +20,7 @@ function Header() {
             <RouteButton onClick={() => navigate ("/")}>메인 페이지</RouteButton>
             <RouteButton onClick={() => navigate ("/login")}>로그인 페이지</RouteButton>
             <RouteButton onClick={() => navigate ("/signup")}>회원가입 페이지</RouteButton>
+            <RouteButton onClick={() => navigate ("/board")}>게시물상세 페이지</RouteButton>
         </RouteBar>
       </>
     )
