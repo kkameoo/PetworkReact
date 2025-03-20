@@ -3,9 +3,9 @@ import WalkBoardContents from "../views/board/walkBoardContents";
 function Board() {
 return(
     <>
-                <h2>
+                {/* <h2>
                 hello vite react
-            </h2>
+            </h2> */}
     <WalkBoardContents/>
     </>
 )

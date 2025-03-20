@@ -1,10 +1,15 @@
 import HomeContents from "../views/main/HomeContents";
 
 function Home() {
-  return (
-    <>
-      <HomeContents />
-    </>
-  );
+
+    return (
+        <>
+            <h2>
+                hello vite react
+            </h2>
+            <HomeContents/>
+        </>
+    )
+
 }
 export default Home;

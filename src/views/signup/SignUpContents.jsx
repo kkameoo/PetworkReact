@@ -272,14 +272,14 @@ const SignupContents = () => {
           <div
             style={{
               flex: 1,
-              padding: "16px",
-              backgroundColor: gender === "남성" ? "#6B7280" : "#F3F4F6",
-              color: gender === "남성" ? "white" : "#4B5563",
-              borderRadius: "8px",
-              textAlign: "center",
-              fontSize: "16px",
-              fontWeight: "500",
-              cursor: "pointer",
+              padding: '16px',
+              backgroundColor: gender === '남성' ? '#00BFFF' : '#F3F4F6',
+              color: gender === '남성' ? 'white' : '#4B5563',
+              borderRadius: '8px',
+              textAlign: 'center',
+              fontSize: '16px',
+              fontWeight: '500',
+              cursor: 'pointer',
             }}
             onClick={() => setGender("남성")}
           >
@@ -288,14 +288,14 @@ const SignupContents = () => {
           <div
             style={{
               flex: 1,
-              padding: "16px",
-              backgroundColor: gender === "여성" ? "#6B7280" : "#F3F4F6",
-              color: gender === "여성" ? "white" : "#4B5563",
-              borderRadius: "8px",
-              textAlign: "center",
-              fontSize: "16px",
-              fontWeight: "500",
-              cursor: "pointer",
+              padding: '16px',
+              backgroundColor: gender === '여성' ? '#00BFFF' : '#F3F4F6',
+              color: gender === '여성' ? 'white' : '#4B5563',
+              borderRadius: '8px',
+              textAlign: 'center',
+              fontSize: '16px',
+              fontWeight: '500',
+              cursor: 'pointer',
             }}
             onClick={() => setGender("여성")}
           >
@@ -308,13 +308,13 @@ const SignupContents = () => {
       <button
         onClick={handleSignup}
         style={{
-          width: "100%",
-          padding: "10px",
-          backgroundColor: "#4CAF50",
-          color: "white",
-          border: "none",
-          borderRadius: "5px",
-          cursor: "pointer",
+          width: '100%',
+          padding: '10px',
+          backgroundColor: '#00BFFF',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
         }}
       >
         회원가입
