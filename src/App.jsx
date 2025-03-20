@@ -7,6 +7,7 @@ import DetailPage from "./views/detail/DetailPage";
 import Board from "./pages/Board";
 import PostWalk from "./views/post/PostWalk";
 import Footer from "./components/Footer";
+import PetShowcasePage from "./views/main/PetShowcasePage";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route path="/Detail" element={<DetailPage />} />
         <Route path="/board" element={<Board />} />
         <Route path="/post" element={<PostWalk />} />
+        <Route path="/petshow" element={<PetShowcasePage />} />
       </Routes>
       <Footer />
     </>

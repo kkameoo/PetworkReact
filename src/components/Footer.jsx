@@ -26,6 +26,7 @@ const FooterSection = styled.div`
   }
 
   h4 {
+    margin-left: 30px;
     font-size: 16px;
     margin-bottom: 10px;
     color: #007acc;
@@ -104,9 +105,9 @@ const Footer = () => {
         <FooterSection>
           <h4>공지사항</h4>
           <ul>
-            <li>- 안전한 만남을 위한 유의사항</li>
-            <li>- 사기 예방 가이드</li>
-            <li>- 새로운 기능 업데이트 안내</li>
+            <p>🚨안전한 만남을 위한 유의사항</p>
+            <p>🚨사기 예방 가이드</p>
+            <p>🚨새로운 기능 업데이트 안내</p>
           </ul>
         </FooterSection>
 

@@ -1,55 +1,158 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import styled from "styled-components";
+
+const DetailWrapper = styled.div`
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+`;
+
+const BackButton = styled.button`
+  align-self: flex-end;
+  width: 80px;
+  height: 60px;
+  margin-top: 10px;
+  background-color: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  &:hover {
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: #ccc;
+  }
+`;
+
+const ProductBody = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const ProductLeft = styled.div`
+  width: 45%;
+  margin-right: 20px;
+  position: relative;
+`;
+
+const ProductImage = styled.img`
+  border: 1px solid rgb(207, 207, 207);
+  border-radius: 25px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 30px;
+`;
+
+const SellerInfo = styled.div`
+  font-size: 20px;
+  text-align: left;
+  position: relative;
+  padding-bottom: 5px;
+  letter-spacing: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const SellerLeft = styled.div`
+  position: absolute;
+  top: 0;
+  display: flex;
+  align-items: center;
+`;
+
+const SellerImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+`;
+
+const Nickname = styled.p`
+  font-weight: bold;
+  line-height: 25px;
+  margin: 0;
+`;
+
+const Location = styled.p`
+  font-size: 14px;
+  margin: 0;
+`;
+
+const ProductRight = styled.div`
+  text-align: left;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ProductTitle = styled.h2`
+  font-size: 35px;
+  font-weight: bold;
+  margin-bottom: 3px;
+`;
+
+const ProductCategory = styled.p`
+  font-size: 14px;
+  color: #007acc;
+  margin-bottom: 10px;
+`;
+
+const ProductDescription = styled.p`
+  min-height: 240px;
+  font-size: 18px;
+  margin-bottom: 20px;
+`;
 
 const DetailPage = () => {
-  const { postId } = useParams(); // URL에서 ID 가져오기
+  const { postId } = useParams();
   const navigate = useNavigate();
+  const [newPost, setNewPost] = useState(null);
+  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const [newPost, setNewPost] = useState(null); // 게시글 상세 데이터
-  const [user, setUser] = useState(null); // 로그인 유저 정보
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // 로그인 여부
+  //   로그인 상태 확인
+  const checkLoginStatus = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/user/session", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIsLoggedIn(true);
+        setUser(data);
+        console.log(data + "세션정보");
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      console.error("로그인 상태 확인 실패:", error);
+      setIsLoggedIn(false);
+    }
+  };
 
-  // 로그인 상태 확인
-  //   const checkLoginStatus = async () => {
-  //     try {
-  //       const response = await fetch("http://localhost:8087/api/user/session", {
-  //         method: "GET",
-  //         credentials: "include",
-  //       });
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
 
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         setIsLoggedIn(true);
-  //         setUser(data);
-  //       } else {
-  //         setIsLoggedIn(false);
-  //       }
-  //     } catch (error) {
-  //       console.error("로그인 상태 확인 중 오류:", error);
-  //       setIsLoggedIn(false);
-  //     }
-  //   };
-
-  // 게시글 상세 데이터 가져오기
   const fetchPostDetail = async () => {
     try {
       const response = await fetch(`http://localhost:8087/api/board/${postId}`);
       const data = await response.json();
-
       const formattedDateTime = data.upd_date
         ? new Date(data.upd_date)
             .toISOString()
             .replace("T", " ")
             .substring(0, 19)
         : "날짜 없음";
-
       const postData = {
         id: data.boardId,
         sellerUid: data.userId,
         regionSi: data.localSi,
         regionGu: data.localGu,
         title: data.title,
-        image: data.post_photo, // 이미지 필드 보완
+        image: data.post_photo,
         content: data.content,
         category: data.category,
         type: data.boardType,
@@ -58,72 +161,50 @@ const DetailPage = () => {
         updateTime: formattedDateTime,
         seller: data.nickname,
       };
-      console.log(data);
       setNewPost(postData);
     } catch (error) {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
 
-  // 뒤로가기
-  const onBack = () => {
-    navigate("/");
-  };
+  const onBack = () => navigate("/");
 
   useEffect(() => {
-    // checkLoginStatus();
     fetchPostDetail();
   }, [postId]);
 
   if (!newPost) return <div>로딩 중...</div>;
 
   return (
-    <>
-      <div className="detail-product-detail">
-        <button onClick={onBack} className="detail-back-button"></button>
-
-        <div className="detail-product-body">
-          <div className="detail-product-left">
-            <img
-              src={newPost.image || "/images/default.jpg"}
-              alt={newPost.title}
-              className="detail-product-image"
-            />
-
-            <div className="detail-seller-info">
-              <div className="detail-seller-left">
-                <img src="/images/user.png" alt="판매자 이미지" />
-                <div>
-                  <p className="detail-nickname">{newPost.seller}</p>
-                  <p className="detail-location">
-                    {newPost.regionSi} {newPost.regionGu}
-                  </p>
-                </div>
-                {isLoggedIn && user && (
-                  <ReportUser postId={postId} userId={user.uid} />
-                )}
+    <DetailWrapper>
+      <BackButton onClick={onBack}>← 뒤로</BackButton>
+      <ProductBody>
+        <ProductLeft>
+          <ProductImage
+            src={newPost.image || "/images/default.jpg"}
+            alt={newPost.title}
+          />
+          <SellerInfo>
+            <SellerLeft>
+              <SellerImage src="/images/user.png" alt="판매자 이미지" />
+              <div>
+                <Nickname>{newPost.seller}</Nickname>
+                <Location>
+                  {newPost.regionSi} {newPost.regionGu}
+                </Location>
               </div>
-            </div>
-          </div>
-
-          <div className="detail-product-right">
-            <h2 className="detail-product-title">{newPost.title}</h2>
-            <p className="detail-product-category">
-              {newPost.category} | {newPost.updateTime}
-            </p>
-            <p className="detail-product-description">{newPost.content}</p>
-
-            {isLoggedIn && user && user.uid !== newPost.sellerUid && (
-              <UserNegoChat
-                sellerUid={newPost.sellerUid}
-                user_id={user.uid}
-                post={newPost}
-              />
-            )}
-          </div>
-        </div>
-      </div>
-    </>
+            </SellerLeft>
+          </SellerInfo>
+        </ProductLeft>
+        <ProductRight>
+          <ProductTitle>{newPost.title}</ProductTitle>
+          <ProductCategory>
+            {newPost.category} | {newPost.updateTime}
+          </ProductCategory>
+          <ProductDescription>{newPost.content}</ProductDescription>
+        </ProductRight>
+      </ProductBody>
+    </DetailWrapper>
   );
 };
 
