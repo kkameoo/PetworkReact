@@ -548,7 +548,7 @@ const HomeContents = () => {
           >
             다음
           </PaginationButton>
-          <CreateButton onClick={() => navigate("/salesPage")}>
+          <CreateButton onClick={() => navigate("/post")}>
             게시물 작성
           </CreateButton>
         </PaginationWrapper>

@@ -5,6 +5,7 @@ import SignUp from "./pages/SignUp";
 import Header from "./components/Header";
 import DetailPage from "./views/detail/DetailPage";
 import Board from "./pages/Board";
+import PostWalk from "./views/post/PostWalk";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <Route path="/:postId" element={<DetailPage />} />
         <Route path="/Detail" element={<DetailPage />} />
         <Route path="/board" element={<Board />} />
+        <Route path="/post" element={<PostWalk />} />
       </Routes>
     </>
   );
