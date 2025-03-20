@@ -64,11 +64,10 @@ export const Sidebar = styled.div`
 export const RegionSection = styled.div`
   max-height: 300px; /* 원하는 최대 높이 */
   overflow-y: auto; /* 세로 스크롤 추가 */
-  margin-bottom: 20px;
 `;
 
 export const CategorySection = styled.div`
-  margin-top: 150px;
+  margin-top: 20px;
 `;
 export const SidebarTitle = styled.h3`
   margin-left: 25px;
@@ -193,12 +192,11 @@ export const PageNumber = styled.span`
   color: #007acc;
 `;
 
-// 지역 및 카테고리 매핑
 const CATEGORY_ID = {
   0: "전체",
-  1: "소형견",
-  2: "중형견",
-  3: "대형견",
+  1: "미용",
+  2: "사료",
+  3: "장난감",
 };
 
 const regionMap = {
@@ -348,7 +346,7 @@ const regionGuMap = {
 
 const ITEMS_PER_PAGE = 12;
 
-const HomeContents = () => {
+const SellContents = () => {
   const API_POST_URL = "http://localhost:8087/api/board";
   const navigate = useNavigate();
 
@@ -569,4 +567,4 @@ const HomeContents = () => {
   );
 };
 
-export default HomeContents;
+export default SellContents;
