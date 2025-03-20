@@ -31,7 +31,7 @@ const Title = styled.h1`
   font-weight: bold;
   text-align: center;
   margin-bottom: 24px;
-  background-color: #00BFFF;
+  background-color: #00bfff;
   color: #000000;
   padding: 16px;
   border-radius: 8px;
@@ -135,7 +135,7 @@ function LoginContents() {
               <Input
                 type="text"
                 placeholder="이메일 입력"
-                value={formData.name}
+                value={formData.email}
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }

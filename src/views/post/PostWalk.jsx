@@ -211,20 +211,21 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
 
     const postData = {
       reportCount: 0,
-      uid: user.userId,
-      post_title: title,
-      post_category: Number(category),
-      local_Si: regions.indexOf(regionSi) + 1,
-      local_Gu: allSis[regionSi].indexOf(regionGu) + 1,
-      post_content: description,
-      post_update: new Date().toISOString(),
-      post_photo:
-        imageUrl ||
-        "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDExMTdfMjAx%2FMDAxNzMxODEyOTU4OTA1.vhVsGTqw28gY-PmIc_6r4YQKM2ZG5F4ThTOfqRo6Lqog.UyBp04nJtxKm3_DG2FmklZHFtRlwSCH4MttaX8rl8J0g.JPEG%2F241005_%25C7%25C7%25C5%25A9_%25BF%25CF%25BC%25BA%25BA%25BB.jpg&type=a340",
+      boardType: 1,
+      userId: user.userId,
+      title: title,
+      walkCategory: Number(category),
+      localSi: regions.indexOf(regionSi) + 1,
+      localGu: allSis[regionSi].indexOf(regionGu) + 1,
+      content: description,
+      update: new Date().toISOString(),
+      //   post_photo:
+      //     imageUrl ||
+      //     "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDExMTdfMjAx%2FMDAxNzMxODEyOTU4OTA1.vhVsGTqw28gY-PmIc_6r4YQKM2ZG5F4ThTOfqRo6Lqog.UyBp04nJtxKm3_DG2FmklZHFtRlwSCH4MttaX8rl8J0g.JPEG%2F241005_%25C7%25C7%25C5%25A9_%25BF%25CF%25BC%25BA%25BA%25BB.jpg&type=a340",
     };
-
+    console.log(postData, "데이터");
     try {
-      const response = await fetch("http://localhost:18090/api/gogumapost", {
+      const response = await fetch("http://localhost:8087/api/board", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
