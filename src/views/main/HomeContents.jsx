@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 /* 전체 컨테이너 */
 export const ListContainer = styled.div`
-  max-width: 1200px;
+  max-width: 1600px;
   margin: 20px auto;
   padding: 20px;
   font-family: Arial, sans-serif;
@@ -63,7 +63,7 @@ export const Sidebar = styled.div`
 // 지역 선택 부분을 감싸는 div에 스타일 추가
 export const RegionSection = styled.div`
   max-height: 300px; /* 원하는 최대 높이 */
-  overflow-y: auto;  /* 세로 스크롤 추가 */
+  overflow-y: auto; /* 세로 스크롤 추가 */
 `;
 
 export const CategorySection = styled.div`
@@ -446,63 +446,63 @@ const HomeContents = () => {
         <ContentWrapper>
           {/* 사이드바 */}
           <Sidebar>
-  <RegionSection>
-    <SidebarTitle>지역 선택</SidebarTitle>
-    {Object.values(regionMap).map((region) => (
-      <SidebarLabel key={region}>
-        <SidebarInput
-          type="radio"
-          name="region"
-          value={region}
-          checked={selectedRegion === region}
-          onChange={() => {
-            setSelectedRegion(region);
-            setSelectedGu("전체");
-          }}
-        />
-        {region}
-      </SidebarLabel>
-    ))}
-  </RegionSection>
+            <RegionSection>
+              <SidebarTitle>지역 선택</SidebarTitle>
+              {Object.values(regionMap).map((region) => (
+                <SidebarLabel key={region}>
+                  <SidebarInput
+                    type="radio"
+                    name="region"
+                    value={region}
+                    checked={selectedRegion === region}
+                    onChange={() => {
+                      setSelectedRegion(region);
+                      setSelectedGu("전체");
+                    }}
+                  />
+                  {region}
+                </SidebarLabel>
+              ))}
+            </RegionSection>
 
-  {selectedRegion !== "전체" && (
-    <select
-      value={selectedGu}
-      onChange={(e) => setSelectedGu(e.target.value)}
-      style={{
-        marginLeft: "25px",
-        marginBottom: "20px",
-        padding: "5px",
-      }}
-    >
-      <option value="전체">-- 구 선택 --</option>
-      {regionGuMap[selectedRegion]?.map((gu) => (
-        <option key={gu} value={gu}>
-          {gu}
-        </option>
-      ))}
-    </select>
-  )}
+            {selectedRegion !== "전체" && (
+              <select
+                value={selectedGu}
+                onChange={(e) => setSelectedGu(e.target.value)}
+                style={{
+                  marginLeft: "25px",
+                  marginBottom: "20px",
+                  padding: "5px",
+                }}
+              >
+                <option value="전체">-- 구 선택 --</option>
+                {regionGuMap[selectedRegion]?.map((gu) => (
+                  <option key={gu} value={gu}>
+                    {gu}
+                  </option>
+                ))}
+              </select>
+            )}
 
-  <CategorySection>
-    <SidebarTitle>카테고리</SidebarTitle>
-    {Object.entries(CATEGORY_ID).map(([key, category]) => (
-      <SidebarLabel key={key}>
-        <SidebarInput
-          type="radio"
-          name="category"
-          value={key}
-          checked={selectedCategory === Number(key)}
-          onChange={() => {
-            setSelectedCategory(Number(key));
-            setCurrentPage(1);
-          }}
-        />
-        {category}
-      </SidebarLabel>
-    ))}
-  </CategorySection>
-</Sidebar>
+            <CategorySection>
+              <SidebarTitle>카테고리</SidebarTitle>
+              {Object.entries(CATEGORY_ID).map(([key, category]) => (
+                <SidebarLabel key={key}>
+                  <SidebarInput
+                    type="radio"
+                    name="category"
+                    value={key}
+                    checked={selectedCategory === Number(key)}
+                    onChange={() => {
+                      setSelectedCategory(Number(key));
+                      setCurrentPage(1);
+                    }}
+                  />
+                  {category}
+                </SidebarLabel>
+              ))}
+            </CategorySection>
+          </Sidebar>
 
           {/* 관리자 모드 알림 */}
           {user?.is_admin && (

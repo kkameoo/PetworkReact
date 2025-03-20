@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const FormContainer = styled.div`
-  max-width: 600px;
+  /* max-width: 600px; */
+  width: 1600px;
   margin: 40px auto;
   padding: 20px;
-  border: 2px solid #ffbb55;
-  border-radius: 20px;
-  background-color: #fff8ef;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  /* border: 2px solid #00bfff; */
+  /* border-radius: 20px; */
+  background-color: #e6f7ff;
+  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); */
 `;
 
 const FormRow = styled.div`
@@ -20,6 +21,7 @@ const FormRow = styled.div`
   label {
     margin-bottom: 5px;
     font-weight: bold;
+    color: #007acc;
   }
 
   input,
@@ -46,7 +48,7 @@ const PreviewImage = styled.img`
 const SubmitButton = styled.button`
   width: 100%;
   padding: 12px;
-  background-color: #ffa94d;
+  background-color: #00bfff;
   border: none;
   border-radius: 12px;
   color: white;
@@ -55,7 +57,7 @@ const SubmitButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #ff922b;
+    background-color: #007acc;
   }
 `;
 
