@@ -87,39 +87,14 @@ const SignupContents = () => {
   // const [selectedCity, setSelectedCity] = useState("");
   // const [selectedDistrict, setSelectedDistrict] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  // const [isEmailVerified, setIsEmailVerified] = useState(false);
   // const [passwordMatch, setPasswordMatch] = useState(null);
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [emailVerificationSent, setEmailVerificationSent] = useState(false);
   const navigate = useNavigate();
 
   const regionData = {
-    시: [
-      "서울시",
-      "수원시",
-      "성남시",
-      "안양시",
-      "부천시",
-      "광명시",
-      "평택시",
-      "시흥시",
-      "안산시",
-      "고양시",
-      "과천시",
-      "구리시",
-      "남양주시",
-      "오산시",
-      "화성시",
-      "김포시",
-      "광주시",
-      "하남시",
-      "이천시",
-      "양평군",
-      "동두천시",
-      "포천시",
-      "인천시",
-    ],
-    군구: [
+    서울시: [
       "종로구",
       "중구",
       "용산구",
@@ -144,31 +119,29 @@ const SignupContents = () => {
       "강남구",
       "송파구",
       "강동구",
-      "장안구",
-      "권선구",
-      "팔달구",
-      "영통구",
-      "수정구",
-      "중원구",
-      "분당구",
-      "만안구",
-      "동안구",
-      "원미구",
-      "소사구",
-      "오정구",
-      "광명구",
-      "평택구",
-      "시흥구",
-      "단원구",
-      "상록구",
-      "덕양구",
-      "일산동구",
-      "일산서구",
-      "과천구",
-      "구리구",
-      "남양주구",
-      "오산구",
-      "화성구",
+    ],
+    수원시: ["장안구", "권선구", "팔달구", "영통구"],
+    성남시: ["수정구", "중원구", "분당구"],
+    안양시: ["만안구", "동안구"],
+    부천시: ["원미구", "소사구", "오정구"],
+    광명시: ["광명구"],
+    평택시: ["평택구", "시흥구", "단원구", "상록구"],
+    시흥시: ["시흥구"],
+    안산시: ["단원구", "상록구"],
+    고양시: ["덕양구", "일산동구", "일산서구"],
+    과천시: ["과천구"],
+    구리시: ["구리구"],
+    남양주시: ["남양주구"],
+    오산시: ["오산구"],
+    화성시: ["화성구"],
+    김포시: ["김포구"],
+    광주시: ["광주구"],
+    하남시: ["하남구"],
+    이천시: ["이천구"],
+    양평군: ["양평군"],
+    동두천시: ["동두천시"],
+    포천시: ["포천시"],
+    인천시: [
       "중구(인천)",
       "동구(인천)",
       "미추홀구",
@@ -181,6 +154,94 @@ const SignupContents = () => {
       "옹진군",
     ],
   };
+  // const regionData = {
+  //   시: [
+  //     "서울시",
+  //     "수원시",
+  //     "성남시",
+  //     "안양시",
+  //     "부천시",
+  //     "광명시",
+  //     "평택시",
+  //     "시흥시",
+  //     "안산시",
+  //     "고양시",
+  //     "과천시",
+  //     "구리시",
+  //     "남양주시",
+  //     "오산시",
+  //     "화성시",
+  //     "김포시",
+  //     "광주시",
+  //     "하남시",
+  //     "이천시",
+  //     "양평군",
+  //     "동두천시",
+  //     "포천시",
+  //     "인천시",
+  //   ],
+  //   군구: [
+  //     "종로구",
+  //     "중구",
+  //     "용산구",
+  //     "성동구",
+  //     "광진구",
+  //     "동대문구",
+  //     "중랑구",
+  //     "강북구",
+  //     "도봉구",
+  //     "노원구",
+  //     "은평구",
+  //     "서대문구",
+  //     "마포구",
+  //     "양천구",
+  //     "강서구",
+  //     "구로구",
+  //     "금천구",
+  //     "영등포구",
+  //     "동작구",
+  //     "관악구",
+  //     "서초구",
+  //     "강남구",
+  //     "송파구",
+  //     "강동구",
+  //     "장안구",
+  //     "권선구",
+  //     "팔달구",
+  //     "영통구",
+  //     "수정구",
+  //     "중원구",
+  //     "분당구",
+  //     "만안구",
+  //     "동안구",
+  //     "원미구",
+  //     "소사구",
+  //     "오정구",
+  //     "광명구",
+  //     "평택구",
+  //     "시흥구",
+  //     "단원구",
+  //     "상록구",
+  //     "덕양구",
+  //     "일산동구",
+  //     "일산서구",
+  //     "과천구",
+  //     "구리구",
+  //     "남양주구",
+  //     "오산구",
+  //     "화성구",
+  //     "중구(인천)",
+  //     "동구(인천)",
+  //     "미추홀구",
+  //     "연수구",
+  //     "남동구",
+  //     "부평구",
+  //     "계양구",
+  //     "서구(인천)",
+  //     "강화군",
+  //     "옹진군",
+  //   ],
+  // };
 
   useEffect(() => {
     fetch(API_USER_URL)
@@ -193,7 +254,7 @@ const SignupContents = () => {
     setPasswordMatch(
       formData.confirmPassword
         ? formData.password === formData.confirmPassword
-        : null
+        : true
     );
   }, [formData.password, formData.confirmPassword]);
 
@@ -223,12 +284,12 @@ const SignupContents = () => {
   //   );
   // };
 
-  const handleBirthdateChange = (e) => {
-    const value = e.target.value;
-    if (/^\d{0,8}$/.test(value)) {
-      setFormData((prev) => ({ ...prev, birthdate: value }));
-    }
-  };
+  // const handleBirthdateChange = (e) => {
+  //   const value = e.target.value;
+  //   if (/^\d{0,8}$/.test(value)) {
+  //     setFormData((prev) => ({ ...prev, birthdate: value }));
+  //   }
+  // };
 
   const handleSendEmailVerification = async () => {
     if (!formData.email) {
@@ -285,7 +346,7 @@ const SignupContents = () => {
     if (
       !formData.name.trim() ||
       !formData.nickname.trim() ||
-      !birthdate ||
+      // !birthdate ||
       !formData.tel_number.trim() ||
       !formData.email.trim()
     ) {
@@ -312,10 +373,10 @@ const SignupContents = () => {
     // }
 
     const { confirmPassword, ...formDataToSend } = formData;
-    formDataToSend.birthdate = birthdate;
-    formDataToSend.gender = gender;
-    formDataToSend.selectedCity = selectedCity;
-    formDataToSend.selectedDistrict = selectedDistrict;
+    // formDataToSend.birthdate = birthdate;
+    // formDataToSend.gender = gender;
+    // formDataToSend.selectedCity = selectedCity;
+    // formDataToSend.selectedDistrict = selectedDistrict;
 
     try {
       const response = await fetch(API_USER_URL, {
@@ -408,7 +469,7 @@ const SignupContents = () => {
           name="birthdate"
           value={formData.birthdate}
           // onChange={handleChange}
-          onChange={handleBirthdateChange}
+          onChange={handleChange}
         />
 
         {/* 시 선택 */}
@@ -451,26 +512,49 @@ const SignupContents = () => {
           onChange={handleRegionChange}
         >
           <option value="">시 선택</option>
-          {Object.keys(regionData).map((city) => (
-            <option key={city} value={city}>
-              {city}
-            </option>
-          ))}
-        </select>
-        <select
-          name="selectedDistrict"
-          value={formData.selectedDistrict}
-          onChange={handleRegionChange}
-          disabled={!formData.selectedCity}
-        >
-          <option value="">군/구 선택</option>
-          {formData.selectedCity &&
-            regionData[formData.selectedCity].map((district) => (
-              <option key={district} value={district}>
-                {district}
+          {regionData.시 &&
+            regionData.시.map((city) => (
+              <option key={city} value={city}>
+                {city}
               </option>
             ))}
         </select>
+
+        {/* {formData.selectedCity && regionData[formData.selectedCity] && (
+          <select
+            name="selectedDistrict"
+            value={formData.selectedDistrict}
+            onChange={handleRegionChange}
+            disabled={!formData.selectedCity}
+          >
+            <option value="">군/구 선택</option>
+            {regionData.군구[formData.selectedCity] ? (
+              regionData[formData.selectedCity].map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))
+            ) : (
+              <option value="">군/구 정보가 없습니다</option>
+            )}
+          </select>
+        )} */}
+
+        {formData.selectedCity && regionData[formData.selectedCity] && (
+          <select
+            name="selectedDistrict"
+            value={formData.selectedDistrict}
+            onChange={handleRegionChange}
+          >
+            <option value="">군/구 선택</option>
+            {regionData[formData.selectedCity] &&
+              regionData[formData.selectedCity].map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+          </select>
+        )}
 
         {/* 성별 선택 */}
         <select name="gender" value={formData.gender} onChange={handleChange}>
