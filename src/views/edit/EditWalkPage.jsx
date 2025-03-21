@@ -1,17 +1,13 @@
+// PostEditWalk.jsx
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import DatePicker from "react-datepicker";
 
 const FormContainer = styled.div`
-  /* max-width: 600px; */
   width: 1600px;
   margin: 40px auto;
   padding: 20px;
-  /* border: 2px solid #00bfff; */
-  /* border-radius: 20px; */
   background-color: #e6f7ff;
-  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); */
 `;
 
 const FormRow = styled.div`
@@ -62,24 +58,23 @@ const SubmitButton = styled.button`
   }
 `;
 
-const PostHire = ({ onSubmitSuccess = () => {} }) => {
-  const [user, setUser] = useState(null);
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState(1);
-  const [regionSi, setRegionSi] = useState("서울특별시");
-  const [regionGu, setRegionGu] = useState("강남구");
-  const [description, setDescription] = useState("");
-  const [condition, setCondition] = useState("");
-  const [hireDate, setHireDate] = useState(new Date());
-  const [imageUrl, setImageUrl] = useState("");
-  const [preview, setPreview] = useState(null);
+const EditWalkPage = () => {
+  const { postId } = useParams(); // 게시물 ID
   const navigate = useNavigate();
 
+  const [user, setUser] = useState(null);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState(1);
+  const [regionSi, setRegionSi] = useState("서울시");
+  const [regionGu, setRegionGu] = useState("강남구");
+  const [description, setDescription] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [preview, setPreview] = useState(null);
+
   const CATEGORY_ID = [
-    [1, "소형견"],
-    [2, "중형견"],
-    [3, "대형견"],
+    [1, "소형"],
+    [2, "중형"],
+    [3, "대형"],
   ];
 
   const regions = [
@@ -100,6 +95,7 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
     "화성시",
     "인천시",
   ];
+
   const allSis = {
     서울시: [
       "종로구",
@@ -155,124 +151,111 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
     ],
   };
 
-  const handleImageChange = async (event) => {
-    const file = event.target.files[0];
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await fetch("http://localhost:8087/api/user/session", {
+        method: "GET",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.userId) setUser(data);
+    };
+
+    const fetchPostData = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:8087/api/board/walk/${postId}`
+        );
+        const post = await res.json();
+
+        setTitle(post.title);
+        setCategory(post.walkCategory);
+        setRegionSi(regions[post.localSi - 1]);
+        setRegionGu(allSis[regions[post.localSi - 1]][post.localGu - 1]);
+        setDescription(post.content);
+        setImageUrl(post.imageUrl);
+        setPreview(post.imageUrl);
+      } catch (err) {
+        console.error("게시물 로드 실패:", err);
+      }
+    };
+
+    fetchUser();
+    fetchPostData();
+  }, [postId]);
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
     if (!file) return;
 
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const uploadResponse = await fetch(
-        `http://localhost:8087/api/board/hire`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (uploadResponse.ok) {
-        const uploadResult = await uploadResponse.json();
-        setImageUrl(uploadResult.url);
-        setPreview(uploadResult.url);
+      const uploadRes = await fetch("http://localhost:8087/api/board/walk", {
+        method: "POST",
+        body: formData,
+      });
+      if (uploadRes.ok) {
+        const result = await uploadRes.json();
+        setImageUrl(result.url);
+        setPreview(result.url);
       }
     } catch (error) {
-      console.error("이미지 업로드 중 오류 발생:", error);
+      console.error("이미지 업로드 실패:", error);
     }
   };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("http://localhost:8087/api/user/session", {
-          method: "GET",
-          credentials: "include", // ← withCredentials 대응
-        });
-
-        if (!response.ok) {
-          throw new Error("응답 오류");
-        }
-
-        const data = await response.json();
-
-        if (data.userId) {
-          setUser(data);
-        } else {
-          console.error("🚨 로그인된 사용자가 없습니다.");
-        }
-      } catch (error) {
-        console.error("🔴 사용자 정보를 불러오는 중 오류 발생:", error);
-      }
-    };
-
-    fetchUserData();
-  }, []);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     if (!user) {
       alert("로그인이 필요합니다.");
       return;
     }
 
-    const postData = {
+    const updatedData = {
       userId: user.userId,
-      title: title,
+      title,
       content: description,
       reportCount: 0,
-      boardType: 1,
       localSi: regions.indexOf(regionSi) + 1,
       localGu: allSis[regionSi].indexOf(regionGu) + 1,
-      hireCondition: condition,
-      hireCategory: Number(category),
-      hirePrice: Number(price),
-      hireDate: hireDate.toISOString(),
+      walkCategory: Number(category),
       update: new Date().toISOString(),
-      //   post_photo:
-      //     imageUrl ||
-      //     "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDExMTdfMjAx%2FMDAxNzMxODEyOTU4OTA1.vhVsGTqw28gY-PmIc_6r4YQKM2ZG5F4ThTOfqRo6Lqog.UyBp04nJtxKm3_DG2FmklZHFtRlwSCH4MttaX8rl8J0g.JPEG%2F241005_%25C7%25C7%25C5%25A9_%25BF%25CF%25BC%25BA%25BA%25BB.jpg&type=a340",
+      post_photo: imageUrl,
     };
-    console.log(postData, "데이터");
-    try {
-      const response = await fetch("http://localhost:8087/api/board/hire", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
-      });
 
-      if (response.ok) {
-        alert("게시물이 성공적으로 등록되었습니다!");
-        onSubmitSuccess();
+    try {
+      const res = await fetch(
+        `http://localhost:8087/api/board/walk/${postId}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedData),
+        }
+      );
+
+      if (res.ok) {
+        alert("게시물이 수정되었습니다.");
         navigate("/");
       } else {
-        alert("게시물 등록 실패. 다시 시도해주세요.");
+        alert("수정 실패. 다시 시도해주세요.");
       }
     } catch (error) {
-      console.error("게시물 등록 중 오류 발생:", error);
-      alert("오류가 발생했습니다.");
+      console.error("수정 오류:", error);
     }
   };
 
   return (
     <FormContainer>
-      <h2>게시물 등록</h2>
+      <h2>게시물 수정</h2>
       <form onSubmit={handleSubmit}>
         <FormRow>
           <label>제목</label>
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </FormRow>
-        <FormRow>
-          <label>가격</label>
-          <input
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
             required
           />
         </FormRow>
@@ -316,24 +299,6 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
           </select>
         </FormRow>
         <FormRow>
-          <label>희망 날짜</label>
-          <DatePicker
-            selected={hireDate}
-            onChange={(date) => setHireDate(date)}
-            dateFormat="yyyy-MM-dd"
-            minDate={new Date()} // 오늘 이후부터 선택 가능
-            placeholderText="날짜를 선택하세요"
-          />
-        </FormRow>
-        <FormRow>
-          <label>조건</label>
-          <textarea
-            value={condition}
-            onChange={(e) => setCondition(e.target.value)}
-            required
-          />
-        </FormRow>
-        <FormRow>
           <label>설명</label>
           <textarea
             value={description}
@@ -346,10 +311,10 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
           <input type="file" accept="image/*" onChange={handleImageChange} />
           {preview && <PreviewImage src={preview} alt="preview" />}
         </FormRow>
-        <SubmitButton type="submit">등록</SubmitButton>
+        <SubmitButton type="submit">수정하기</SubmitButton>
       </form>
     </FormContainer>
   );
 };
 
-export default PostHire;
+export default EditWalkPage;

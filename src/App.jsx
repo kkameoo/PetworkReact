@@ -15,6 +15,9 @@ import SellContents from "./views/main/SellContents";
 import JobContents from "./views/main/JobContents";
 import TradeDetailPage from "./views/detail/TradeDetailPage";
 import HireDetailPage from "./views/detail/HireDetailPage";
+import EditWalkPage from "./views/edit/EditWalkPage";
+import EditHirePage from "./views/edit/EditHirePage";
+import EditTradePage from "./views/edit/EditTradePage";
 
 function App() {
   return (
@@ -27,7 +30,7 @@ function App() {
         <Route path="/main" element={<MainPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
-        <Route path="/walk/:postId" element={<DetailPage />} />
+        <Route path="/:postId" element={<DetailPage />} />
         <Route path="/Detail" element={<DetailPage />} />
         <Route path="/walk" element={<WalkContents />} />
         <Route path="/sell" element={<SellContents />} />
@@ -38,6 +41,9 @@ function App() {
         <Route path="/petshow" element={<PetShowcasePage />} />
         <Route path="/trade/:postId" element={<TradeDetailPage />} />
         <Route path="/hire/:postId" element={<HireDetailPage />} />
+        <Route path="/editWalk/:postId" element={<EditWalkPage />} />
+        <Route path="/edithire/:postId" element={<EditHirePage />} />
+        <Route path="/edittrade/:postId" element={<EditTradePage />} />
       </Routes>
       <Footer />
     </>

@@ -103,7 +103,16 @@ const ProductDescription = styled.p`
   font-size: 18px;
   margin-bottom: 20px;
 `;
+const EditButton = styled.button`
+  position: absolute;
+  right: 150px;
+  background-color: #007acc;
 
+  &:hover {
+    background-color: #005c99;
+    color: white;
+  }
+`;
 const DetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
@@ -138,9 +147,7 @@ const DetailPage = () => {
 
   const fetchPostDetail = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:8087/api/board/walk/${postId}`
-      );
+      const response = await fetch(`http://localhost:8087/api/board/${postId}`);
       const data = await response.json();
       const formattedDateTime = data.upd_date
         ? new Date(data.upd_date)
@@ -207,6 +214,9 @@ const DetailPage = () => {
           <ProductDescription>{newPost.content}</ProductDescription>
         </ProductRight>
       </ProductBody>
+      <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
+        게시물 수정
+      </EditButton>
     </DetailWrapper>
   );
 };

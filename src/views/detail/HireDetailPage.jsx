@@ -103,6 +103,16 @@ const ProductDescription = styled.p`
   font-size: 18px;
   margin-bottom: 20px;
 `;
+const EditButton = styled.button`
+  position: absolute;
+  right: 150px;
+  background-color: #007acc;
+
+  &:hover {
+    background-color: #005c99;
+    color: white;
+  }
+`;
 
 const HireDetailPage = () => {
   const { postId } = useParams();
@@ -211,6 +221,9 @@ const HireDetailPage = () => {
           <ProductDescription>{newPost.content}</ProductDescription>
         </ProductRight>
       </ProductBody>
+      <EditButton onClick={() => navigate(`/edithire/${postId}`)}>
+        게시물 수정
+      </EditButton>
     </DetailWrapper>
   );
 };
