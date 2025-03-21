@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 export const PageContainer = styled.div`
+  margin-left: 120px;
+  max-width: 1500px;
   padding: 2rem;
   background-color: #fffefc;
 `;

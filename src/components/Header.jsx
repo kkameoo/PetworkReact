@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 // 이미지 스타일
 export const LeftImage = styled.img`
   position: absolute;
-  top: -30px;
-  left: -30px;
+  top: -20px;
+  left: 90px;
   width: 200px;
   height: auto;
   z-index: 5;

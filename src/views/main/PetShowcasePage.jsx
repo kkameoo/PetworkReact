@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const Container = styled.div`
-  width: 1600px;
+  margin-left: 130px;
+  margin-right: 200px;
+  max-width: 1600px;
   padding: 40px;
   font-family: "Arial", sans-serif;
 `;
