@@ -122,6 +122,7 @@ const SignupContents = () => {
   const [verificationCode, setVerificationCode] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [emailVerificationSent, setEmailVerificationSent] = useState(false);
+  const [emailInput, setEmailInput] = useState("");
   const { confirmPassword, ...formDataToSend } = formData;
   const navigate = useNavigate();
   const regionData = {
@@ -300,34 +301,29 @@ const SignupContents = () => {
   };
 
   const handleSendEmailVerification = async () => {
-    if (!formData.email.trim()) {
+    if (!emailInput.trim()) {
       alert("이메일을 입력해주세요.");
       return;
     }
     // 실제 api사용 이메일 인증
     try {
-      console.log("이메일 인증 시작 ===============================");
       const response = await fetch(API_EMAIL_VERIFICATION_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email }),
+        body: JSON.stringify({ email: emailInput }),
       });
 
       if (!response.ok) throw new Error("이메일 인증 요청 실패");
 
-      alert("인증 메일이 발송되었습니다. 이메일을 확인해주세요.");
-      // setEmailVerificationSent(true);
-      setModalVisible(true);
-      console.log("성공>>>>>>>>>>>>>>>>>>>>>>>>"); // 성공 로그
+      alert("이메일 인증 코드가 전송되었습니다.");
     } catch (error) {
       console.error("이메일 인증 오류:", error);
-      alert("이메일 인증 요청 중 오류가 발생했습니다.");
-      console.error("실패<<<<<<<<<<<<<<<<<<<<<<<<<<<<", error); // 실패 로그
+      alert("이메일 인증 중 오류 발생");
     }
   };
 
   const handleVerifyCode = async () => {
-    if (!verificationCode.trim() || !formData.email.trim()) {
+    if (!emailInput.trim() || !verificationCode.trim()) {
       alert("이메일과 인증 코드를 입력해주세요.");
       return;
     }
@@ -336,20 +332,16 @@ const SignupContents = () => {
       const response = await fetch(API_EMAIL_VERIFY_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email, code: verificationCode }),
+        body: JSON.stringify({ email: emailInput, code: verificationCode }),
       });
 
       if (!response.ok) throw new Error("인증 코드 불일치");
 
       alert("이메일 인증 성공!");
       setIsEmailVerified(true);
-      // setIsEmailVerified(true);
 
       // ✅ 인증 코드 formData에 저장
-      setFormData((prev) => ({
-        ...prev,
-        verificationCode: verificationCode,
-      }));
+      setFormData((prev) => ({ ...prev, email: emailInput }));
       setModalVisible(false);
     } catch (error) {
       console.error("이메일 인증 오류:", error);
@@ -363,7 +355,7 @@ const SignupContents = () => {
   //     setCode(e.target.value);
   //   };
 
-  //   const handleVerify = () => {
+  //   const handleVerify = () => {SignupContainer
   //     onVerifyCode(code);
   //     onClose(); // Close the modal after verification
   //   };
@@ -405,13 +397,10 @@ const SignupContents = () => {
     }
 
     try {
-      const response = await fetch(API_USER_URL, {
+      const response = await fetch("http://localhost:8087/api/user", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          verificationCode: formData.verificationCode, // ✅ 인증 코드 포함
-        }),
+        body: JSON.stringify(formData),
       });
       if (!response.ok) throw new Error("회원가입 실패");
       alert("회원가입 성공! 로그인 페이지로 이동합니다.");
@@ -430,31 +419,44 @@ const SignupContents = () => {
           type="email"
           name="email"
           value={formData.email}
-          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
           disabled={isEmailVerified}
+          placeholder="이메일 인증을 먼저해주세요."
         />
         <button
-          onClick={handleSendEmailVerification}
-          disabled={isEmailVerified || !formData.email}
+          type="button"
+          onClick={() => setModalVisible(true)}
+          disabled={isEmailVerified}
         >
           이메일 인증
         </button>
         {modalVisible && (
           <ModalBackdrop>
             <ModalContainer>
-              <ModalHeader>이메일 인증</ModalHeader>
-              <div>
-                <Input
-                  type="text"
-                  placeholder="인증 코드 입력"
-                  value={verificationCode}
-                  onChange={(e) => setVerificationCode(e.target.value)}
-                />
-                <Button type="button" onClick={handleVerifyCode}>
-                  인증 확인
-                </Button>
-              </div>
-              <ModalButton onClick={handleCloseModal}>닫기</ModalButton>
+              <h3>이메일 인증</h3>
+              <Input
+                type="text"
+                placeholder="이메일 입력"
+                value={emailInput}
+                onChange={(e) => setEmailInput(e.target.value)}
+                disabled={isEmailVerified}
+              />
+              <Button type="button" onClick={handleSendEmailVerification}>
+                인증 코드 보내기
+              </Button>
+
+              <Input
+                type="text"
+                placeholder="인증 코드 입력"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+              />
+              <Button type="button" onClick={handleVerifyCode}>
+                인증 확인
+              </Button>
+
+              <Button type="button" onClick={() => setModalVisible(false)}>
+                닫기
+              </Button>
             </ModalContainer>
           </ModalBackdrop>
         )}
