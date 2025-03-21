@@ -220,7 +220,7 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
       title: title,
       content: description,
       reportCount: 0,
-      boardType: 1,
+      boardType: 3,
       localSi: regions.indexOf(regionSi) + 1,
       localGu: allSis[regionSi].indexOf(regionGu) + 1,
       hireCondition: condition,

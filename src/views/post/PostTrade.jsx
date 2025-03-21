@@ -217,7 +217,7 @@ const PostTrade = ({ onSubmitSuccess = () => {} }) => {
       title: title,
       content: description,
       reportCount: 0,
-      boardType: 1,
+      boardType: 2,
       localSi: regions.indexOf(regionSi) + 1,
       localGu: allSis[regionSi].indexOf(regionGu) + 1,
       tradeCategory: Number(category),
