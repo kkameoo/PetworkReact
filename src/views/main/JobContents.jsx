@@ -192,6 +192,7 @@ export const PageNumber = styled.span`
   color: #007acc;
 `;
 
+// 지역 및 카테고리 매핑
 const CATEGORY_ID = {
   0: "전체",
   1: "소형견",
@@ -397,7 +398,7 @@ const JobContents = () => {
           title: item.title,
           content: item.content,
           category: item.category,
-          type: 2,
+          type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
           price: item.price || 0,
@@ -560,7 +561,7 @@ const JobContents = () => {
           >
             다음
           </PaginationButton>
-          <CreateButton onClick={() => navigate("/post")}>
+          <CreateButton onClick={() => navigate("/postHire")}>
             게시물 작성
           </CreateButton>
         </PaginationWrapper>

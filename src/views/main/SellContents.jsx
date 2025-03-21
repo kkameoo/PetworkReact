@@ -558,7 +558,7 @@ const SellContents = () => {
           >
             다음
           </PaginationButton>
-          <CreateButton onClick={() => navigate("/post")}>
+          <CreateButton onClick={() => navigate("/postTrade")}>
             게시물 작성
           </CreateButton>
         </PaginationWrapper>

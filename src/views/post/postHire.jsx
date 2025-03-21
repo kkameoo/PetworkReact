@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import DatePicker from "react-datepicker";
 
 const FormContainer = styled.div`
   /* max-width: 600px; */
@@ -61,7 +62,7 @@ const SubmitButton = styled.button`
   }
 `;
 
-const PostWalk = ({ onSubmitSuccess = () => {} }) => {
+const PostHire = ({ onSubmitSuccess = () => {} }) => {
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -69,14 +70,16 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
   const [regionSi, setRegionSi] = useState("서울특별시");
   const [regionGu, setRegionGu] = useState("강남구");
   const [description, setDescription] = useState("");
+  const [condition, setCondition] = useState("");
+  const [hireDate, setHireDate] = useState(new Date());
   const [imageUrl, setImageUrl] = useState("");
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
 
   const CATEGORY_ID = [
-    [1, "소형"],
-    [2, "중형"],
-    [3, "대형"],
+    [1, "소형견"],
+    [2, "중형견"],
+    [3, "대형견"],
   ];
 
   const regions = [
@@ -161,7 +164,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
 
     try {
       const uploadResponse = await fetch(
-        `http://localhost:8087/api/board/walk`,
+        `http://localhost:8087/api/board/hire`,
         {
           method: "POST",
           body: formData,
@@ -220,7 +223,10 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
       boardType: 1,
       localSi: regions.indexOf(regionSi) + 1,
       localGu: allSis[regionSi].indexOf(regionGu) + 1,
-      walkCategory: Number(category),
+      hireCondition: condition,
+      hireCategory: Number(category),
+      hirePrice: Number(price),
+      hireDate: hireDate.toISOString(),
       update: new Date().toISOString(),
       //   post_photo:
       //     imageUrl ||
@@ -228,7 +234,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     };
     console.log(postData, "데이터");
     try {
-      const response = await fetch("http://localhost:8087/api/board/walk", {
+      const response = await fetch("http://localhost:8087/api/board/hire", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -261,7 +267,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
             required
           />
         </FormRow>
-        {/* <FormRow>
+        <FormRow>
           <label>가격</label>
           <input
             type="number"
@@ -269,7 +275,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
             onChange={(e) => setPrice(e.target.value)}
             required
           />
-        </FormRow> */}
+        </FormRow>
         <FormRow>
           <label>카테고리</label>
           <select
@@ -310,6 +316,24 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
           </select>
         </FormRow>
         <FormRow>
+          <label>희망 날짜</label>
+          <DatePicker
+            selected={hireDate}
+            onChange={(date) => setHireDate(date)}
+            dateFormat="yyyy-MM-dd"
+            minDate={new Date()} // 오늘 이후부터 선택 가능
+            placeholderText="날짜를 선택하세요"
+          />
+        </FormRow>
+        <FormRow>
+          <label>조건</label>
+          <textarea
+            value={condition}
+            onChange={(e) => setCondition(e.target.value)}
+            required
+          />
+        </FormRow>
+        <FormRow>
           <label>설명</label>
           <textarea
             value={description}
@@ -328,4 +352,4 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
   );
 };
 
-export default PostWalk;
+export default PostHire;

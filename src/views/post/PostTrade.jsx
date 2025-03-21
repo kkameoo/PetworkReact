@@ -61,7 +61,7 @@ const SubmitButton = styled.button`
   }
 `;
 
-const PostWalk = ({ onSubmitSuccess = () => {} }) => {
+const PostTrade = ({ onSubmitSuccess = () => {} }) => {
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
@@ -74,9 +74,9 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
   const navigate = useNavigate();
 
   const CATEGORY_ID = [
-    [1, "소형"],
-    [2, "중형"],
-    [3, "대형"],
+    [1, "미용"],
+    [2, "사료"],
+    [3, "장난감"],
   ];
 
   const regions = [
@@ -161,7 +161,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
 
     try {
       const uploadResponse = await fetch(
-        `http://localhost:8087/api/board/walk`,
+        `http://localhost:8087/api/board/trade`,
         {
           method: "POST",
           body: formData,
@@ -220,7 +220,8 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
       boardType: 1,
       localSi: regions.indexOf(regionSi) + 1,
       localGu: allSis[regionSi].indexOf(regionGu) + 1,
-      walkCategory: Number(category),
+      tradeCategory: Number(category),
+      tradePrice: Number(price),
       update: new Date().toISOString(),
       //   post_photo:
       //     imageUrl ||
@@ -228,7 +229,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     };
     console.log(postData, "데이터");
     try {
-      const response = await fetch("http://localhost:8087/api/board/walk", {
+      const response = await fetch("http://localhost:8087/api/board/trade", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -261,7 +262,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
             required
           />
         </FormRow>
-        {/* <FormRow>
+        <FormRow>
           <label>가격</label>
           <input
             type="number"
@@ -269,7 +270,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
             onChange={(e) => setPrice(e.target.value)}
             required
           />
-        </FormRow> */}
+        </FormRow>
         <FormRow>
           <label>카테고리</label>
           <select
@@ -328,4 +329,4 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
   );
 };
 
-export default PostWalk;
+export default PostTrade;

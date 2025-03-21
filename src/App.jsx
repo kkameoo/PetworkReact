@@ -8,6 +8,8 @@ import Board from "./pages/Board";
 import PostWalk from "./views/post/PostWalk";
 import Footer from "./components/Footer";
 import PetShowcasePage from "./views/main/PetShowcasePage";
+import PostTrade from "./views/post/PostTrade";
+import PostHire from "./views/post/postHire";
 
 function App() {
   return (
@@ -22,7 +24,9 @@ function App() {
         <Route path="/:postId" element={<DetailPage />} />
         <Route path="/Detail" element={<DetailPage />} />
         <Route path="/board" element={<Board />} />
-        <Route path="/post" element={<PostWalk />} />
+        <Route path="/postTrade" element={<PostTrade />} />
+        <Route path="/postWalk" element={<PostWalk />} />
+        <Route path="/postHire" element={<PostHire />} />
         <Route path="/petshow" element={<PetShowcasePage />} />
       </Routes>
       <Footer />
