@@ -36,7 +36,7 @@ const Select = styled.select`
   cursor: pointer;
 `;
 const Button = styled.button`
-  background-color: #ff8c00;
+  background-color: #007acc;
   color: white;
   padding: 10px;
   border: none;
@@ -44,7 +44,7 @@ const Button = styled.button`
   font-size: 16px;
   cursor: pointer;
   &:hover {
-    background-color: #e07b00;
+    background-color: #00bfff;
   }
 `;
 const ErrorMessage = styled.p`
@@ -77,7 +77,7 @@ const ModalHeader = styled.h2`
 `;
 
 const ModalButton = styled.button`
-  background-color: #ff8c00;
+  background-color: #007acc;
   color: white;
   padding: 10px;
   border: none;
@@ -85,7 +85,7 @@ const ModalButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #e07b00;
+    background-color: #00bfff;
   }
 `;
 
