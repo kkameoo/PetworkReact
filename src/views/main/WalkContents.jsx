@@ -397,7 +397,7 @@ const WalkContents = () => {
           regionGu: guMap[item.localGu] || "알 수 없음",
           title: item.title,
           content: item.content,
-          category: item.category,
+          category: item.walkCategory,
           type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,

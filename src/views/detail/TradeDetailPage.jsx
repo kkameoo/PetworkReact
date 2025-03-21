@@ -104,7 +104,7 @@ const ProductDescription = styled.p`
   margin-bottom: 20px;
 `;
 
-const DetailPage = () => {
+const TradeDetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState(null);
@@ -139,9 +139,10 @@ const DetailPage = () => {
   const fetchPostDetail = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8087/api/board/walk/${postId}`
+        `http://localhost:8087/api/board/trade/${postId}`
       );
       const data = await response.json();
+
       const formattedDateTime = data.upd_date
         ? new Date(data.upd_date)
             .toISOString()
@@ -154,16 +155,17 @@ const DetailPage = () => {
         regionSi: data.localSi,
         regionGu: data.localGu,
         title: data.title,
-        image: data.post_photo,
+        // image: data.post_photo,
         content: data.content,
-        category: data.category,
+        category: data.tradeCategory,
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
         updateTime: formattedDateTime,
         seller: data.nickname,
+        price: data.tradePrice,
       };
-      console.log("Data", data);
+      console.log("Data", postData);
       setNewPost(postData);
     } catch (error) {
       console.error("상세 데이터 불러오기 오류:", error);
@@ -211,4 +213,4 @@ const DetailPage = () => {
   );
 };
 
-export default DetailPage;
+export default TradeDetailPage;

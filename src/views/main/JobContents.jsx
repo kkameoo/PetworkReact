@@ -348,7 +348,7 @@ const regionGuMap = {
 const ITEMS_PER_PAGE = 12;
 
 const JobContents = () => {
-  const API_POST_URL = "http://localhost:8087/api/board";
+  const API_POST_URL = "http://localhost:8087/api/board/hire";
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
@@ -438,7 +438,7 @@ const JobContents = () => {
     startIndex + ITEMS_PER_PAGE
   );
 
-  const goToDetail = (postId) => navigate(`/${postId}`);
+  const goToDetail = (postId) => navigate(`/hire/${postId}`);
 
   return (
     <>

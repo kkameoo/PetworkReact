@@ -9,6 +9,9 @@ export const LeftImage = styled.img`
   width: 200px;
   height: auto;
   z-index: 5;
+  &:hover {
+    transform: scale(1.1);
+  }
 `;
 
 // 로그인 및 회원가입 버튼 스타일
@@ -117,6 +120,7 @@ const ExampleComponent = () => {
       <LeftImage
         src="src/assets/TalkMedia_i_2a4ebc04392c.png.png"
         alt="left-image"
+        onClick={() => handleImageClick("/")}
       />
 
       {/* 로그인과 회원가입 버튼을 오른쪽 상단에 배치 */}

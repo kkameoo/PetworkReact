@@ -347,7 +347,7 @@ const regionGuMap = {
 const ITEMS_PER_PAGE = 12;
 
 const SellContents = () => {
-  const API_POST_URL = "http://localhost:8087/api/board";
+  const API_POST_URL = "http://localhost:8087/api/board/trade";
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
@@ -396,7 +396,7 @@ const SellContents = () => {
           regionGu: guMap[item.localGu] || "알 수 없음",
           title: item.title,
           content: item.content,
-          category: item.category,
+          category: item.tradeCategory,
           type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
@@ -404,6 +404,7 @@ const SellContents = () => {
             guMap[item.localGu] || ""
           }`,
           image: item.image || "/no-image.png",
+          price: item.tradePrice,
         }));
         console.log("데이터:", data);
         setPosts(postData);
@@ -435,7 +436,7 @@ const SellContents = () => {
     startIndex + ITEMS_PER_PAGE
   );
 
-  const goToDetail = (postId) => navigate(`/${postId}`);
+  const goToDetail = (postId) => navigate(`/trade/${postId}`);
 
   return (
     <>
