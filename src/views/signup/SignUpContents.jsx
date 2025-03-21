@@ -51,6 +51,44 @@ const ErrorMessage = styled.p`
   color: red;
   font-size: 14px;
 `;
+
+// 모달
+const ModalBackdrop = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const ModalContainer = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  width: 400px;
+`;
+
+const ModalHeader = styled.h2`
+  text-align: center;
+`;
+
+const ModalButton = styled.button`
+  background-color: #ff8c00;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #e07b00;
+  }
+`;
+
 const SignupContents = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -68,18 +106,23 @@ const SignupContents = () => {
     is_deleted: false,
     is_admin: false,
     upd_date: new Date().toISOString(),
+    verificationCode: "", // ✅ 인증 코드 추가
   });
   const API_USER_URL = `http://localhost:8087/api/user`;
-  // const API_EMAIL_VERIFICATION_URL = `http://localhost:8087/api/user/verify-email`;
+  const API_EMAIL_VERIFICATION_URL = `http://localhost:8087/api/email/send`;
+  const API_EMAIL_VERIFY_URL = `http://localhost:8087/api/email/verify`;
+
   // const [birthdate, setBirthdate] = useState("");
   // const [gender, setGender] = useState("");
   // const [selectedCity, setSelectedCity] = useState("");
   // const [selectedDistrict, setSelectedDistrict] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
-  // const [isEmailVerified, setIsEmailVerified] = useState(false);
-  // const [passwordMatch, setPasswordMatch] = useState(null);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [emailVerificationSent, setEmailVerificationSent] = useState(false);
+  const { confirmPassword, ...formDataToSend } = formData;
   const navigate = useNavigate();
   const regionData = {
     서울시: [
@@ -255,60 +298,78 @@ const SignupContents = () => {
       selectedDistrict: "", // 시를 변경하면 군/구는 초기화
     }));
   };
-  // const handlePasswordChange = (e) => {
-  //   const password = e.target.value;
-  //   setFormData({ ...formData, password });
-  //   const passwordRegex = /^(?=.*[A-Z])(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
-  //   setPasswordStrength(
-  //     passwordRegex.test(password)
-  //       ? "보안성: 강함"
-  //       : "비밀번호는 최소 6자 이상이며, 최소 1개의 대문자 및 특수문자를 포함해야 합니다."
-  //   );
-  // };
-  // const handleBirthdateChange = (e) => {
-  //   const value = e.target.value;
-  //   if (/^\d{0,8}$/.test(value)) {
-  //     setFormData((prev) => ({ ...prev, birthdate: value }));
-  //   }
-  // };
+
   const handleSendEmailVerification = async () => {
-    if (!formData.email) {
+    if (!formData.email.trim()) {
       alert("이메일을 입력해주세요.");
       return;
     }
     // 실제 api사용 이메일 인증
-    //   try {
-    //     console.log("이메일 인증 시작 ===============================");
-    //     const response = await fetch(API_EMAIL_VERIFICATION_URL, {
-    //       method: "POST",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify({ email: formData.email }),
-    //     });
-    //     if (!response.ok) throw new Error("이메일 인증 요청 실패");
-    //     alert("인증 메일이 발송되었습니다. 이메일을 확인해주세요.");
-    //     setEmailVerificationSent(true);
-    //     console.log("이메일 인증 메일 발송 성공>>>>>>>>>>>>>>>>>>>>>>>>"); // 성공 로그
-    //   } catch (error) {
-    //     console.error("이메일 인증 오류:", error);
-    //     alert("이메일 인증 요청 중 오류가 발생했습니다.");
-    //     console.error("이메일 인증 요청 실패<<<<<<<<<<<<<<<<<<<<<<<<<<<<", error); // 실패 로그
-    //   }
-    // };
-    // 이메일인증 시뮬레이션
     try {
-      console.log("이메일 인증 요청 시작..."); // 추가된 로그
-      // 여기서는 실제 fetch 요청을 보내지 않고, 시뮬레이션만 진행
-      setTimeout(() => {
-        // 시뮬레이션된 성공 응답
-        console.log("이메일 인증 메일 발송 성공."); // 성공 로그
-        alert("인증 메일이 발송되었습니다. 이메일을 확인해주세요.");
-        setEmailVerificationSent(true);
-      }, 2000); // 2초 뒤에 성공적으로 인증 메일이 발송된 것처럼 처리
+      console.log("이메일 인증 시작 ===============================");
+      const response = await fetch(API_EMAIL_VERIFICATION_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email }),
+      });
+
+      if (!response.ok) throw new Error("이메일 인증 요청 실패");
+
+      alert("인증 메일이 발송되었습니다. 이메일을 확인해주세요.");
+      // setEmailVerificationSent(true);
+      setModalVisible(true);
+      console.log("성공>>>>>>>>>>>>>>>>>>>>>>>>"); // 성공 로그
     } catch (error) {
       console.error("이메일 인증 오류:", error);
       alert("이메일 인증 요청 중 오류가 발생했습니다.");
-      console.error("이메일 인증 요청 실패:", error); // 실패 로그
+      console.error("실패<<<<<<<<<<<<<<<<<<<<<<<<<<<<", error); // 실패 로그
     }
+  };
+
+  const handleVerifyCode = async () => {
+    if (!verificationCode.trim() || !formData.email.trim()) {
+      alert("이메일과 인증 코드를 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetch(API_EMAIL_VERIFY_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email, code: verificationCode }),
+      });
+
+      if (!response.ok) throw new Error("인증 코드 불일치");
+
+      alert("이메일 인증 성공!");
+      setIsEmailVerified(true);
+      // setIsEmailVerified(true);
+
+      // ✅ 인증 코드 formData에 저장
+      setFormData((prev) => ({
+        ...prev,
+        verificationCode: verificationCode,
+      }));
+      setModalVisible(false);
+    } catch (error) {
+      console.error("이메일 인증 오류:", error);
+      alert("인증 코드가 올바르지 않습니다.");
+    }
+  };
+  // const EmailVerificationModal = ({ onClose, onVerifyCode }) => {
+  //   const [code, setCode] = useState("");
+
+  //   const handleCodeChange = (e) => {
+  //     setCode(e.target.value);
+  //   };
+
+  //   const handleVerify = () => {
+  //     onVerifyCode(code);
+  //     onClose(); // Close the modal after verification
+  //   };
+  // };
+  const handleCloseModal = () => {
+    setModalVisible(false);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -316,14 +377,18 @@ const SignupContents = () => {
     const phoneRegex = /^\d{10,11}$/;
     console.log(formData);
     // 회원가입 처리 로직 추가
-    if (
-      !formData.name.trim() ||
-      !formData.nickname.trim() ||
-      // !birthdate ||
-      !formData.tel_number.trim() ||
-      !formData.email.trim()
-    ) {
-      alert("모든 필수 입력란을 채워주세요.");
+
+    // if (
+    //   !formData.name.trim() ||
+    //   !formData.nickname.trim() ||
+    //   !formData.tel_number.trim() ||
+    //   !formData.email.trim()
+    // ) {
+    //   alert("모든 필수 입력란을 채워주세요.");
+    //   return;
+    // }
+    if (!isEmailVerified) {
+      alert("이메일 인증을 완료해주세요.");
       return;
     }
     if (!phoneRegex.test(formData.tel_number)) {
@@ -338,20 +403,15 @@ const SignupContents = () => {
       alert("올바른 이메일 형식을 입력하세요.");
       return;
     }
-    // if (!isEmailVerified) {
-    //   alert("이메일 인증이 필요합니다.");
-    //   return;
-    // }
-    const { confirmPassword, ...formDataToSend } = formData;
-    // formDataToSend.birthdate = birthdate;
-    // formDataToSend.gender = gender;
-    // formDataToSend.selectedCity = selectedCity;
-    // formDataToSend.selectedDistrict = selectedDistrict;
+
     try {
       const response = await fetch(API_USER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formDataToSend),
+        body: JSON.stringify({
+          ...formData,
+          verificationCode: formData.verificationCode, // ✅ 인증 코드 포함
+        }),
       });
       if (!response.ok) throw new Error("회원가입 실패");
       alert("회원가입 성공! 로그인 페이지로 이동합니다.");
@@ -370,15 +430,37 @@ const SignupContents = () => {
           type="email"
           name="email"
           value={formData.email}
-          onChange={handleChange}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          disabled={isEmailVerified}
         />
         <button
           onClick={handleSendEmailVerification}
-          disabled={!formData.email}
+          disabled={isEmailVerified || !formData.email}
         >
           이메일 인증
         </button>
-        {emailVerificationSent && <p>인증 메일이 발송되었습니다.</p>}
+        {modalVisible && (
+          <ModalBackdrop>
+            <ModalContainer>
+              <ModalHeader>이메일 인증</ModalHeader>
+              <div>
+                <Input
+                  type="text"
+                  placeholder="인증 코드 입력"
+                  value={verificationCode}
+                  onChange={(e) => setVerificationCode(e.target.value)}
+                />
+                <Button type="button" onClick={handleVerifyCode}>
+                  인증 확인
+                </Button>
+              </div>
+              <ModalButton onClick={handleCloseModal}>닫기</ModalButton>
+            </ModalContainer>
+          </ModalBackdrop>
+        )}
+
+        {isEmailVerified && <p>이메일 인증 완료 ✅</p>}
+
         {/* 비밀번호 입력 */}
         <Input
           type="password"
