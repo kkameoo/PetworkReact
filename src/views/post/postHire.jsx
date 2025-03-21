@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 
 const FormContainer = styled.div`
   /* max-width: 600px; */
