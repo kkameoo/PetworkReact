@@ -18,6 +18,7 @@ import HireDetailPage from "./views/detail/HireDetailPage";
 import EditWalkPage from "./views/edit/EditWalkPage";
 import EditHirePage from "./views/edit/EditHirePage";
 import EditTradePage from "./views/edit/EditTradePage";
+import UserDetailPage from "./views/detail/UserDetailPage";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/editWalk/:postId" element={<EditWalkPage />} />
         <Route path="/edithire/:postId" element={<EditHirePage />} />
         <Route path="/edittrade/:postId" element={<EditTradePage />} />
+        <Route path="/my" element={<UserDetailPage />} />
       </Routes>
       <Footer />
     </>
