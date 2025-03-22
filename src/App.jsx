@@ -19,6 +19,7 @@ import EditWalkPage from "./views/edit/EditWalkPage";
 import EditHirePage from "./views/edit/EditHirePage";
 import EditTradePage from "./views/edit/EditTradePage";
 import Room from "./pages/Room";
+import UserDetailPage from "./views/detail/UserDetailPage";
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
         <Route path="/edithire/:postId" element={<EditHirePage />} />
         <Route path="/edittrade/:postId" element={<EditTradePage />} />
         <Route path="/room" element={<Room />} />
+        <Route path="/my" element={<UserDetailPage />} />
       </Routes>
       <Footer />
     </>
