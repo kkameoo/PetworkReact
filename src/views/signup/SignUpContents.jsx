@@ -108,22 +108,17 @@ const SignupContents = () => {
     upd_date: new Date().toISOString(),
     verificationCode: "", // ✅ 인증 코드 추가
   });
-  const API_USER_URL = `http://localhost:8087/api/user`;
+  const API_USER_URL = "http://localhost:8087/api/user/register";
   const API_EMAIL_VERIFICATION_URL = `http://localhost:8087/api/email/send`;
   const API_EMAIL_VERIFY_URL = `http://localhost:8087/api/email/verify`;
 
-  // const [birthdate, setBirthdate] = useState("");
-  // const [gender, setGender] = useState("");
-  // const [selectedCity, setSelectedCity] = useState("");
-  // const [selectedDistrict, setSelectedDistrict] = useState("");
   const [passwordStrength, setPasswordStrength] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
-  const [emailVerificationSent, setEmailVerificationSent] = useState(false);
+  // const [emailVerificationSent, setEmailVerificationSent] = useState(false);
   const [emailInput, setEmailInput] = useState("");
-  const { confirmPassword, ...formDataToSend } = formData;
   const navigate = useNavigate();
   const regionData = {
     서울시: [
@@ -186,94 +181,7 @@ const SignupContents = () => {
       "옹진군",
     ],
   };
-  // const regionData = {
-  //   시: [
-  //     "서울시",
-  //     "수원시",
-  //     "성남시",
-  //     "안양시",
-  //     "부천시",
-  //     "광명시",
-  //     "평택시",
-  //     "시흥시",
-  //     "안산시",
-  //     "고양시",
-  //     "과천시",
-  //     "구리시",
-  //     "남양주시",
-  //     "오산시",
-  //     "화성시",
-  //     "김포시",
-  //     "광주시",
-  //     "하남시",
-  //     "이천시",
-  //     "양평군",
-  //     "동두천시",
-  //     "포천시",
-  //     "인천시",
-  //   ],
-  //   군구: [
-  //     "종로구",
-  //     "중구",
-  //     "용산구",
-  //     "성동구",
-  //     "광진구",
-  //     "동대문구",
-  //     "중랑구",
-  //     "강북구",
-  //     "도봉구",
-  //     "노원구",
-  //     "은평구",
-  //     "서대문구",
-  //     "마포구",
-  //     "양천구",
-  //     "강서구",
-  //     "구로구",
-  //     "금천구",
-  //     "영등포구",
-  //     "동작구",
-  //     "관악구",
-  //     "서초구",
-  //     "강남구",
-  //     "송파구",
-  //     "강동구",
-  //     "장안구",
-  //     "권선구",
-  //     "팔달구",
-  //     "영통구",
-  //     "수정구",
-  //     "중원구",
-  //     "분당구",
-  //     "만안구",
-  //     "동안구",
-  //     "원미구",
-  //     "소사구",
-  //     "오정구",
-  //     "광명구",
-  //     "평택구",
-  //     "시흥구",
-  //     "단원구",
-  //     "상록구",
-  //     "덕양구",
-  //     "일산동구",
-  //     "일산서구",
-  //     "과천구",
-  //     "구리구",
-  //     "남양주구",
-  //     "오산구",
-  //     "화성구",
-  //     "중구(인천)",
-  //     "동구(인천)",
-  //     "미추홀구",
-  //     "연수구",
-  //     "남동구",
-  //     "부평구",
-  //     "계양구",
-  //     "서구(인천)",
-  //     "강화군",
-  //     "옹진군",
-  //   ],
-  // };
+
   useEffect(() => {
     fetch(API_USER_URL)
       .then((response) => response.json())
@@ -305,6 +213,7 @@ const SignupContents = () => {
       alert("이메일을 입력해주세요.");
       return;
     }
+
     // 실제 api사용 이메일 인증
     try {
       const response = await fetch(API_EMAIL_VERIFICATION_URL, {
@@ -348,21 +257,10 @@ const SignupContents = () => {
       alert("인증 코드가 올바르지 않습니다.");
     }
   };
-  // const EmailVerificationModal = ({ onClose, onVerifyCode }) => {
-  //   const [code, setCode] = useState("");
 
-  //   const handleCodeChange = (e) => {
-  //     setCode(e.target.value);
-  //   };
-
-  //   const handleVerify = () => {SignupContainer
-  //     onVerifyCode(code);
-  //     onClose(); // Close the modal after verification
-  //   };
+  // const handleCloseModal = () => {
+  //   setModalVisible(false);
   // };
-  const handleCloseModal = () => {
-    setModalVisible(false);
-  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -397,17 +295,23 @@ const SignupContents = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8087/api/user", {
+      const response = await fetch(API_USER_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      if (!response.ok) throw new Error("회원가입 실패");
+
+      const responseData = await response.text(); // 서버 응답 메시지 받기
+
+      if (!response.ok) {
+        throw new Error(responseData || "회원가입 실패");
+      }
+
       alert("회원가입 성공! 로그인 페이지로 이동합니다.");
       navigate("/loginPage");
     } catch (error) {
-      console.error("회원가입 오류:", error);
-      alert("회원가입 중 오류가 발생했습니다.");
+      console.error("회원가입 오류:", error.message);
+      alert(`회원가입 실패: ${error.message}`);
     }
   };
   return (
@@ -515,78 +419,66 @@ const SignupContents = () => {
           // onChange={handleChange}
           onChange={handleChange}
         />
+
         {/* 시 선택 */}
-        {/* <div>
-          <label>시</label>
-          <select
-            value={selectedCity}
-            onChange={(e) => setSelectedCity(e.target.value)}
-          >
-            <option value="">시를 선택하세요</option>
-            {regionData.시.map((city) => (
+        <select
+          name="selectedCity"
+          value={formData.selectedCity}
+          // onChange={handleRegionChange}
+          onChange={(e) => {
+            setFormData((prev) => ({
+              ...prev,
+              selectedCity: e.target.value,
+              selectedDistrict: "", // ✅ 시 변경 시 군/구 초기화
+            }));
+          }}
+        >
+          {/* <option value="">시 선택</option>
+          {regionData.시 &&
+            regionData.시.map((city) => (
               <option key={city} value={city}>
                 {city}
               </option>
-            ))}
+            ))} */}
+          <option value="">시 선택</option>
+          {Object.keys(regionData).map((city) => (
+            <option key={city} value={city}>
+              {city}
+            </option>
+          ))}
+        </select>
+        {/* 군구 선택 */}
+        {formData.selectedCity && regionData[formData.selectedCity] && (
+          <select
+            name="selectedDistrict"
+            value={formData.selectedDistrict}
+            // onChange={handleRegionChange}
+            onChange={(e) => {
+              setFormData((prev) => ({
+                ...prev,
+                selectedDistrict: e.target.value,
+              }));
+            }}
+          >
+            <option value="">군/구 선택</option>
+            {regionData[formData.selectedCity] &&
+              regionData[formData.selectedCity].map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
           </select>
-        </div>
-      )}
-
-      {/* 성별 선택 */}
-      <div style={{ marginBottom: '16px' }}>
-        <label>성별</label>
-        <div style={{ display: 'flex', gap: '20px', marginBottom: '24px' }}>
-          <div
-            style={{
-              flex: 1,
-              padding: '16px',
-              backgroundColor: gender === '남성' ? '#00BFFF' : '#F3F4F6',
-              color: gender === '남성' ? 'white' : '#4B5563',
-              borderRadius: '8px',
-              textAlign: 'center',
-              fontSize: '16px',
-              fontWeight: '500',
-              cursor: 'pointer',
-            }}
-            onClick={() => setGender('남성')}
-          >
-            남성
-          </div>
-          <div
-            style={{
-              flex: 1,
-              padding: '16px',
-              backgroundColor: gender === '여성' ? '#00BFFF' : '#F3F4F6',
-              color: gender === '여성' ? 'white' : '#4B5563',
-              borderRadius: '8px',
-              textAlign: 'center',
-              fontSize: '16px',
-              fontWeight: '500',
-              cursor: 'pointer',
-            }}
-            onClick={() => setGender('여성')}
-          >
-            여성
-          </div>
-        </div>
-      </div>
-
-      {/* 회원가입 버튼 */}
-      <button
-        onClick={handleSignup}
-        style={{
-          width: '100%',
-          padding: '10px',
-          backgroundColor: '#00BFFF',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-        }}
-      >
-        회원가입
-      </button>
-    </div>
+        )}
+        {/* 성별 선택 */}
+        <select name="gender" value={formData.gender} onChange={handleChange}>
+          <option value="">성별 선택</option>
+          <option value="male">남성</option>
+          <option value="female">여성</option>
+        </select>
+        {/* 회원가입 버튼 */}
+        <Button type="submit">가입하기</Button>
+      </Form>
+    </SignupContainer>
   );
 };
 export default SignupContents;
