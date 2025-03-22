@@ -18,13 +18,12 @@ import HireDetailPage from "./views/detail/HireDetailPage";
 import EditWalkPage from "./views/edit/EditWalkPage";
 import EditHirePage from "./views/edit/EditHirePage";
 import EditTradePage from "./views/edit/EditTradePage";
+import Room from "./pages/Room";
 
 function App() {
   return (
     <>
       <Header />
-      {/* 맨 처음 기본 페이지는 Home으로 되있습니다.
-      추가 페이지를 작업하시려면 pages에서 jsx파일을 생성후 route 관리를 해주세요. */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/main" element={<MainPage />} />
@@ -44,6 +43,7 @@ function App() {
         <Route path="/editWalk/:postId" element={<EditWalkPage />} />
         <Route path="/edithire/:postId" element={<EditHirePage />} />
         <Route path="/edittrade/:postId" element={<EditTradePage />} />
+        <Route path="/room" element={<Room />} />
       </Routes>
       <Footer />
     </>

@@ -529,81 +529,64 @@ const SignupContents = () => {
               </option>
             ))}
           </select>
-        </div> */}
-        {/* 군구 선택 */}
-        {/* {selectedCity && (
-          <div>
-            <label>군/구</label>
-            <select
-              value={selectedDistrict}
-              onChange={(e) => setSelectedDistrict(e.target.value)}
-            >
-              <option value="">군/구를 선택하세요</option>
-              {regionData.군구.map((district) => (
-                <option key={district} value={district}>
-                  {district}
-                </option>
-              ))}
-            </select>
+        </div>
+      )}
+
+      {/* 성별 선택 */}
+      <div style={{ marginBottom: '16px' }}>
+        <label>성별</label>
+        <div style={{ display: 'flex', gap: '20px', marginBottom: '24px' }}>
+          <div
+            style={{
+              flex: 1,
+              padding: '16px',
+              backgroundColor: gender === '남성' ? '#00BFFF' : '#F3F4F6',
+              color: gender === '남성' ? 'white' : '#4B5563',
+              borderRadius: '8px',
+              textAlign: 'center',
+              fontSize: '16px',
+              fontWeight: '500',
+              cursor: 'pointer',
+            }}
+            onClick={() => setGender('남성')}
+          >
+            남성
           </div>
-        )} */}
-        <select
-          name="selectedCity"
-          value={formData.selectedCity}
-          onChange={handleRegionChange}
-        >
-          <option value="">시 선택</option>
-          {regionData.시 &&
-            regionData.시.map((city) => (
-              <option key={city} value={city}>
-                {city}
-              </option>
-            ))}
-        </select>
-        {/* {formData.selectedCity && regionData[formData.selectedCity] && (
-          <select
-            name="selectedDistrict"
-            value={formData.selectedDistrict}
-            onChange={handleRegionChange}
-            disabled={!formData.selectedCity}
+          <div
+            style={{
+              flex: 1,
+              padding: '16px',
+              backgroundColor: gender === '여성' ? '#00BFFF' : '#F3F4F6',
+              color: gender === '여성' ? 'white' : '#4B5563',
+              borderRadius: '8px',
+              textAlign: 'center',
+              fontSize: '16px',
+              fontWeight: '500',
+              cursor: 'pointer',
+            }}
+            onClick={() => setGender('여성')}
           >
-            <option value="">군/구 선택</option>
-            {regionData.군구[formData.selectedCity] ? (
-              regionData[formData.selectedCity].map((district) => (
-                <option key={district} value={district}>
-                  {district}
-                </option>
-              ))
-            ) : (
-              <option value="">군/구 정보가 없습니다</option>
-            )}
-          </select>
-        )} */}
-        {formData.selectedCity && regionData[formData.selectedCity] && (
-          <select
-            name="selectedDistrict"
-            value={formData.selectedDistrict}
-            onChange={handleRegionChange}
-          >
-            <option value="">군/구 선택</option>
-            {regionData[formData.selectedCity] &&
-              regionData[formData.selectedCity].map((district) => (
-                <option key={district} value={district}>
-                  {district}
-                </option>
-              ))}
-          </select>
-        )}
-        {/* 성별 선택 */}
-        <select name="gender" value={formData.gender} onChange={handleChange}>
-          <option value="">성별 선택</option>
-          <option value="male">남성</option>
-          <option value="female">여성</option>
-        </select>
-        {/* 회원가입 버튼 */}
-        <Button type="submit">가입하기</Button>
-      </Form>
-    </SignupContainer>
+            여성
+          </div>
+        </div>
+      </div>
+
+      {/* 회원가입 버튼 */}
+      <button
+        onClick={handleSignup}
+        style={{
+          width: '100%',
+          padding: '10px',
+          backgroundColor: '#00BFFF',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+        }}
+      >
+        회원가입
+      </button>
+    </div>
   );
 };
 export default SignupContents;
