@@ -349,6 +349,7 @@ const ITEMS_PER_PAGE = 12;
 
 const JobContents = () => {
   const API_POST_URL = "http://localhost:8087/api/board/hire";
+  const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
@@ -360,6 +361,7 @@ const JobContents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [imageMap, setImageMap] = useState({});
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -411,9 +413,27 @@ const JobContents = () => {
         console.log("데이터:", data);
         setPosts(postData);
         setFilteredPosts(postData);
+        postData.forEach((post) => fetchImage(post.id));
       })
       .catch((err) => console.error("게시글 불러오기 오류:", err));
   }, []);
+  const fetchImage = async (postId) => {
+    try {
+      const res = await fetch(`${API_IMAGE_URL}/${postId}`);
+      if (res.ok) {
+        const base64Data = await res.json();
+        const base64String = Array.isArray(base64Data)
+          ? base64Data[0]
+          : base64Data;
+        const fullBase64 = `data:image/jpeg;base64,${base64String}`;
+        setImageMap((prev) => ({ ...prev, [postId]: fullBase64 }));
+      } else {
+        console.warn(`이미지 불러오기 실패: ${postId}`);
+      }
+    } catch (e) {
+      console.error(`이미지 요청 에러 (${postId}):`, e);
+    }
+  };
 
   // 필터링 로직
   useEffect(() => {
@@ -530,7 +550,7 @@ const JobContents = () => {
                   style={{ cursor: "pointer" }}
                 >
                   <ReportOverlay style={{ backgroundColor }} />
-                  <ProductImage src={post.image} alt={post.title} />
+                  <ProductImage src={imageMap[post.id]} alt={post.title} />
                   <ProductTitle>{post.title}</ProductTitle>
                   <Seller>판매자: {post.seller}</Seller>
                   <Seller>{post.regionDong}</Seller>

@@ -100,17 +100,20 @@ const petImages = Array.from(
 
 function MainPage() {
   const API_POST_URL = "http://localhost:8087/api/board";
+  const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
   const [homePosts, setHomePosts] = useState([]);
   const [tradePosts, setTradePosts] = useState([]);
   const [jobPosts, setJobPosts] = useState([]);
+  const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
 
   useEffect(() => {
-    fetch(API_POST_URL)
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchPosts = async () => {
+      try {
+        const res = await fetch(API_POST_URL);
+        const data = await res.json();
         const postData = Object.values(data).map((item) => ({
           id: item.boardId,
           sellerUid: item.userId,
@@ -122,14 +125,39 @@ function MainPage() {
           type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
-          image: item.image || "/no-image.png",
         }));
+
         setPosts(postData);
         setHomePosts(postData.filter((p) => p.type === 1));
         setTradePosts(postData.filter((p) => p.type === 2));
         setJobPosts(postData.filter((p) => p.type === 3));
-      })
-      .catch((err) => console.error("게시글 불러오기 오류:", err));
+
+        // 이미지 병렬로 불러오기
+        postData.forEach((post) => fetchImage(post.id));
+      } catch (err) {
+        console.error("게시글 불러오기 오류:", err);
+      }
+    };
+
+    const fetchImage = async (postId) => {
+      try {
+        const res = await fetch(`${API_IMAGE_URL}/${postId}`);
+        if (res.ok) {
+          const base64Data = await res.json();
+          const base64String = Array.isArray(base64Data)
+            ? base64Data[0]
+            : base64Data;
+          const fullBase64 = `data:image/jpeg;base64,${base64String}`;
+          setImageMap((prev) => ({ ...prev, [postId]: fullBase64 }));
+        } else {
+          console.warn(`이미지 불러오기 실패: ${postId}`);
+        }
+      } catch (e) {
+        console.error(`이미지 요청 에러 (${postId}):`, e);
+      }
+    };
+
+    fetchPosts();
   }, []);
 
   const goToDetail = (postId) => navigate(`/${postId}`);
@@ -143,7 +171,7 @@ function MainPage() {
         <CardGrid>
           {homePosts.map((post) => (
             <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
-              <img src={post.image} alt={post.title} />
+              <img src={imageMap[post.id]} alt={post.title} />
               <h4>{post.title}</h4>
             </HomeCard>
           ))}
@@ -157,7 +185,7 @@ function MainPage() {
         <CardGrid>
           {tradePosts.map((post) => (
             <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
-              <img src={post.image} alt={post.title} />
+              <img src={imageMap[post.id]} alt={post.title} />
               <h4>{post.title}</h4>
             </HomeCard>
           ))}
@@ -184,12 +212,11 @@ function MainPage() {
         </SectionTitle>
         <ImageRow>
           {homePosts.slice(0, 10).map((post) => (
-            <PetImage key={post.id} src={post.image} alt={post.title} />
+            <PetImage key={post.id} src={imageMap[post.id]} alt={post.title} />
           ))}
         </ImageRow>
       </Section>
     </PageContainer>
   );
 }
-
 export default MainPage;
