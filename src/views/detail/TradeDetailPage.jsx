@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const DetailWrapper = styled.div`
+  width: 1600px;
+  margin-left: 100px;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
@@ -38,12 +40,13 @@ const ProductLeft = styled.div`
 const ProductImage = styled.img`
   border: 1px solid rgb(207, 207, 207);
   border-radius: 25px;
-  width: 100%;
+  width: 500px;
   height: auto;
   margin-bottom: 30px;
 `;
 
 const SellerInfo = styled.div`
+  margin-bottom: 70px;
   font-size: 20px;
   text-align: left;
   position: relative;
@@ -120,6 +123,7 @@ const TradeDetailPage = () => {
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [imageBase64, setImageBase64] = useState("");
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -165,7 +169,6 @@ const TradeDetailPage = () => {
         regionSi: data.localSi,
         regionGu: data.localGu,
         title: data.title,
-        // image: data.post_photo,
         content: data.content,
         category: data.tradeCategory,
         type: data.boardType,
@@ -181,11 +184,34 @@ const TradeDetailPage = () => {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
+  const fetchImageBase64 = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/photo/board/upload/${postId}`
+      );
+      if (response.ok) {
+        const base64Data = await response.json(); // ⚠ 서버가 JSON으로 배열 반환하는 경우
+        const base64String = Array.isArray(base64Data)
+          ? base64Data[0]
+          : base64Data;
 
+        const mimeType = "image/jpeg"; // 필요 시 서버에서 MIME 타입도 함께 받아올 수 있음
+        const fullBase64 = `data:${mimeType};base64,${base64String}`;
+        setImageBase64(fullBase64);
+      } else {
+        console.error("이미지 로드 실패");
+      }
+    } catch (error) {
+      console.error("이미지 로드 에러:", error);
+    }
+  };
   const onBack = () => navigate("/");
 
   useEffect(() => {
-    fetchPostDetail();
+    if (postId) {
+      fetchPostDetail();
+      fetchImageBase64(); // 이미지도 함께 로드
+    }
   }, [postId]);
 
   if (!newPost) return <div>로딩 중...</div>;
@@ -196,7 +222,7 @@ const TradeDetailPage = () => {
       <ProductBody>
         <ProductLeft>
           <ProductImage
-            src={newPost.image || "/images/default.jpg"}
+            src={imageBase64 || "/images/default.jpg"}
             alt={newPost.title}
           />
           <SellerInfo>

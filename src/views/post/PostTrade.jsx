@@ -41,7 +41,7 @@ const FormRow = styled.div`
 
 const PreviewImage = styled.img`
   margin-top: 10px;
-  max-width: 100%;
+  max-width: 400px;
   border-radius: 12px;
 `;
 
@@ -69,7 +69,7 @@ const PostTrade = ({ onSubmitSuccess = () => {} }) => {
   const [regionSi, setRegionSi] = useState("서울특별시");
   const [regionGu, setRegionGu] = useState("강남구");
   const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
 
@@ -156,26 +156,8 @@ const PostTrade = ({ onSubmitSuccess = () => {} }) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const uploadResponse = await fetch(
-        `http://localhost:8087/api/board/trade`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      if (uploadResponse.ok) {
-        const uploadResult = await uploadResponse.json();
-        setImageUrl(uploadResult.url);
-        setPreview(uploadResult.url);
-      }
-    } catch (error) {
-      console.error("이미지 업로드 중 오류 발생:", error);
-    }
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   useEffect(() => {
@@ -223,18 +205,19 @@ const PostTrade = ({ onSubmitSuccess = () => {} }) => {
       tradeCategory: Number(category),
       tradePrice: Number(price),
       update: new Date().toISOString(),
-      //   post_photo:
-      //     imageUrl ||
-      //     "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2FMjAyNDExMTdfMjAx%2FMDAxNzMxODEyOTU4OTA1.vhVsGTqw28gY-PmIc_6r4YQKM2ZG5F4ThTOfqRo6Lqog.UyBp04nJtxKm3_DG2FmklZHFtRlwSCH4MttaX8rl8J0g.JPEG%2F241005_%25C7%25C7%25C5%25A9_%25BF%25CF%25BC%25BA%25BA%25BB.jpg&type=a340",
     };
+    const formData = new FormData();
+    console.log(postData);
+    const postData2 = JSON.stringify(postData);
+    console.log(postData2);
+    formData.append("file", imageFile);
+    formData.append("requestJson", postData2);
     console.log(postData, "데이터");
     try {
       const response = await fetch("http://localhost:8087/api/board/trade", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(postData),
+        body: formData,
+        credentials: "include",
       });
 
       if (response.ok) {

@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const DetailWrapper = styled.div`
+  width: 1600px;
+  margin-left: 100px;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
@@ -38,12 +40,13 @@ const ProductLeft = styled.div`
 const ProductImage = styled.img`
   border: 1px solid rgb(207, 207, 207);
   border-radius: 25px;
-  width: 100%;
+  width: 500px;
   height: auto;
   margin-bottom: 30px;
 `;
 
 const SellerInfo = styled.div`
+  margin-bottom: 70px;
   font-size: 20px;
   text-align: left;
   position: relative;
@@ -114,12 +117,28 @@ const EditButton = styled.button`
   }
 `;
 
+const newPost = {
+  id: 1,
+  sellerUid: "user1234",
+  regionSi: "서울",
+  regionGu: "강남구",
+  title: "산책할 인간.",
+  image: "../src/assets/KakaoTalk_20250320_174016642.jpg",
+  content: "나랑 놀사람.",
+  category: "소형견",
+  clickCnt: 150,
+  reportCnt: 3,
+  updateTime: "2025-03-24 14:30:00",
+  seller: "김경빈",
+};
+
 const HireDetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [imageBase64, setImageBase64] = useState(""); // ✅ 이미지 상태 추가
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -165,7 +184,6 @@ const HireDetailPage = () => {
         regionSi: data.localSi,
         regionGu: data.localGu,
         title: data.title,
-        // image: data.post_photo,
         content: data.content,
         category: data.tradeCategory,
         type: data.boardType,
@@ -183,11 +201,29 @@ const HireDetailPage = () => {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
-
+  const fetchImageBase64 = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/photo/board/upload/${postId}`
+      );
+      if (response.ok) {
+        const result = await response.json(); // 예: ["/9j/4AAQ..."]
+        const base64String = Array.isArray(result) ? result[0] : result;
+        const fullBase64 = `data:image/jpeg;base64,${base64String}`;
+        setImageBase64(fullBase64);
+      } else {
+        console.error("이미지 로드 실패");
+      }
+    } catch (error) {
+      console.error("이미지 로드 에러:", error);
+    }
+  };
   const onBack = () => navigate("/");
 
   useEffect(() => {
+    checkLoginStatus();
     fetchPostDetail();
+    fetchImageBase64();
   }, [postId]);
 
   if (!newPost) return <div>로딩 중...</div>;
@@ -198,9 +234,10 @@ const HireDetailPage = () => {
       <ProductBody>
         <ProductLeft>
           <ProductImage
-            src={newPost.image || "/images/default.jpg"}
+            src={imageBase64 || "/images/default.jpg"}
             alt={newPost.title}
           />
+
           <SellerInfo>
             <SellerLeft>
               <SellerImage src="/images/user.png" alt="판매자 이미지" />

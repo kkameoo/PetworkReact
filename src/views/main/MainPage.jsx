@@ -98,7 +98,7 @@ const petImages = Array.from(
   (_, i) => `https://place-puppy.com/100x100?pet${i}`
 );
 
-const MainPage = () => {
+function MainPage() {
   const API_POST_URL = "http://localhost:8087/api/board";
   const navigate = useNavigate();
 
@@ -190,6 +190,6 @@ const MainPage = () => {
       </Section>
     </PageContainer>
   );
-};
+}
 
 export default MainPage;

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, data } from "react-router-dom";
 import styled from "styled-components";
 
 const DetailWrapper = styled.div`
+  width: 1600px;
+  margin-left: 100px;
   margin-top: 30px;
   display: flex;
   flex-direction: column;
@@ -38,12 +40,13 @@ const ProductLeft = styled.div`
 const ProductImage = styled.img`
   border: 1px solid rgb(207, 207, 207);
   border-radius: 25px;
-  width: 100%;
+  width: 500px;
   height: auto;
   margin-bottom: 30px;
 `;
 
 const SellerInfo = styled.div`
+  margin-bottom: 70px;
   font-size: 20px;
   text-align: left;
   position: relative;
@@ -113,12 +116,60 @@ const EditButton = styled.button`
     color: white;
   }
 `;
+
+// const newPost = {
+//   id: 1,
+//   sellerUid: "user1234",
+//   regionSi: "서울",
+//   regionGu: "강남구",
+//   title: "산책할 인간.",
+//   image: "../src/assets/KakaoTalk_20250320_174016642.jpg",
+//   content: "나랑 놀사람.",
+//   category: "소형견",
+//   clickCnt: 150,
+//   reportCnt: 3,
+//   updateTime: "2025-03-24 14:30:00",
+//   seller: "김경빈",
+// };
+
 const DetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [imageBase64, setImageBase64] = useState("");
+  // const base64String = Array.isArray(base64Data) ? base64Data[0] : base64Data;
+
+  const fetchImageBase64 = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/photo/board/upload/${postId}`
+      );
+      if (response.ok) {
+        const base64Data = await response.json(); // ⚠ 서버가 JSON으로 배열 반환하는 경우
+        const base64String = Array.isArray(base64Data)
+          ? base64Data[0]
+          : base64Data;
+
+        const mimeType = "image/jpeg"; // 필요 시 서버에서 MIME 타입도 함께 받아올 수 있음
+        const fullBase64 = `data:${mimeType};base64,${base64String}`;
+        setImageBase64(fullBase64);
+      } else {
+        console.error("이미지 로드 실패");
+      }
+    } catch (error) {
+      console.error("이미지 로드 에러:", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -161,7 +212,6 @@ const DetailPage = () => {
         regionSi: data.localSi,
         regionGu: data.localGu,
         title: data.title,
-        image: data.post_photo,
         content: data.content,
         category: data.category,
         type: data.boardType,
@@ -180,7 +230,10 @@ const DetailPage = () => {
   const onBack = () => navigate("/");
 
   useEffect(() => {
-    fetchPostDetail();
+    if (postId) {
+      fetchPostDetail();
+      fetchImageBase64(); // 이미지도 함께 로드
+    }
   }, [postId]);
 
   if (!newPost) return <div>로딩 중...</div>;
@@ -191,7 +244,7 @@ const DetailPage = () => {
       <ProductBody>
         <ProductLeft>
           <ProductImage
-            src={newPost.image || "/images/default.jpg"}
+            src={imageBase64 || "/images/default.jpg"}
             alt={newPost.title}
           />
           <SellerInfo>
