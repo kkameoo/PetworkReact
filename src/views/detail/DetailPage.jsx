@@ -125,6 +125,7 @@ const DetailPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageBase64, setImageBase64] = useState("");
+  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   // const base64String = Array.isArray(base64Data) ? base64Data[0] : base64Data;
 
   const fetchImageBase64 = async () => {
@@ -229,12 +230,12 @@ const DetailPage = () => {
       <ProductBody>
         <ProductLeft>
           <ProductImage
-            src={imageBase64 || "/images/default.jpg"}
+            src={imageBase64 || DEFAULT_IMAGE}
             alt={newPost.title}
           />
           <SellerInfo>
             <SellerLeft>
-              <SellerImage src="/images/user.png" alt="판매자 이미지" />
+              <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
               <div>
                 <Nickname>{newPost.seller}</Nickname>
                 <Location>

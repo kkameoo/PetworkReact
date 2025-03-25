@@ -108,6 +108,7 @@ function MainPage() {
   const [tradePosts, setTradePosts] = useState([]);
   const [jobPosts, setJobPosts] = useState([]);
   const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
+  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -171,7 +172,7 @@ function MainPage() {
         <CardGrid>
           {homePosts.map((post) => (
             <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
-              <img src={imageMap[post.id]} alt={post.title} />
+              <img src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
               <h4>{post.title}</h4>
             </HomeCard>
           ))}
@@ -185,7 +186,7 @@ function MainPage() {
         <CardGrid>
           {tradePosts.map((post) => (
             <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
-              <img src={imageMap[post.id]} alt={post.title} />
+              <img src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
               <h4>{post.title}</h4>
             </HomeCard>
           ))}

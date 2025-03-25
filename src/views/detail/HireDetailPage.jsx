@@ -138,7 +138,8 @@ const HireDetailPage = () => {
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [imageBase64, setImageBase64] = useState(""); // ✅ 이미지 상태 추가
+  const [imageBase64, setImageBase64] = useState("");
+  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -234,7 +235,7 @@ const HireDetailPage = () => {
       <ProductBody>
         <ProductLeft>
           <ProductImage
-            src={imageBase64 || "/images/default.jpg"}
+            src={imageBase64 || DEFAULT_IMAGE}
             alt={newPost.title}
           />
 

@@ -361,6 +361,7 @@ const SellContents = () => {
   const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [imageMap, setImageMap] = useState({});
+  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -547,7 +548,10 @@ const SellContents = () => {
                   style={{ cursor: "pointer" }}
                 >
                   <ReportOverlay style={{ backgroundColor }} />
-                  <ProductImage src={imageMap[post.id]} alt={post.title} />
+                  <ProductImage
+                    src={imageMap[post.id] || DEFAULT_IMAGE}
+                    alt={post.title}
+                  />
                   <ProductTitle>{post.title}</ProductTitle>
                   <Seller>판매자: {post.seller}</Seller>
                   <Seller>{post.regionDong}</Seller>
