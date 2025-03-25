@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const UserDetailPage = () => {
-  const [user] = useState({
-    nickname: "멍멍이아빠",
-    email: "doglover@example.com",
-    profileImage:
-      "https://search.pstatic.net/common/?src=http%3A%2F%2Fblogfiles.naver.net%2F20121114_263%2Fbarun28_1352881028492HBIhF_JPEG%2F%25BF%25B9%25BB%25DB%25B0%25AD%25BE%25C6%25C1%25F6%25C0%25CC%25B9%25CC%25C1%25F6_%25284%2529.jpg&type=sc960_832",
-  });
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
+  }, []);
 
   const [selectedBoard, setSelectedBoard] = useState("community");
   const [posts, setPosts] = useState([]);
@@ -39,11 +41,27 @@ const UserDetailPage = () => {
 
   return (
     <Container>
-      <ProfileSection>
-        <img src={user.profileImage} alt="프로필" />
-        <h2>{user.nickname}</h2>
-        <p>{user.email}</p>
-      </ProfileSection>
+      {user ? (
+        <>
+          <ProfileSection>
+            <img
+              src={user.profileImage || "/assets/default-profile.png"}
+              alt="프로필"
+            />
+            <h2>{user.nickName || "익명"}</h2>
+            <p>{user.email}</p>
+          </ProfileSection>
+
+          {/* 버튼 3개 추가 */}
+          <ButtonContainer>
+            <ActionButton>버튼 1</ActionButton>
+            <ActionButton>버튼 2</ActionButton>
+            <ActionButton>버튼 3</ActionButton>
+          </ButtonContainer>
+        </>
+      ) : (
+        <p>로그인이 필요합니다.</p>
+      )}
 
       <BoardNav>
         {["community", "adoption", "lost", "pet"].map((key) => (
@@ -159,5 +177,26 @@ const PostCard = styled.div`
     font-size: 1rem;
     margin-top: 0.5rem;
     color: #3b2e1a;
+  }
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+`;
+
+const ActionButton = styled.button`
+  padding: 10px 15px;
+  border: none;
+  background: #00bfff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #007acc;
   }
 `;

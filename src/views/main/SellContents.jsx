@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useAuth } from "../../App";
 
 /* 전체 컨테이너 */
 export const ListContainer = styled.div`
@@ -350,7 +351,8 @@ const SellContents = () => {
   const API_POST_URL = "http://localhost:8087/api/board/trade";
   const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
   const navigate = useNavigate();
-
+  const { vale } = useAuth();
+  console.log("aaaa" + vale);
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);

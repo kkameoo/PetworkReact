@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useAuth } from "../App";
 
 const LeftImage = styled.img`
   position: absolute;
@@ -93,8 +95,94 @@ const BoardButtonContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-const ExampleComponent = () => {
+function Header() {
   const navigate = useNavigate();
+
+  // 로그인 상태관리
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user } = useAuth();
+  console.log(user);
+
+  // const [trigger, setTrigger] = useState(false);
+  // useEffect(() => {
+  // checkLoginStatus();
+  // localStorage에서 사용자 정보 확인
+  // const storedUser = localStorage.getItem("user");
+  // if (storedUser) {
+  //   setUser(JSON.parse(storedUser));
+  //   setIsLoggedIn(true);
+  // }
+  // }, []);
+
+  // 로그인 상태 변경시 호출할 함수 (상태 관리)
+  const onAuthChange = (loggedIn, userData) => {
+    // 로그인 상태나 사용자 정보 변경
+    console.log(loggedIn ? "로그인 상태" : "로그아웃 상태", userData);
+  };
+
+  useEffect(() => {
+    console.log(user);
+  }, []);
+
+  // 로그인 처리 (예시)
+  // const handleLogin = async () => {
+  //   navigate("/login");
+  //   try {
+  //     const response = await fetch("http://localhost:8087/api/user/login", {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ username: "test", password: "password" }),
+  //     });
+
+  //     // if (response.ok) {
+  //     //   const data = await response.json();
+  //     //   setIsLoggedIn(true); // 상태 즉시 업데이트
+  //     //   setUser(data);
+  //     //   navigate("/");
+  //     // }
+  //     if (response.ok) {
+  //       setTimeout(() => {
+  //         checkLoginStatus();
+  //         setTrigger((prev) => !prev); // 강제 리렌더링
+  //       }, 500);
+  //       navigate("/");
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 실패:", error);
+  //   }
+  // };
+
+  // 로그아웃
+  const handleLogout = () => {
+    localStorage.removeItem("user"); // 사용자 정보 삭제
+    setIsLoggedIn(false);
+    setUser(null);
+    navigate("/");
+  };
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:8087/api/user/logout", {
+  //       method: "POST",
+  //       credentials: "include",
+  //     });
+
+  //     if (response.ok) {
+  //       setIsLoggedIn(false); // 상태 즉시 반영
+  //       setUser(null);
+  //       setTrigger((prev) => !prev); // 강제 리렌더링
+  //       navigate("/");
+  //     }
+  //   } catch (error) {
+  //     console.error("로그아웃 실패:", error);
+  //   }
+  // };
+  // 로그인 버튼 클릭 시 처리 (로그인 페이지로 이동)
+  // const handleLoginClick = () => {
+  //   navigate("/login");
+  // };
 
   const handleImageClick = (boardPath) => {
     navigate(boardPath);
@@ -112,9 +200,27 @@ const ExampleComponent = () => {
         onClick={() => handleImageClick("/")}
       />
       <AuthButtonContainer>
+        {/* 로그인 여부에 따라 다른 버튼을 렌더링 */}
+        {isLoggedIn ? (
+          <>
+            <AuthButton onClick={handleLogout}>로그아웃</AuthButton>
+            <AuthButton onClick={() => navigate("/my")}>마이페이지</AuthButton>
+          </>
+        ) : (
+          <>
+            {/* <AuthButton onClick={handleLoginClick}>로그인</AuthButton> */}
+            {/* <AuthButton onClick={handleLogin}>로그인</AuthButton> */}
+            <AuthButton onClick={() => navigate("/login")}>로그인</AuthButton>
+            <AuthButton onClick={() => navigate("/signup")}>
+              회원가입
+            </AuthButton>
+          </>
+        )}
+      </AuthButtonContainer>
+      {/* <AuthButtonContainer>
         <AuthButton onClick={() => navigate("/login")}>로그인</AuthButton>
         <AuthButton onClick={() => navigate("/signup")}>회원가입</AuthButton>
-      </AuthButtonContainer>
+      </AuthButtonContainer> */}
       <BoardButtonContainer>
         <BoardButtonWrapper onClick={() => navigate("/walk")}>
           <BoardButtonImage
@@ -157,6 +263,6 @@ const ExampleComponent = () => {
       </BoardButtonContainer>
     </div>
   );
-};
+}
 
-export default ExampleComponent;
+export default Header;

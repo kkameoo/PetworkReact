@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
-import Header from "./components/Header";
+
 import DetailPage from "./views/detail/DetailPage";
 import PostWalk from "./views/post/PostWalk";
 import Footer from "./components/Footer";
@@ -20,10 +20,52 @@ import EditHirePage from "./views/edit/EditHirePage";
 import EditTradePage from "./views/edit/EditTradePage";
 import Room from "./pages/Room";
 import UserDetailPage from "./views/detail/UserDetailPage";
+import { useState } from "react";
+import { useEffect } from "react";
+import { createContext } from "react";
+import { useContext } from "react";
+import { useMemo } from "react";
+import Header from "./components/Header";
+
+const AuthContext = createContext(null);
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
+  const value = useMemo(() => ({ user }), [user]);
+
+  useEffect(() => {
+    checkLoginStatus();
+    // console.log("현재 접속 중인 유저 : " + user);
+  }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/user/session", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setIsLoggedIn(true);
+        setUser(data);
+        // onAuthChange(true, data); // 로그인상태 전달
+      } else {
+        setIsLoggedIn(false);
+        setUser(null);
+        // onAuthChange(false, null); // 로그아웃상태 전달
+      }
+    } catch (error) {
+      console.error("로그인 상태 확인 중 오류 발생:", error);
+      setIsLoggedIn(false);
+      setUser(null);
+      // onAuthChange(false, null);
+    }
+  };
+
   return (
-    <>
+    <AuthContext.Provider value={value}>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -48,8 +90,8 @@ function App() {
         <Route path="/my" element={<UserDetailPage />} />
       </Routes>
       <Footer />
-    </>
+    </AuthContext.Provider>
   );
 }
-
+export const useAuth = () => useContext(AuthContext);
 export default App;

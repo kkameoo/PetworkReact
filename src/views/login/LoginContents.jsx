@@ -77,9 +77,8 @@ const Button = styled.button`
 `;
 
 function LoginContents() {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const API_USER_URL = `http://localhost:8087/api/user`;
+  // const [username, setUsername] = useState("");
+  // const [password, setPassword] = useState("");
 
   const [formData, setFormData] = useState({
     email: "",
@@ -87,6 +86,7 @@ function LoginContents() {
   });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const API_USER_URL = `http://localhost:8087/api/user`;
 
   // 뒤로가기 버튼
   const onBack = () => {
@@ -97,7 +97,7 @@ function LoginContents() {
     // e.preventDefault();
 
     try {
-      const response = await fetch(API_USER_URL + `/login`, {
+      const response = await fetch(`${API_USER_URL}/login`, {
         credentials: "include",
         method: "POST",
         headers: {
