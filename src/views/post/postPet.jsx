@@ -212,7 +212,7 @@ const PostPet = ({ onSubmitSuccess = () => {} }) => {
     console.log(postData, "데이터");
     try {
       const response = await fetch(
-        "http://localhost:8087/api/board/petstagram]",
+        "http://localhost:8087/api/board/petstagram",
         {
           method: "POST",
           body: formData,
