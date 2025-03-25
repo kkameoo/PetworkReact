@@ -2,15 +2,26 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const ChatContainer = styled.div`
+  min-height: 600px;
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 600px;
+  flex-direction: row;
+  width: 1000px;
   margin: auto;
   padding: 1rem;
   background-color: #bae3f3;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+`;
+
+const UserContainer = styled.div`
+  width: 200px;
+  background-color: #d3e8f0;
+  padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const MessageList = styled.div`
@@ -20,11 +31,20 @@ const MessageList = styled.div`
   max-height: 400px;
   overflow-y: auto;
   padding: 10px;
+  flex-grow: 1;
 `;
 
 const Message = styled.div`
   display: flex;
-  justify-content: ${(props) => (props.isUser1 ? "flex-end" : "flex-start")};
+  flex-direction: column;
+  align-items: ${(props) => (props.isUser1 ? "flex-end" : "flex-start")};
+`;
+
+const UserName = styled.div`
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 3px;
+  color: #555;
 `;
 
 const Bubble = styled.div`
@@ -35,12 +55,25 @@ const Bubble = styled.div`
   color: ${(props) => (props.isUser1 ? "white" : "black")};
   font-size: 14px;
   word-wrap: break-word;
+  position: relative;
+`;
+
+const Timestamp = styled.div`
+  font-size: 10px;
+  color: #666;
+  margin-top: 5px;
+  text-align: ${(props) => (props.isUser1 ? "right" : "left")};
 `;
 
 const InputContainer = styled.div`
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(0, -50%);
+  width: calc(70% - 220px);
 `;
 
 const Input = styled.input`
@@ -66,11 +99,20 @@ const SendButton = styled.button`
 
 const RoomContents = () => {
   const [messages, setMessages] = useState([
-    { sender: "USER2", text: "안녕!" },
-    { sender: "USER1", text: "안녕! 반가워!" },
+    {
+      sender: "USER2",
+      text: "안녕!",
+      timestamp: new Date().toLocaleTimeString(),
+    },
+    {
+      sender: "USER1",
+      text: "안녕! 반가워!",
+      timestamp: new Date().toLocaleTimeString(),
+    },
   ]);
   const [inputText, setInputText] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+  const [users, setUsers] = useState(["USER1", "USER2"]);
 
   const checkLoginStatus = async () => {
     try {
@@ -80,7 +122,7 @@ const RoomContents = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setCurrentUser(data.userId); // 현재 로그인한 유저 ID 저장
+        setCurrentUser(data.userId);
       }
     } catch (error) {
       console.error("로그인 상태 확인 실패:", error);
@@ -93,16 +135,33 @@ const RoomContents = () => {
 
   const sendMessage = () => {
     if (inputText.trim() === "" || !currentUser) return;
-    setMessages([...messages, { sender: "USER1", text: inputText }]);
+    setMessages([
+      ...messages,
+      {
+        sender: "USER1",
+        text: inputText,
+        timestamp: new Date().toLocaleTimeString(),
+      },
+    ]);
     setInputText("");
   };
 
   return (
     <ChatContainer>
+      <UserContainer>
+        <h4>접속 중인 유저</h4>
+        {users.map((user, index) => (
+          <div key={index}>{user}</div>
+        ))}
+      </UserContainer>
       <MessageList>
         {messages.map((msg, index) => (
           <Message key={index} isUser1={msg.sender === "USER1"}>
+            {msg.sender === "USER2" && <UserName>{msg.sender}</UserName>}
             <Bubble isUser1={msg.sender === "USER1"}>{msg.text}</Bubble>
+            <Timestamp isUser1={msg.sender === "USER1"}>
+              {msg.timestamp}
+            </Timestamp>
           </Message>
         ))}
       </MessageList>
