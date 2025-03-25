@@ -382,9 +382,12 @@ const PetShowcasePage = () => {
       <PostGrid>
         {petPosts.slice(0, 12).map((post) => (
           <PostCard key={post.id}>
-            <PostImage src={post.image} alt={post.title} />
+            <PostImage
+              src={imageMap[post.id] || DEFAULT_IMAGE}
+              alt={post.title}
+            />
             <PostTitle>{post.title}</PostTitle>
-            <PostViews>조회수: {post.views}</PostViews>
+            <PostViews>조회수: {post.clickCnt}</PostViews>
           </PostCard>
         ))}
       </PostGrid>
