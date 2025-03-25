@@ -1,16 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 const ChatContainer = styled.div`
+  min-height: 600px;
   display: flex;
-  flex-direction: column;
-  width: 100%;
-  max-width: 600px;
+  flex-direction: row;
+  width: 1000px;
   margin: auto;
   padding: 1rem;
   background-color: #bae3f3;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  position: relative;
+`;
+
+const UserContainer = styled.div`
+  width: 200px;
+  background-color: #d3e8f0;
+  padding: 1rem;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;
 
 const MessageList = styled.div`
@@ -20,11 +33,20 @@ const MessageList = styled.div`
   max-height: 400px;
   overflow-y: auto;
   padding: 10px;
+  flex-grow: 1;
 `;
 
 const Message = styled.div`
   display: flex;
-  justify-content: ${(props) => (props.isUser1 ? "flex-end" : "flex-start")};
+  flex-direction: column;
+  align-items: ${(props) => (props.isUser1 ? "flex-end" : "flex-start")};
+`;
+
+const UserName = styled.div`
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 3px;
+  color: #555;
 `;
 
 const Bubble = styled.div`
@@ -35,12 +57,25 @@ const Bubble = styled.div`
   color: ${(props) => (props.isUser1 ? "white" : "black")};
   font-size: 14px;
   word-wrap: break-word;
+  position: relative;
+`;
+
+const Timestamp = styled.div`
+  font-size: 10px;
+  color: #666;
+  margin-top: 5px;
+  text-align: ${(props) => (props.isUser1 ? "right" : "left")};
 `;
 
 const InputContainer = styled.div`
   display: flex;
   gap: 10px;
   margin-top: 10px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(0, -50%);
+  width: calc(70% - 220px);
 `;
 
 const Input = styled.input`
@@ -65,12 +100,26 @@ const SendButton = styled.button`
 `;
 
 const RoomContents = () => {
-  const [messages, setMessages] = useState([
-    { sender: "USER2", text: "안녕!" },
-    { sender: "USER1", text: "안녕! 반가워!" },
-  ]);
-  const [inputText, setInputText] = useState("");
+  const SOCKET_URL = "http://localhost:8087/ws";
+  // const [messages, setMessages] = useState([
+  //   {
+  //     sender: "USER2",
+  //     text: "안녕!",
+  //     timestamp: new Date().toLocaleTimeString(),
+  //   },
+  //   {
+  //     sender: "USER1",
+  //     text: "안녕! 반가워!",
+  //     timestamp: new Date().toLocaleTimeString(),
+  //   },
+  // ]);
+  // const [inputText, setInputText] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
+  // const [users, setUsers] = useState(["USER1", "USER2"]);
+
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const stompClientRef = useRef(null);
 
   const checkLoginStatus = async () => {
     try {
@@ -80,37 +129,108 @@ const RoomContents = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        setCurrentUser(data.userId); // 현재 로그인한 유저 ID 저장
+        setCurrentUser(data.userId);
       }
     } catch (error) {
       console.error("로그인 상태 확인 실패:", error);
     }
   };
 
+  const getChatHistory = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/chat", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const jsonData = data.map((item) => JSON.parse(item));
+        jsonData.reverse();
+        setMessages(jsonData);
+      }
+    } catch (error) {
+      console.error("채팅 내역 가져오기 실패", error);
+    }
+  };
+
   useEffect(() => {
     checkLoginStatus();
+    getChatHistory();
+
+    const socket = new SockJS(SOCKET_URL);
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        console.log("WebSocket Connected");
+        stompClient.subscribe("/topic/messages", (msg) => {
+          setMessages((prev) => [...prev, JSON.parse(msg.body)]);
+        });
+      },
+      onStompError: (frame) => console.error("Error: ", frame),
+    });
+    stompClient.activate();
+    stompClientRef.current = stompClient;
+    return () => stompClient.deactivate();
   }, []);
 
   const sendMessage = () => {
-    if (inputText.trim() === "" || !currentUser) return;
-    setMessages([...messages, { sender: "USER1", text: inputText }]);
-    setInputText("");
+    if (!message.trim()) return;
+    stompClientRef.current.publish({
+      destination: "/app/chat",
+      body: JSON.stringify({ sender: "User", content: message, roomId: "1" }),
+    });
+    setMessage("");
   };
+
+  // const sendMessage = () => {
+  //   if (inputText.trim() === "" || !currentUser) return;
+  //   setMessages([
+  //     ...messages,
+  //     {
+  //       sender: "USER1",
+  //       text: inputText,
+  //       timestamp: new Date().toLocaleTimeString(),
+  //     },
+  //   ]);
+  //   setInputText("");
+  // };
 
   return (
     <ChatContainer>
+      {/*
       <MessageList>
         {messages.map((msg, index) => (
           <Message key={index} isUser1={msg.sender === "USER1"}>
+            {msg.sender === "USER2" && <UserName>{msg.sender}</UserName>}
             <Bubble isUser1={msg.sender === "USER1"}>{msg.text}</Bubble>
+            <Timestamp isUser1={msg.sender === "USER1"}>
+              {msg.timestamp}
+            </Timestamp>
           </Message>
         ))}
       </MessageList>
+      */}
+      <UserContainer>
+        <h4>접속 중인 유저</h4>
+      </UserContainer>
+
+      {messages.length === 0 ? (
+        <p>메시지를 불러오는 중...</p>
+      ) : (
+        <MessageList>
+          {messages.map((msg, idx) => (
+            <Message key={idx}>
+              <b>{msg.sender}: </b> {msg.content}
+              <Timestamp>{new Date().toLocaleTimeString()}</Timestamp>
+            </Message>
+          ))}
+        </MessageList>
+      )}
       <InputContainer>
         <Input
           type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="메시지를 입력하세요..."
         />
         <SendButton onClick={sendMessage}>전송</SendButton>

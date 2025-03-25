@@ -107,6 +107,7 @@ function MainPage() {
   const [homePosts, setHomePosts] = useState([]);
   const [tradePosts, setTradePosts] = useState([]);
   const [jobPosts, setJobPosts] = useState([]);
+  const [petPosts, setPetPosts] = useState([]);
   const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
@@ -132,6 +133,7 @@ function MainPage() {
         setHomePosts(postData.filter((p) => p.type === 1));
         setTradePosts(postData.filter((p) => p.type === 2));
         setJobPosts(postData.filter((p) => p.type === 3));
+        setPetPosts(postData.filter((p) => p.type === 4));
 
         // 이미지 병렬로 불러오기
         postData.forEach((post) => fetchImage(post.id));
@@ -212,7 +214,7 @@ function MainPage() {
           🐶 Pet Showcase
         </SectionTitle>
         <ImageRow>
-          {homePosts.slice(0, 10).map((post) => (
+          {petPosts.slice(0, 10).map((post) => (
             <PetImage key={post.id} src={imageMap[post.id]} alt={post.title} />
           ))}
         </ImageRow>

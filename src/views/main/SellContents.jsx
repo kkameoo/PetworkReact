@@ -555,7 +555,7 @@ const SellContents = () => {
                     alt={post.title}
                   />
                   <ProductTitle>{post.title}</ProductTitle>
-                  <Seller>판매자: {post.seller}</Seller>
+                  <Seller>판매자: {post.sellerUid}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{CATEGORY_ID[post.category]}</Seller>
                   {user?.is_admin && (
