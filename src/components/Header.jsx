@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { useAuth } from "../App";
+import { useAuth } from "../hooks/useAuth";
+
 
 const LeftImage = styled.img`
   position: absolute;
@@ -95,35 +96,25 @@ const BoardButtonContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-function Header() {
+function Header({handleLogout, isLoggedIn}) {
   const navigate = useNavigate();
 
   // 로그인 상태관리
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const { user } = useAuth();
-  console.log(user);
-
-  // const [trigger, setTrigger] = useState(false);
-  // useEffect(() => {
-  // checkLoginStatus();
-  // localStorage에서 사용자 정보 확인
-  // const storedUser = localStorage.getItem("user");
-  // if (storedUser) {
-  //   setUser(JSON.parse(storedUser));
-  //   setIsLoggedIn(true);
-  // }
-  // }, []);
 
   // 로그인 상태 변경시 호출할 함수 (상태 관리)
-  const onAuthChange = (loggedIn, userData) => {
+  const onAuthChange = (loggedIn, user) => {
     // 로그인 상태나 사용자 정보 변경
-    console.log(loggedIn ? "로그인 상태" : "로그아웃 상태", userData);
+    console.log(loggedIn ? "로그인 상태" : "로그아웃 상태", user);
   };
 
-  useEffect(() => {
-    console.log(user);
-  }, []);
+  // useEffect(() => {
+  //   if (user != null) {
+  //     setIsLoggedIn(true);
+  //   }
+  // }, [user]);
 
+  
   // 로그인 처리 (예시)
   // const handleLogin = async () => {
   //   navigate("/login");
@@ -156,12 +147,11 @@ function Header() {
   // };
 
   // 로그아웃
-  const handleLogout = () => {
-    localStorage.removeItem("user"); // 사용자 정보 삭제
-    setIsLoggedIn(false);
-    setUser(null);
-    navigate("/");
-  };
+  // const handleLogout = () => {
+  //   setIsLoggedIn(false);
+  //   setUser(null);
+  //   navigate("/");
+  // };
   // const handleLogout = async () => {
   //   try {
   //     const response = await fetch("http://localhost:8087/api/user/logout", {
@@ -203,7 +193,7 @@ function Header() {
         {/* 로그인 여부에 따라 다른 버튼을 렌더링 */}
         {isLoggedIn ? (
           <>
-            <AuthButton onClick={handleLogout}>로그아웃</AuthButton>
+            <AuthButton onClick={() => handleLogout()}>로그아웃</AuthButton>
             <AuthButton onClick={() => navigate("/my")}>마이페이지</AuthButton>
           </>
         ) : (

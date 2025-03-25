@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 // 스타일 컴포넌트들
 const Container = styled.div`
@@ -79,7 +80,7 @@ const Button = styled.button`
 function LoginContents() {
   // const [username, setUsername] = useState("");
   // const [password, setPassword] = useState("");
-
+  const {user, setUser} = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -105,8 +106,10 @@ function LoginContents() {
         },
         body: JSON.stringify(formData),
       });
+      
 
       const data = await response.json();
+      setUser(data);
       console.log("data", data);
 
       navigate("/");

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 /* 전체 컨테이너 */
-export const ListContainer = styled.div`
+const ListContainer = styled.div`
   max-width: 1600px;
   margin: 20px auto;
   padding: 20px;
@@ -12,7 +12,7 @@ export const ListContainer = styled.div`
 `;
 
 /* 검색창 */
-export const SearchInput = styled.input`
+const SearchInput = styled.input`
   width: 100%;
   padding: 10px;
   font-size: 16px;
@@ -24,13 +24,13 @@ export const SearchInput = styled.input`
 `;
 
 /* 인기검색어 */
-export const PopularKeywords = styled.div`
+const PopularKeywords = styled.div`
   font-size: 14px;
   display: flex;
   gap: 10px;
 `;
 
-export const KeywordButton = styled.button`
+const KeywordButton = styled.button`
   background-color: white;
   border: 1px solid #00bfff;
   color: #00bfff;
@@ -46,13 +46,13 @@ export const KeywordButton = styled.button`
 `;
 
 /* 메인 콘텐츠 영역 */
-export const ContentWrapper = styled.div`
+const ContentWrapper = styled.div`
   display: flex;
   gap: 20px;
 `;
 
 /* 카테고리 필터 사이드바 */
-export const Sidebar = styled.div`
+const Sidebar = styled.div`
   width: 200px;
   padding: 10px;
   border-radius: 10px;
@@ -61,22 +61,21 @@ export const Sidebar = styled.div`
 `;
 
 // 지역 선택 부분을 감싸는 div에 스타일 추가
-export const RegionSection = styled.div`
+const RegionSection = styled.div`
   max-height: 300px; /* 원하는 최대 높이 */
   overflow-y: auto; /* 세로 스크롤 추가 */
 `;
-
-export const CategorySection = styled.div`
+const CategorySection = styled.div`
   margin-top: 20px;
 `;
-export const SidebarTitle = styled.h3`
+const SidebarTitle = styled.h3`
   margin-left: 25px;
   text-align: left;
   margin-bottom: 10px;
   color: #007acc;
 `;
 
-export const SidebarLabel = styled.label`
+const SidebarLabel = styled.label`
   margin-left: 30px;
   text-align: left;
   display: block;
@@ -84,19 +83,18 @@ export const SidebarLabel = styled.label`
   color: #007acc;
 `;
 
-export const SidebarInput = styled.input`
+const SidebarInput = styled.input`
   margin-right: 5px;
 `;
 
 /* 상품 리스트 */
-export const ProductList = styled.div`
+const ProductList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   flex-grow: 1;
 `;
-
-export const ProductCard = styled.div`
+const ProductCard = styled.div`
   background-color: white;
   border-radius: 10px;
   padding: 10px;
@@ -111,7 +109,7 @@ export const ProductCard = styled.div`
   }
 `;
 
-export const ProductImage = styled.img`
+const ProductImage = styled.img`
   width: 100%;
   height: 200px;
   object-fit: cover;
@@ -119,7 +117,7 @@ export const ProductImage = styled.img`
 `;
 
 /* 신고 배경 오버레이 */
-export const ReportOverlay = styled.div`
+const ReportOverlay = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -130,7 +128,7 @@ export const ReportOverlay = styled.div`
 `;
 
 /* 신고 횟수 표시 */
-export const ReportCount = styled.div`
+const ReportCount = styled.div`
   font-size: 14px;
   color: #ff3b3b;
   font-weight: bold;
@@ -138,19 +136,19 @@ export const ReportCount = styled.div`
 `;
 
 /* 제목, 가격, 판매자 */
-export const ProductTitle = styled.h4`
+const ProductTitle = styled.h4`
   font-size: 16px;
   margin: 10px 0;
   color: #333;
 `;
 
-export const Seller = styled.div`
+const Seller = styled.div`
   font-size: 14px;
   color: #777;
 `;
 
 /* 페이지네이션 */
-export const PaginationWrapper = styled.div`
+const PaginationWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -158,7 +156,7 @@ export const PaginationWrapper = styled.div`
   position: relative;
 `;
 
-export const PaginationButton = styled.button`
+const PaginationButton = styled.button`
   background-color: #00bfff;
   color: white;
   border: none;
@@ -175,7 +173,7 @@ export const PaginationButton = styled.button`
   }
 `;
 
-export const CreateButton = styled(PaginationButton)`
+const CreateButton = styled(PaginationButton)`
   position: absolute;
   right: 0;
   background-color: #007acc;
@@ -186,7 +184,7 @@ export const CreateButton = styled(PaginationButton)`
   }
 `;
 
-export const PageNumber = styled.span`
+const PageNumber = styled.span`
   font-size: 18px;
   font-weight: bold;
   color: #007acc;

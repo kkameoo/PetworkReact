@@ -1,4 +1,4 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
@@ -24,23 +24,18 @@ import UserDetailPage from "./views/detail/UserDetailPage";
 import { useState } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
-import { useContext } from "react";
 import { useMemo } from "react";
 import Header from "./components/Header";
 
-const AuthContext = createContext(null);
+export const AuthContext = createContext(null);
 
 import PostPet from "./views/post/postPet";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const value = useMemo(() => ({ user }), [user]);
-
-  useEffect(() => {
-    checkLoginStatus();
-    // console.log("현재 접속 중인 유저 : " + user);
-  }, []);
+  // const value = useMemo(() => ({ user }), [user]);
+  const navigate = useNavigate();
 
   const checkLoginStatus = async () => {
     try {
@@ -52,24 +47,50 @@ function App() {
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
-        setUser(data);
-        // onAuthChange(true, data); // 로그인상태 전달
+        // 기존 user와 값이 다를 때만 업데이트
+        if (JSON.stringify(user) !== JSON.stringify(data)) {
+          setUser(data);
+        }
+        console.log("세션 체크"+  user);
       } else {
         setIsLoggedIn(false);
         setUser(null);
-        // onAuthChange(false, null); // 로그아웃상태 전달
       }
     } catch (error) {
       console.error("로그인 상태 확인 중 오류 발생:", error);
       setIsLoggedIn(false);
       setUser(null);
-      // onAuthChange(false, null);
     }
   };
 
+  const invalidSession = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/user/logout", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        console.log("로그아웃 성공");
+        setIsLoggedIn(false);
+        setUser(null);
+        navigate("/");
+      } else {
+        console.log("에러발생");
+      }
+    } catch (error) {
+      console.error("로그인 상태 확인 중 오류 발생:", error);
+    }
+  };
+
+  // 처음 컴포넌트가 임포트 될 때 유저세션을 가져오는 메서드
+  useEffect(() => {
+    checkLoginStatus();
+  }, [user]);
+
   return (
-    <AuthContext.Provider value={value}>
-      <Header />
+    <AuthContext.Provider value={{user, setUser}}>
+      <Header handleLogout={invalidSession} isLoggedIn={isLoggedIn}/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/main" element={<MainPage />} />
@@ -97,5 +118,4 @@ function App() {
     </AuthContext.Provider>
   );
 }
-export const useAuth = () => useContext(AuthContext);
 export default App;
