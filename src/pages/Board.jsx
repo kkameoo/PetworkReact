@@ -1,14 +1,11 @@
 import WalkBoardContents from "../views/board/walkBoardContents";
 
 function Board() {
-return(
+  return (
     <>
-                {/* <h2>
-                hello vite react
-            </h2> */}
-    <WalkBoardContents/>
+      <WalkBoardContents />
     </>
-)
+  );
 }
 
 export default Board;

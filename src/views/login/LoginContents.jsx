@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 // 스타일 컴포넌트들
 const Container = styled.div`
   height: 100vh;
-  /* background-color: #e5e7eb; */
   display: flex;
   flex-direction: column;
 `;
@@ -20,7 +19,6 @@ const FormWrapper = styled.div`
 const Form = styled.div`
   width: 100%;
   max-width: 32rem;
-  /* background-color: #d1d5db; */
   padding: 32px;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -31,7 +29,7 @@ const Title = styled.h1`
   font-weight: bold;
   text-align: center;
   margin-bottom: 24px;
-  background-color: #00BFFF;
+  background-color: #00bfff;
   color: #000000;
   padding: 16px;
   border-radius: 8px;
@@ -57,7 +55,7 @@ const Input = styled.input`
   width: 100%;
   background-color: white;
   font-size: 16px;
-  box-sizing: border-box; /* 패딩과 보더를 포함한 크기 설정 */
+  box-sizing: border-box;
 `;
 
 const Button = styled.button`
@@ -105,7 +103,6 @@ function LoginContents() {
         headers: {
           "Content-Type": "application/json",
         },
-        // ✅ 세션 유지
         body: JSON.stringify(formData),
       });
 
@@ -124,7 +121,6 @@ function LoginContents() {
 
   return (
     <Container>
-      {/* 로그인 폼 */}
       <FormWrapper>
         <Form onSubmit={handleLogin}>
           <button onClick={onBack} className="login-back-button" />

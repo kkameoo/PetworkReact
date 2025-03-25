@@ -190,12 +190,12 @@ const TradeDetailPage = () => {
         `http://localhost:8087/api/photo/board/upload/${postId}`
       );
       if (response.ok) {
-        const base64Data = await response.json(); // ⚠ 서버가 JSON으로 배열 반환하는 경우
+        const base64Data = await response.json();
         const base64String = Array.isArray(base64Data)
           ? base64Data[0]
           : base64Data;
 
-        const mimeType = "image/jpeg"; // 필요 시 서버에서 MIME 타입도 함께 받아올 수 있음
+        const mimeType = "image/jpeg";
         const fullBase64 = `data:${mimeType};base64,${base64String}`;
         setImageBase64(fullBase64);
       } else {
@@ -210,7 +210,7 @@ const TradeDetailPage = () => {
   useEffect(() => {
     if (postId) {
       fetchPostDetail();
-      fetchImageBase64(); // 이미지도 함께 로드
+      fetchImageBase64();
     }
   }, [postId]);
 

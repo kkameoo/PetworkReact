@@ -22,7 +22,7 @@ const UserDetailPage = () => {
           id: item.boardId,
           title: item.title,
           content: item.content,
-          type: item.boardType, // 1: 산책, 2: 나눔, 3: 알바, 4: 펫
+          type: item.boardType,
         }));
         setPosts(formattedData);
       })

@@ -1,8 +1,7 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-// 이미지 스타일
-export const LeftImage = styled.img`
+const LeftImage = styled.img`
   position: absolute;
   top: -20px;
   left: 90px;
@@ -14,8 +13,7 @@ export const LeftImage = styled.img`
   }
 `;
 
-// 로그인 및 회원가입 버튼 스타일
-export const AuthButton = styled.button`
+const AuthButton = styled.button`
   padding: 15px 30px; // 여백을 반으로 줄임
   font-size: 15px; // 폰트 크기를 줄임
   background-color: #00bfff;
@@ -29,8 +27,7 @@ export const AuthButton = styled.button`
   }
 `;
 
-// 로그인, 회원가입 버튼들을 감싸는 컨테이너 (오른쪽 끝 정렬)
-export const AuthButtonContainer = styled.div`
+const AuthButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 10px; // 버튼 간 간격을 줄임
@@ -41,8 +38,7 @@ export const AuthButtonContainer = styled.div`
   z-index: 10;
 `;
 
-// 게시판 버튼 스타일 (이미지와 텍스트를 감싸는 박스)
-export const BoardButtonWrapper = styled.div`
+const BoardButtonWrapper = styled.div`
   position: relative;
   display: flex;
   flex-direction: column; // 이미지와 텍스트를 세로로 배치
@@ -63,8 +59,7 @@ export const BoardButtonWrapper = styled.div`
   }
 `;
 
-// 이미지 스타일 (텍스트 위로 올리기)
-export const BoardButtonImage = styled.img`
+const BoardButtonImage = styled.img`
   width: 80%; // 이미지 크기를 줄임
   height: auto;
   margin-bottom: 5px; // 이미지와 텍스트 간 간격 설정
@@ -77,8 +72,7 @@ export const BoardButtonImage = styled.img`
   }
 `;
 
-// 게시판 버튼 텍스트 스타일
-export const BoardButtonText = styled.button`
+const BoardButtonText = styled.button`
   font-size: 14px; // 텍스트 크기를 줄임
   background-color: transparent;
   color: black;
@@ -91,9 +85,7 @@ export const BoardButtonText = styled.button`
     color: #007acc; // 호버 시 텍스트 색상 파란색으로 변경
   }
 `;
-
-// 게시판 버튼들을 감싸는 컨테이너 (가운데 정렬)
-export const BoardButtonContainer = styled.div`
+const BoardButtonContainer = styled.div`
   display: flex;
   gap: 20px; // 버튼 간 간격을 줄임
   justify-content: center;
@@ -104,45 +96,37 @@ export const BoardButtonContainer = styled.div`
 const ExampleComponent = () => {
   const navigate = useNavigate();
 
-  // 이미지 클릭 시 해당 게시판으로 이동
   const handleImageClick = (boardPath) => {
     navigate(boardPath);
   };
 
-  // 텍스트 클릭 시 해당 게시판으로 이동
   const handleTextClick = (boardPath) => {
     navigate(boardPath);
   };
 
   return (
     <div>
-      {/* 왼쪽 끝에 이미지를 배치 */}
       <LeftImage
         src="src/assets/TalkMedia_i_2a4ebc04392c.png.png"
         alt="left-image"
         onClick={() => handleImageClick("/")}
       />
-
-      {/* 로그인과 회원가입 버튼을 오른쪽 상단에 배치 */}
       <AuthButtonContainer>
         <AuthButton onClick={() => navigate("/login")}>로그인</AuthButton>
         <AuthButton onClick={() => navigate("/signup")}>회원가입</AuthButton>
       </AuthButtonContainer>
-
-      {/* 게시판 버튼들을 가운데 정렬 */}
       <BoardButtonContainer>
-        <BoardButtonWrapper>
-          {/* 각 버튼에 대해 이미지 클릭 시 해당 경로로 이동 */}
+        <BoardButtonWrapper onClick={() => navigate("/walk")}>
           <BoardButtonImage
             src="src/assets/KakaoTalk_20250320_191922332.jpg"
-            onClick={() => handleImageClick("/walk")} // 이미지 클릭 시 게시판으로 이동
+            onClick={() => handleImageClick("/walk")}
           />
           <BoardButtonText onClick={() => handleTextClick("/walk")}>
             산책 게시판
           </BoardButtonText>
         </BoardButtonWrapper>
 
-        <BoardButtonWrapper>
+        <BoardButtonWrapper onClick={() => navigate("/sell")}>
           <BoardButtonImage
             src="src/assets/KakaoTalk_20250320_183321982.jpg"
             onClick={() => handleImageClick("/sell")}
@@ -152,7 +136,7 @@ const ExampleComponent = () => {
           </BoardButtonText>
         </BoardButtonWrapper>
 
-        <BoardButtonWrapper>
+        <BoardButtonWrapper onClick={() => navigate("/hire")}>
           <BoardButtonImage
             src="src/assets/KakaoTalk_20250320_184745054.jpg"
             onClick={() => handleImageClick("/hire")}
@@ -161,8 +145,7 @@ const ExampleComponent = () => {
             알바 게시판
           </BoardButtonText>
         </BoardButtonWrapper>
-
-        <BoardButtonWrapper>
+        <BoardButtonWrapper onClick={() => navigate("/petshow")}>
           <BoardButtonImage
             src="src/assets/KakaoTalk_20250320_174016642.jpg"
             onClick={() => handleImageClick("/petshow")}

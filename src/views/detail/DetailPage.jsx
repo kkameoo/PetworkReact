@@ -217,7 +217,7 @@ const DetailPage = () => {
   useEffect(() => {
     if (postId) {
       fetchPostDetail();
-      fetchImageBase64(); // 이미지도 함께 로드
+      fetchImageBase64();
     }
   }, [postId]);
 

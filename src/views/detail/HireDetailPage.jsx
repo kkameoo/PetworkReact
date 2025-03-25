@@ -207,7 +207,7 @@ const HireDetailPage = () => {
         `http://localhost:8087/api/photo/board/upload/${postId}`
       );
       if (response.ok) {
-        const result = await response.json(); // 예: ["/9j/4AAQ..."]
+        const result = await response.json();
         const base64String = Array.isArray(result) ? result[0] : result;
         const fullBase64 = `data:image/jpeg;base64,${base64String}`;
         setImageBase64(fullBase64);

@@ -2,31 +2,31 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-export const PageContainer = styled.div`
+const PageContainer = styled.div`
   margin-left: 120px;
   max-width: 1500px;
   padding: 2rem;
   background-color: #fffefc;
 `;
 
-export const Section = styled.section`
+const Section = styled.section`
   margin-bottom: 3rem;
 `;
 
-export const SectionTitle = styled.h2`
+const SectionTitle = styled.h2`
   font-size: 1.8rem;
   font-weight: bold;
   color: #7b4f1d;
   margin-bottom: 1rem;
 `;
 
-export const CardGrid = styled.div`
+const CardGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 1rem;
 `;
 
-export const HomeCard = styled.div`
+const HomeCard = styled.div`
   background-color: #fff2cf;
   border-radius: 16px;
   padding: 1rem;
@@ -50,13 +50,13 @@ export const HomeCard = styled.div`
   }
 `;
 
-export const TextGrid = styled.div`
+const TextGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr); // 항상 2열
   gap: 1rem;
 `;
 
-export const TextCard = styled.div`
+const TextCard = styled.div`
   background-color: #fff6e0;
   border-radius: 16px;
   padding: 1rem;
@@ -78,14 +78,14 @@ export const TextCard = styled.div`
   }
 `;
 
-export const ImageRow = styled.div`
+const ImageRow = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   justify-content: flex-start;
 `;
 
-export const PetImage = styled.img`
+const PetImage = styled.img`
   width: 80px;
   height: 80px;
   border-radius: 30px;
