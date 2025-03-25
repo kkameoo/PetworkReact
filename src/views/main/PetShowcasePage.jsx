@@ -22,11 +22,17 @@ const TopTenList = styled.ul`
 `;
 
 const TopTenItem = styled.li`
-  background-color: #007acc;
   color: white;
   padding: 5px 10px;
   border-radius: 10px;
   font-size: 14px;
+  img {
+    width: 80px;
+    height: 80px;
+    border-radius: 30px;
+    object-fit: cover;
+    border: 2px solid #ffd38b;
+  }
 `;
 
 const SortButtons = styled.div`
@@ -345,13 +351,15 @@ const PetShowcasePage = () => {
     setPosts(exampleData);
   }, []);
 
-  const sortedPosts = [...posts].sort((a, b) => {
+  const sortedPosts = [...petPosts].sort((a, b) => {
     if (sortType === "latest") return b.date - a.date;
     if (sortType === "views") return b.views - a.views;
     return 0;
   });
 
-  const topTenPosts = [...posts].sort((a, b) => b.views - a.views).slice(0, 10);
+  const topTenPosts = [...petPosts]
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 10);
 
   return (
     <Container>
@@ -359,7 +367,9 @@ const PetShowcasePage = () => {
         <h3>🔥 조회수 TOP 10</h3>
         <TopTenList>
           {topTenPosts.map((post) => (
-            <TopTenItem key={post.id}>{post.title}</TopTenItem>
+            <TopTenItem key={post.id}>
+              <img src={imageMap[post.id] || DEFAULT_IMAGE} />
+            </TopTenItem>
           ))}
         </TopTenList>
       </TopTenContainer>
