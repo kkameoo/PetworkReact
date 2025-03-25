@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 const ChatContainer = styled.div`
   min-height: 600px;
@@ -98,21 +100,26 @@ const SendButton = styled.button`
 `;
 
 const RoomContents = () => {
-  const [messages, setMessages] = useState([
-    {
-      sender: "USER2",
-      text: "안녕!",
-      timestamp: new Date().toLocaleTimeString(),
-    },
-    {
-      sender: "USER1",
-      text: "안녕! 반가워!",
-      timestamp: new Date().toLocaleTimeString(),
-    },
-  ]);
-  const [inputText, setInputText] = useState("");
+  const SOCKET_URL = "http://localhost:8087/ws";
+  // const [messages, setMessages] = useState([
+  //   {
+  //     sender: "USER2",
+  //     text: "안녕!",
+  //     timestamp: new Date().toLocaleTimeString(),
+  //   },
+  //   {
+  //     sender: "USER1",
+  //     text: "안녕! 반가워!",
+  //     timestamp: new Date().toLocaleTimeString(),
+  //   },
+  // ]);
+  // const [inputText, setInputText] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
-  const [users, setUsers] = useState(["USER1", "USER2"]);
+  // const [users, setUsers] = useState(["USER1", "USER2"]);
+
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+  const stompClientRef = useRef(null);
 
   const checkLoginStatus = async () => {
     try {
@@ -129,31 +136,68 @@ const RoomContents = () => {
     }
   };
 
+  const getChatHistory = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/chat", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const jsonData = data.map((item) => JSON.parse(item));
+        jsonData.reverse();
+        setMessages(jsonData);
+      }
+    } catch (error) {
+      console.error("채팅 내역 가져오기 실패", error);
+    }
+  };
+
   useEffect(() => {
     checkLoginStatus();
+    getChatHistory();
+
+    const socket = new SockJS(SOCKET_URL);
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        console.log("WebSocket Connected");
+        stompClient.subscribe("/topic/messages", (msg) => {
+          setMessages((prev) => [...prev, JSON.parse(msg.body)]);
+        });
+      },
+      onStompError: (frame) => console.error("Error: ", frame),
+    });
+    stompClient.activate();
+    stompClientRef.current = stompClient;
+    return () => stompClient.deactivate();
   }, []);
 
   const sendMessage = () => {
-    if (inputText.trim() === "" || !currentUser) return;
-    setMessages([
-      ...messages,
-      {
-        sender: "USER1",
-        text: inputText,
-        timestamp: new Date().toLocaleTimeString(),
-      },
-    ]);
-    setInputText("");
+    if (!message.trim()) return;
+    stompClientRef.current.publish({
+      destination: "/app/chat",
+      body: JSON.stringify({ sender: "User", content: message, roomId: "1" }),
+    });
+    setMessage("");
   };
+
+  // const sendMessage = () => {
+  //   if (inputText.trim() === "" || !currentUser) return;
+  //   setMessages([
+  //     ...messages,
+  //     {
+  //       sender: "USER1",
+  //       text: inputText,
+  //       timestamp: new Date().toLocaleTimeString(),
+  //     },
+  //   ]);
+  //   setInputText("");
+  // };
 
   return (
     <ChatContainer>
-      <UserContainer>
-        <h4>접속 중인 유저</h4>
-        {users.map((user, index) => (
-          <div key={index}>{user}</div>
-        ))}
-      </UserContainer>
+      {/*
       <MessageList>
         {messages.map((msg, index) => (
           <Message key={index} isUser1={msg.sender === "USER1"}>
@@ -165,11 +209,28 @@ const RoomContents = () => {
           </Message>
         ))}
       </MessageList>
+      */}
+      <UserContainer>
+        <h4>접속 중인 유저</h4>
+      </UserContainer>
+
+      {messages.length === 0 ? (
+        <p>메시지를 불러오는 중...</p>
+      ) : (
+        <MessageList>
+          {messages.map((msg, idx) => (
+            <Message key={idx}>
+              <b>{msg.sender}: </b> {msg.content}
+              <Timestamp>{new Date().toLocaleTimeString()}</Timestamp>
+            </Message>
+          ))}
+        </MessageList>
+      )}
       <InputContainer>
         <Input
           type="text"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           placeholder="메시지를 입력하세요..."
         />
         <SendButton onClick={sendMessage}>전송</SendButton>

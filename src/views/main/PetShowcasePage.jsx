@@ -82,120 +82,256 @@ const PostViews = styled.p`
   color: #666;
 `;
 
-export const petShowcaseData = [
-  {
-    id: 1,
-    title: "귀염둥이 댕댕이 산책 중 💕",
-    image: "/images/dog1.jpg",
-    category: "산책",
-    location: "서울 강남구",
-    createdAt: "2025-03-20",
-    views: 158,
-  },
-  {
-    id: 2,
-    title: "우리집 강아지 첫 미용✨",
-    image: "/images/dog2.jpg",
-    category: "미용",
-    location: "부산 해운대구",
-    createdAt: "2025-03-19",
-    views: 230,
-  },
-  {
-    id: 3,
-    title: "개린이날 기념 사진📸",
-    image: "/images/dog3.jpg",
-    category: "기념일",
-    location: "인천 연수구",
-    createdAt: "2025-03-18",
-    views: 142,
-  },
-  {
-    id: 4,
-    title: "아기 댕댕이 입양했어요🥺",
-    image: "/images/dog4.jpg",
-    category: "입양",
-    location: "서울 마포구",
-    createdAt: "2025-03-17",
-    views: 315,
-  },
-  {
-    id: 5,
-    title: "눈 오는 날 산책🐾",
-    image: "/images/dog5.jpg",
-    category: "산책",
-    location: "강원 춘천시",
-    createdAt: "2025-03-16",
-    views: 189,
-  },
-  {
-    id: 6,
-    title: "강아지 생일파티🎂",
-    image: "/images/dog6.jpg",
-    category: "기념일",
-    location: "대전 서구",
-    createdAt: "2025-03-15",
-    views: 274,
-  },
-  {
-    id: 7,
-    title: "강아지랑 커플룩👕🐶",
-    image: "/images/dog7.jpg",
-    category: "패션",
-    location: "경기 성남시",
-    createdAt: "2025-03-14",
-    views: 162,
-  },
-  {
-    id: 8,
-    title: "강아지 유치원 졸업했어요🎓",
-    image: "/images/dog8.jpg",
-    category: "교육",
-    location: "광주 북구",
-    createdAt: "2025-03-13",
-    views: 220,
-  },
-  {
-    id: 9,
-    title: "간식 앞에서 기다리는 모습🥰",
-    image: "/images/dog9.jpg",
-    category: "훈련",
-    location: "제주 서귀포시",
-    createdAt: "2025-03-12",
-    views: 137,
-  },
-  {
-    id: 10,
-    title: "강아지랑 벚꽃 구경🌸",
-    image: "/images/dog10.jpg",
-    category: "산책",
-    location: "서울 송파구",
-    createdAt: "2025-03-11",
-    views: 298,
-  },
-  {
-    id: 11,
-    title: "잠자는 천사😴",
-    image: "/images/dog11.jpg",
-    category: "일상",
-    location: "부산 수영구",
-    createdAt: "2025-03-10",
-    views: 199,
-  },
-  {
-    id: 12,
-    title: "강아지 수영 처음 도전💦",
-    image: "/images/dog12.jpg",
-    category: "놀이",
-    location: "경남 창원시",
-    createdAt: "2025-03-09",
-    views: 251,
-  },
-];
+const regionMap = {
+  1: "서울시",
+  2: "수원시",
+  3: "성남시",
+  4: "안양시",
+  5: "부천시",
+  6: "광명시",
+  7: "평택시",
+  8: "시흥시",
+  9: "안산시",
+  10: "고양시",
+  11: "과천시",
+  12: "구리시",
+  13: "남양주시",
+  14: "오산시",
+  15: "화성시",
+  16: "김포시",
+  17: "광주시",
+  18: "하남시",
+  19: "이천시",
+  20: "양평군",
+  21: "동두천시",
+  22: "연천군",
+  23: "가평군",
+  24: "포천시",
+  25: "인천시",
+};
+
+const guMap = {
+  1: "종로구",
+  2: "중구",
+  3: "용산구",
+  4: "성동구",
+  5: "광진구",
+  6: "동대문구",
+  7: "중랑구",
+  8: "강북구",
+  9: "도봉구",
+  10: "노원구",
+  11: "은평구",
+  12: "서대문구",
+  13: "마포구",
+  14: "양천구",
+  15: "강서구",
+  16: "구로구",
+  17: "금천구",
+  18: "영등포구",
+  19: "동작구",
+  20: "관악구",
+  21: "서초구",
+  22: "강남구",
+  23: "송파구",
+  24: "강동구",
+  25: "장안구",
+  26: "권선구",
+  27: "팔달구",
+  28: "영통구",
+  29: "수정구",
+  30: "중원구",
+  31: "분당구",
+  32: "만안구",
+  33: "동안구",
+  34: "원미구",
+  35: "소사구",
+  36: "오정구",
+  37: "광명구",
+  38: "평택구",
+  39: "시흥구",
+  40: "단원구",
+  41: "상록구",
+  42: "덕양구",
+  43: "일산동구",
+  44: "일산서구",
+  45: "과천구",
+  46: "구리구",
+  47: "남양주구",
+  48: "오산구",
+  49: "화성구",
+  50: "중구(인천)",
+  51: "동구(인천)",
+  52: "미추홀구",
+  53: "연수구",
+  54: "남동구",
+  55: "부평구",
+  56: "계양구",
+  57: "서구(인천)",
+  58: "강화군",
+  59: "옹진군",
+};
+
+const regionGuMap = {
+  서울시: [
+    "종로구",
+    "중구",
+    "용산구",
+    "성동구",
+    "광진구",
+    "동대문구",
+    "중랑구",
+    "강북구",
+    "도봉구",
+    "노원구",
+    "은평구",
+    "서대문구",
+    "마포구",
+    "양천구",
+    "강서구",
+    "구로구",
+    "금천구",
+    "영등포구",
+    "동작구",
+    "관악구",
+    "서초구",
+    "강남구",
+    "송파구",
+    "강동구",
+  ],
+  수원시: ["장안구", "권선구", "팔달구", "영통구"],
+  성남시: ["수정구", "중원구", "분당구"],
+  안양시: ["만안구", "동안구"],
+  부천시: ["원미구", "소사구", "오정구"],
+  광명시: ["광명구"],
+  평택시: ["평택구"],
+  시흥시: ["시흥구"],
+  안산시: ["단원구", "상록구"],
+  고양시: ["덕양구", "일산동구", "일산서구"],
+  과천시: ["과천구"],
+  구리시: ["구리구"],
+  남양주시: ["남양주구"],
+  오산시: ["오산구"],
+  화성시: ["화성구"],
+  인천시: [
+    "중구(인천)",
+    "동구(인천)",
+    "미추홀구",
+    "연수구",
+    "남동구",
+    "부평구",
+    "계양구",
+    "서구(인천)",
+    "강화군",
+    "옹진군",
+  ],
+};
 
 const PetShowcasePage = () => {
-  const [posts, setPosts] = useState([]);
   const [sortType, setSortType] = useState("latest");
+  const API_POST_URL = "http://localhost:8087/api/board";
+  const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
+  // const navigate = useNavigate();
+
+  const [posts, setPosts] = useState([]);
+  const [filteredPosts, setFilteredPosts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState(0);
+  const [selectedRegion, setSelectedRegion] = useState("전체");
+  const [selectedGu, setSelectedGu] = useState("전체");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [user, setUser] = useState({});
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
+  const [petPosts, setPetPosts] = useState([]);
+  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+
+  //   로그인 상태 확인
+  const checkLoginStatus = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/user/session", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIsLoggedIn(true);
+        setUser(data);
+        console.log(data + "세션정보");
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      console.error("로그인 상태 확인 실패:", error);
+      setIsLoggedIn(false);
+    }
+  };
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  useEffect(() => {
+    fetch(API_POST_URL)
+      .then((res) => res.json())
+      .then((data) => {
+        const postData = Object.values(data).map((item) => ({
+          id: item.boardId,
+          sellerUid: item.userId,
+          regionSi: regionMap[item.localSi] || "알 수 없음",
+          regionGu: guMap[item.localGu] || "알 수 없음",
+          title: item.title,
+          content: item.content,
+          category: item.walkCategory,
+          type: item.boardType,
+          clickCnt: item.clickCount,
+          reportCnt: item.reportCount,
+          regionDong: `${regionMap[item.localSi] || ""} ${
+            guMap[item.localGu] || ""
+          }`,
+          image: item.image || "/no-image.png",
+        }));
+        setPetPosts(postData.filter((p) => p.type === 4));
+        console.log("데이터:", data);
+        setPosts(postData);
+        setFilteredPosts(postData);
+        postData.forEach((post) => fetchImage(post.id));
+      })
+      .catch((err) => console.error("게시글 불러오기 오류:", err));
+  }, []);
+  const fetchImage = async (postId) => {
+    try {
+      const res = await fetch(`${API_IMAGE_URL}/${postId}`);
+      if (res.ok) {
+        const base64Data = await res.json();
+        const base64String = Array.isArray(base64Data)
+          ? base64Data[0]
+          : base64Data;
+        const fullBase64 = `data:image/jpeg;base64,${base64String}`;
+        setImageMap((prev) => ({ ...prev, [postId]: fullBase64 }));
+      } else {
+        console.warn(`이미지 불러오기 실패: ${postId}`);
+      }
+    } catch (e) {
+      console.error(`이미지 요청 에러 (${postId}):`, e);
+    }
+  };
+
+  // 필터링 로직
+  useEffect(() => {
+    const filtered = posts.filter((post) => {
+      const matchesCategory =
+        selectedCategory === 0 || post.category === selectedCategory;
+      const matchesRegion =
+        selectedRegion === "전체" || post.regionSi === selectedRegion;
+      const matchesGu = selectedGu === "전체" || post.regionGu === selectedGu;
+      const matchesSearch =
+        post.title.includes(searchTerm) || post.content.includes(searchTerm);
+      return matchesCategory && matchesRegion && matchesGu && matchesSearch;
+    });
+
+    setFilteredPosts(filtered);
+  }, [selectedCategory, selectedRegion, selectedGu, searchTerm, posts]);
 
   useEffect(() => {
     // 예시 데이터 불러오기 또는 API 연결
@@ -244,7 +380,7 @@ const PetShowcasePage = () => {
       </SortButtons>
 
       <PostGrid>
-        {sortedPosts.slice(0, 12).map((post) => (
+        {petPosts.slice(0, 12).map((post) => (
           <PostCard key={post.id}>
             <PostImage src={post.image} alt={post.title} />
             <PostTitle>{post.title}</PostTitle>

@@ -20,6 +20,7 @@ import EditHirePage from "./views/edit/EditHirePage";
 import EditTradePage from "./views/edit/EditTradePage";
 import Room from "./pages/Room";
 import UserDetailPage from "./views/detail/UserDetailPage";
+import PostPet from "./views/post/postPet";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
         <Route path="/hire" element={<JobContents />} />
         <Route path="/postTrade" element={<PostTrade />} />
         <Route path="/postWalk" element={<PostWalk />} />
+        <Route path="/postPet" element={<PostPet />} />
         <Route path="/postHire" element={<PostHire />} />
         <Route path="/petshow" element={<PetShowcasePage />} />
         <Route path="/trade/:postId" element={<TradeDetailPage />} />

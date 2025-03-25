@@ -241,7 +241,7 @@ const HireDetailPage = () => {
 
           <SellerInfo>
             <SellerLeft>
-              <SellerImage src="/images/user.png" alt="판매자 이미지" />
+              <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
               <div>
                 <Nickname>{newPost.seller}</Nickname>
                 <Location>
