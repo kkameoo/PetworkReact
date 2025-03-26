@@ -40,6 +40,10 @@ const AuthButtonContainer = styled.div`
   padding: 10px;
   z-index: 10;
 `;
+const BellIcon = styled.img`
+  width: 35px;
+  height: 35px;
+`;
 
 const BoardButtonWrapper = styled.div`
   position: relative;
@@ -181,7 +185,7 @@ function Header({ handleLogout, isLoggedIn }) {
         style={{ position: "absolute", top: 20, right: 300, cursor: "pointer" }}
         onClick={() => setDropdownOpen(!dropdownOpen)}
       >
-        :종:
+        <BellIcon src="src/assets/bell.png" />
         {notifications.length > 0 && <span style={{ color: "red" }}> ●</span>}
       </div>
       {dropdownOpen && (
