@@ -30,6 +30,7 @@ import Header from "./components/Header";
 export const AuthContext = createContext(null);
 
 import PostPet from "./views/post/postPet";
+import PetstarDetailPage from "./views/detail/PetstarDetailPage";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -113,6 +114,7 @@ function App() {
         <Route path="/edittrade/:postId" element={<EditTradePage />} />
         <Route path="/room" element={<Room />} />
         <Route path="/my" element={<UserDetailPage />} />
+        <Route path="/petstarDetail" element={<PetstarDetailPage />} />
       </Routes>
       <Footer />
     </AuthContext.Provider>
