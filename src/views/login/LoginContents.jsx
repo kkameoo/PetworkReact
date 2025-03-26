@@ -1,102 +1,85 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
-// 스타일 컴포넌트들
 const Container = styled.div`
   height: 100vh;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f9fa;
 `;
 
 const FormWrapper = styled.div`
-  flex: 1;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
 `;
 
-const Form = styled.div`
-  width: 100%;
-  max-width: 32rem;
-  padding: 32px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-`;
-
 const Title = styled.h1`
-  font-size: 24px;
+  font-size: 22px;
   font-weight: bold;
   text-align: center;
-  margin-bottom: 24px;
-  background-color: #00bfff;
-  color: #000000;
-  padding: 16px;
-  border-radius: 8px;
+  margin-bottom: 20px;
+  color: #007acc;
 `;
 
 const InputWrapper = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: column;
-  width: 100%;
-  gap: 24px;
-`;
-
-const Label = styled.label`
-  font-size: 16px;
-  font-weight: 500;
-  margin-bottom: 8px;
+  gap: 12px;
+  margin-bottom: 20px;
 `;
 
 const Input = styled.input`
-  border: 1px solid #d1d5db;
-  padding: 16px;
-  border-radius: 8px;
   width: 100%;
-  background-color: white;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
   font-size: 16px;
+  background-color: white;
   box-sizing: border-box;
+  transition: border 0.3s;
+
+  &:focus {
+    border-color: #007acc;
+    outline: none;
+  }
 `;
 
 const Button = styled.button`
   width: 100%;
-  background-color: white;
-  color: black;
-  border: 1px solid black;
-  padding: 16px;
+  background-color: #007acc;
+  color: white;
+  border: none;
+  padding: 12px;
   border-radius: 8px;
-  margin-top: ${(props) => (props.isSignup ? "16px" : "24px")};
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s;
 
   &:hover {
-    background-color: #f3f4f6;
+    background-color: #005f99;
   }
 `;
 
-function LoginContents() {
-  // const [username, setUsername] = useState("");
-  // const [password, setPassword] = useState("");
-  const {user, setUser} = useAuth();
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+const Login = () => {
+  const { setUser } = useAuth();
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const API_USER_URL = `http://localhost:8087/api/user`;
-
-  // 뒤로가기 버튼
-  const onBack = () => {
-    navigate("/");
-  };
+  const API_USER_URL = "http://localhost:8087/api/user";
 
   const handleLogin = async () => {
-    // e.preventDefault();
-
     try {
       const response = await fetch(`${API_USER_URL}/login`, {
         credentials: "include",
@@ -106,16 +89,13 @@ function LoginContents() {
         },
         body: JSON.stringify(formData),
       });
-      
 
       const data = await response.json();
-      setUser(data);
-      console.log("data", data);
-
-      navigate("/");
       if (!response.ok) {
         throw new Error("로그인 실패");
       }
+      setUser(data);
+      navigate("/");
     } catch (error) {
       console.error("로그인 오류", error);
       setError("서버 오류가 발생했습니다.");
@@ -125,39 +105,36 @@ function LoginContents() {
   return (
     <Container>
       <FormWrapper>
-        <Form onSubmit={handleLogin}>
-          <button onClick={onBack} className="login-back-button" />
-          <Title>로그인</Title>
-          <InputWrapper>
-            <div>
-              <Label>아이디</Label>
-              <Input
-                type="text"
-                placeholder="이메일 입력"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <Label>비밀번호</Label>
-              <Input
-                type="password"
-                placeholder="비밀번호 입력"
-                value={formData.password}
-                onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
-                }
-              />
-            </div>
-            <Button onClick={handleLogin}>로그인</Button>
-            <Button isSignup>회원가입</Button>
-          </InputWrapper>
-        </Form>
+        <Title>로그인</Title>
+        <InputWrapper>
+          <Input
+            type="email"
+            placeholder="이메일"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+          <Input
+            type="password"
+            placeholder="비밀번호"
+            value={formData.password}
+            onChange={(e) =>
+              setFormData({ ...formData, password: e.target.value })
+            }
+          />
+        </InputWrapper>
+        {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}
+        <Button onClick={handleLogin}>로그인</Button>
+        <Button
+          onClick={() => navigate("/signup")}
+          style={{ marginTop: "10px", backgroundColor: "#ddd", color: "black" }}
+        >
+          회원가입
+        </Button>
       </FormWrapper>
     </Container>
   );
-}
+};
 
-export default LoginContents;
+export default Login;
