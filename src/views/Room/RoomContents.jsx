@@ -138,7 +138,7 @@ const RoomContents = () => {
 
   const getChatHistory = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/chat", {
+      const response = await fetch("http://localhost:8087/api/chat/1", {
         method: "GET",
         credentials: "include",
       });
@@ -177,7 +177,12 @@ const RoomContents = () => {
     if (!message.trim()) return;
     stompClientRef.current.publish({
       destination: "/app/chat",
-      body: JSON.stringify({ sender: "User", content: message, roomId: "1" }),
+      body: JSON.stringify({
+        chatroomId: 1,
+        sender: "User",
+        content: message,
+        messageType: 3,
+      }),
     });
     setMessage("");
   };
