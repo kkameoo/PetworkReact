@@ -5,44 +5,59 @@ const SignupContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f9f9f9;
 `;
 const Title = styled.h2`
+  font-size: 28px;
   color: #333;
   margin-bottom: 20px;
 `;
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  width: 100%;
+  width: 320px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+`;
+const Label = styled.label`
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
 `;
 const Input = styled.input`
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
+   padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  &:focus {
+    outline: none;
+    border-color: #93C572;
 `;
 const Select = styled.select`
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
+   padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 15px;
+  font-size: 14px;
   background: white;
-  cursor: pointer;
+  &:focus {
+    outline: none;
+    border-color: #93C572;
 `;
 const Button = styled.button`
   background-color: #007acc;
   color: white;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
+  padding: 12px;
   font-size: 16px;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.3s ease;
   &:hover {
     background-color: #00bfff;
   }
@@ -50,6 +65,48 @@ const Button = styled.button`
 const ErrorMessage = styled.p`
   color: red;
   font-size: 14px;
+`;
+/* 드롭다운 스타일 */
+const Dropdown = styled.div`
+  position: relative;
+  margin-bottom: 15px;
+`;
+
+const DropdownHeader = styled.div`
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: 0.3s;
+  &:hover {
+    background-color: #f4f4f4;
+  }
+`;
+
+const DropdownList = styled.ul`
+  position: absolute;
+  width: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 5px;
+  padding: 0;
+  list-style: none;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  max-height: 150px;
+  overflow-y: auto;
+`;
+
+const DropdownItem = styled.li`
+  padding: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  &:hover {
+    background-color: #ff8c00;
+    color: white;
+  }
 `;
 
 // 모달
@@ -210,7 +267,7 @@ const SignupContents = () => {
   const API_EMAIL_VERIFICATION_URL = `http://localhost:8087/api/email/send`;
   const API_EMAIL_VERIFY_URL = `http://localhost:8087/api/email/verify`;
 
-  const [passwordStrength, setPasswordStrength] = useState("");
+  // const [passwordStrength, setPasswordStrength] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
@@ -239,6 +296,7 @@ const SignupContents = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
+
   // 회원가입 시 변환
   // const handleSignUp = () => {
   //   const userData = {
@@ -253,21 +311,6 @@ const SignupContents = () => {
   // };
   // 회원 정보 조회 시 변환
   const user = { localSi: 1, localGu: 3 }; // DB에서 가져온 데이터
-
-  // const handleRegionChange = (e) => {
-  //   const selectedSi = e.target.value;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     localSi: selectedSi,
-  //     localGu: "", // 시가 바뀌면 구 초기화
-  //   }));
-  // };
-  // const handleDistrictChange = (e) => {
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     localGu: e.target.value,
-  //   }));
-  // };
 
   const handleSendEmailVerification = async () => {
     if (!emailInput.trim()) {
@@ -437,7 +480,6 @@ const SignupContents = () => {
           value={formData.password}
           onChange={handleChange}
         />
-        <p>{passwordStrength}</p>
         {/* 비밀번호 확인 입력 */}
         <Input
           type="password"
@@ -527,33 +569,7 @@ const SignupContents = () => {
               </option>
             ))}
           </select>
-          // {/* {formData.localSi && regionData[formData.localSi] && (
-          //   <select
-          //     name="localGu"
-          //     value={formData.localGu}
-          //     // onChange={handleRegionChange}
-          //     onChange={(e) => {
-          //       setFormData((prev) => ({
-          //         ...prev,
-          //         localGu: e.target.value,
-          //       }));
-          //     }}
-          //   >
-          //     <option value="">군/구 선택</option>
-          //     {regionData[formData.localSi] &&
-          //       regionData[formData.localSi].map((district) => (
-          //         <option key={district} value={district}>
-          //           {district}
-          //         </option>
-          //       ))}
-          //   </select> */}
         )}
-        {/* 성별 선택 */}
-        {/* <select name="gender" value={formData.gender} onChange={handleChange}>
-          <option value="">성별 선택</option>
-          <option value="male">남성</option>
-          <option value="female">여성</option>
-        </select> */}
         {/* 회원가입 버튼 */}
         <Button type="submit">가입하기</Button>
       </Form>
