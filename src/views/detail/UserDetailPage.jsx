@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
+import defaultProfile from "../../assets/basic.jpg";
 
 const UserDetailPage = () => {
   // const [user, setUser] = useState(null);
@@ -46,20 +47,15 @@ const UserDetailPage = () => {
       {user ? (
         <ContentWrapper>
           <ProfileSection>
-            <img
-              src={user.profileImage || "/assets/default-profile.png"}
-              alt="프로필"
-            />
-            <h2>{user.nickName || "익명"}</h2>
+            <img src={user.profileImage || defaultProfile} alt="프로필" />
+            <h2>{user.nickname || "익명"}</h2>
             <p>{user.email}</p>
+            <ButtonSection>
+              <ActionButton>버튼 1</ActionButton>
+              <ActionButton>버튼 2</ActionButton>
+              <ActionButton>버튼 3</ActionButton>
+            </ButtonSection>
           </ProfileSection>
-
-          {/* 버튼 3개 추가 */}
-          <ButtonContainer>
-            <ActionButton>버튼 1</ActionButton>
-            <ActionButton>버튼 2</ActionButton>
-            <ActionButton>버튼 3</ActionButton>
-          </ButtonContainer>
         </ContentWrapper>
       ) : (
         <p>로그인이 필요합니다.</p>
@@ -104,32 +100,60 @@ export default UserDetailPage;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   padding: 20px;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  gap: 50px;
   padding: 20px;
 `;
 
 const ProfileSection = styled.div`
-  width: 30%;
-  text-align: center;
+  display: flex;
+  align-items: center;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  gap: 20px;
 
   img {
     width: 120px;
     height: 120px;
     border-radius: 50%;
   }
+  div {
+    text-align: left;
+  }
   h2 {
     margin: 10px 0 5px;
   }
   p {
     color: gray;
+  }
+`;
+
+const ButtonSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const ActionButton = styled.button`
+  padding: 10px 15px;
+  border: none;
+  background: #00bfff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+
+  &:hover {
+    background: #007acc;
   }
 `;
 
@@ -191,26 +215,5 @@ const PostCard = styled.div`
     font-size: 1rem;
     margin-top: 0.5rem;
     color: #3b2e1a;
-  }
-`;
-
-const ButtonContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 20px;
-`;
-
-const ActionButton = styled.button`
-  padding: 10px 15px;
-  border: none;
-  background: #00bfff;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
-
-  &:hover {
-    background: #007acc;
   }
 `;
