@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../hooks/useAuth";
-
+import { connectSocket } from "../hooks/socket";
 
 const LeftImage = styled.img`
   position: absolute;
@@ -96,7 +96,7 @@ const BoardButtonContainer = styled.div`
   flex-wrap: wrap;
 `;
 
-function Header({handleLogout, isLoggedIn}) {
+function Header({ handleLogout, isLoggedIn }) {
   const navigate = useNavigate();
 
   // 로그인 상태관리
@@ -108,71 +108,36 @@ function Header({handleLogout, isLoggedIn}) {
     console.log(loggedIn ? "로그인 상태" : "로그아웃 상태", user);
   };
 
-  // useEffect(() => {
-  //   if (user != null) {
-  //     setIsLoggedIn(true);
-  //   }
-  // }, [user]);
+  const [notifications, setNotifications] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef();
 
-  
-  // 로그인 처리 (예시)
-  // const handleLogin = async () => {
-  //   navigate("/login");
-  //   try {
-  //     const response = await fetch("http://localhost:8087/api/user/login", {
-  //       method: "POST",
-  //       credentials: "include",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ username: "test", password: "password" }),
-  //     });
+  useEffect(() => {
+    if (user) {
+      connectSocket(user.userId, (noti) => {
+        setNotifications((prev) => [noti, ...prev]);
+      });
+      // 로그인 후 저장된 알람 불러오기
+      fetch(`http://localhost:8087/alarm/list?userId=${user.userId}`)
+        .then((res) => res.json())
+        // .then((data) => setNotifications(data))
+        .then((data) => {
+          console.log("불러온 알림:", data);
+          setNotifications(data);
+        })
+        .catch((err) => console.error("알림 불러오기 실패", err));
+    }
+  }, [user]);
 
-  //     // if (response.ok) {
-  //     //   const data = await response.json();
-  //     //   setIsLoggedIn(true); // 상태 즉시 업데이트
-  //     //   setUser(data);
-  //     //   navigate("/");
-  //     // }
-  //     if (response.ok) {
-  //       setTimeout(() => {
-  //         checkLoginStatus();
-  //         setTrigger((prev) => !prev); // 강제 리렌더링
-  //       }, 500);
-  //       navigate("/");
-  //     }
-  //   } catch (error) {
-  //     console.error("로그인 실패:", error);
-  //   }
-  // };
-
-  // 로그아웃
-  // const handleLogout = () => {
-  //   setIsLoggedIn(false);
-  //   setUser(null);
-  //   navigate("/");
-  // };
-  // const handleLogout = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:8087/api/user/logout", {
-  //       method: "POST",
-  //       credentials: "include",
-  //     });
-
-  //     if (response.ok) {
-  //       setIsLoggedIn(false); // 상태 즉시 반영
-  //       setUser(null);
-  //       setTrigger((prev) => !prev); // 강제 리렌더링
-  //       navigate("/");
-  //     }
-  //   } catch (error) {
-  //     console.error("로그아웃 실패:", error);
-  //   }
-  // };
-  // 로그인 버튼 클릭 시 처리 (로그인 페이지로 이동)
-  // const handleLoginClick = () => {
-  //   navigate("/login");
-  // };
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleImageClick = (boardPath) => {
     navigate(boardPath);
@@ -211,6 +176,48 @@ function Header({handleLogout, isLoggedIn}) {
         <AuthButton onClick={() => navigate("/login")}>로그인</AuthButton>
         <AuthButton onClick={() => navigate("/signup")}>회원가입</AuthButton>
       </AuthButtonContainer> */}
+      {/* :종: 알림 벨 아이콘 + 드롭다운 */}
+      <div
+        style={{ position: "absolute", top: 20, right: 300, cursor: "pointer" }}
+        onClick={() => setDropdownOpen(!dropdownOpen)}
+      >
+        :종:
+        {notifications.length > 0 && <span style={{ color: "red" }}> ●</span>}
+      </div>
+      {dropdownOpen && (
+        <div
+          ref={dropdownRef}
+          style={{
+            position: "absolute",
+            top: "60px",
+            right: "100px",
+            width: "250px",
+            background: "white",
+            border: "1px solid #ddd",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+            borderRadius: "8px",
+            zIndex: 999,
+          }}
+        >
+          <ul style={{ listStyle: "none", padding: "1rem", margin: 0 }}>
+            {notifications.length === 0 ? (
+              <li style={{ color: "#888" }}>알림이 없습니다</li>
+            ) : (
+              notifications.map((n, i) => (
+                <li
+                  key={i}
+                  style={{
+                    padding: "0.5rem 0",
+                    borderBottom: "1px solid #eee",
+                  }}
+                >
+                  {n.content}
+                </li>
+              ))
+            )}
+          </ul>
+        </div>
+      )}
       <BoardButtonContainer>
         <BoardButtonWrapper onClick={() => navigate("/walk")}>
           <BoardButtonImage
