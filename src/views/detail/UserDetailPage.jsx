@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useAuth } from "../../hooks/useAuth";
 
 const UserDetailPage = () => {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -42,7 +44,7 @@ const UserDetailPage = () => {
   return (
     <Container>
       {user ? (
-        <>
+        <ContentWrapper>
           <ProfileSection>
             <img
               src={user.profileImage || "/assets/default-profile.png"}
@@ -58,7 +60,7 @@ const UserDetailPage = () => {
             <ActionButton>버튼 2</ActionButton>
             <ActionButton>버튼 3</ActionButton>
           </ButtonContainer>
-        </>
+        </ContentWrapper>
       ) : (
         <p>로그인이 필요합니다.</p>
       )}
@@ -100,12 +102,24 @@ const UserDetailPage = () => {
 export default UserDetailPage;
 
 const Container = styled.div`
-  max-width: 600px;
-  margin: 20px auto;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+`;
+
+const ContentWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
 `;
 
 const ProfileSection = styled.div`
+  width: 30%;
+  text-align: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+
   img {
     width: 120px;
     height: 120px;
