@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   margin-left: 130px;
@@ -86,6 +87,17 @@ const PostTitle = styled.h4`
 const PostViews = styled.p`
   font-size: 14px;
   color: #666;
+`;
+
+const CreateButton = styled.button`
+  position: absolute;
+  right: 0;
+  background-color: #007acc;
+
+  &:hover {
+    background-color: #005c99;
+    color: white;
+  }
 `;
 
 const regionMap = {
@@ -238,7 +250,7 @@ const PetShowcasePage = () => {
   const API_POST_URL = "http://localhost:8087/api/board";
   const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
   // const navigate = useNavigate();
-
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -401,6 +413,9 @@ const PetShowcasePage = () => {
           </PostCard>
         ))}
       </PostGrid>
+      <CreateButton onClick={() => navigate("/postPet")}>
+        게시물 작성
+      </CreateButton>
     </Container>
   );
 };

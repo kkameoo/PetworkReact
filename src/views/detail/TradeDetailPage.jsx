@@ -175,7 +175,7 @@ const TradeDetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: formattedDateTime,
+        updateTime: data.update,
         seller: data.nickname,
         price: data.tradePrice,
       };
@@ -228,7 +228,10 @@ const TradeDetailPage = () => {
           />
           <SellerInfo>
             <SellerLeft>
-              <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
+              <SellerImage
+                src="../src/assets/userimage.jpg"
+                alt="판매자 이미지"
+              />
               <div>
                 <Nickname>{newPost.seller}</Nickname>
                 <Location>

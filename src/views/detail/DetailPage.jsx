@@ -203,7 +203,7 @@ const DetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: formattedDateTime,
+        updateTime: data.update,
         seller: data.nickname,
       };
       console.log("Data", data);
