@@ -126,14 +126,16 @@ const EditButton = styled.button`
   }
 `;
 
-function PetstarDetailPage() {
+function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
   const { postId } = useParams();
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState(null); // 이거 다시 켜키
+  const [newComment, setNewComment] = useState();
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageBase64, setImageBase64] = useState("");
+  const [description, setDescription] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   // const base64String = Array.isArray(base64Data) ? base64Data[0] : base64Data;
 
@@ -221,6 +223,61 @@ function PetstarDetailPage() {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
+  const fetchComment = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/board/${postId}/comment`
+      );
+      const data = await response.json();
+      const postData3 = {
+        commentDescription: data.commentContent,
+        reg_date: new Date(data.reg_date).toLocaleString(),
+        comment_user: data.commentUser,
+      };
+      console.log("Data", data);
+      setNewComment(postData3);
+    } catch (error) {
+      console.error("상세 데이터 불러오기 오류:", error);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!user) {
+      alert("로그인이 필요합니다.");
+      return;
+    }
+
+    const postData2 = {
+      commentContent: description,
+      reg_date: new Date().toISOString(),
+      commentUser: user.nickname,
+    };
+    console.log("postdata", postData2);
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/board/${postId}/comment`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(postData2),
+        }
+      );
+
+      if (response.ok) {
+        alert("게시물이 성공적으로 등록되었습니다!");
+        onSubmitSuccess();
+        // navigate("/");
+      } else {
+        alert("게시물 등록 실패. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("게시물 등록 중 오류 발생:", error);
+      alert("오류가 발생했습니다.");
+    }
+  };
 
   const onBack = () => navigate("/");
 
@@ -228,6 +285,7 @@ function PetstarDetailPage() {
     if (postId) {
       fetchPostDetail();
       fetchImageBase64();
+      fetchComment();
     }
   }, [postId]);
 
@@ -261,14 +319,21 @@ function PetstarDetailPage() {
             </div>
           </SellerLeft>
         </SellerInfo>
-
-        {/* 상품 이미지 */}
         <ProductImage src={imageBase64 || DEFAULT_IMAGE} alt={newPost.title} />
-
-        {/* 상품 설명 */}
         <ProductDescription>{newPost.content}</ProductDescription>
       </ProductDetailWrapper>
-
+      <ProductDescription>{newComment.commentDescription}</ProductDescription>
+      <h2>댓글 등록</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="sell-product-row">
+          <textarea
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </div>
+        <button type="submit">등록</button>
+      </form>
       <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
         게시물 수정
       </EditButton>
