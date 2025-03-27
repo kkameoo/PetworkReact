@@ -90,6 +90,15 @@ const PostViews = styled.p`
 `;
 
 const CreateButton = styled.button`
+  background-color: #00bfff;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+
   position: absolute;
   right: 0;
   background-color: #007acc;
