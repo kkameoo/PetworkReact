@@ -413,7 +413,7 @@ const SignupContents = () => {
       }
 
       alert("회원가입 성공! 로그인 페이지로 이동합니다.");
-      navigate("/loginPage");
+      navigate("/login");
     } catch (error) {
       console.error("회원가입 오류:", error.message);
       alert(`회원가입 실패: ${error.message}`);

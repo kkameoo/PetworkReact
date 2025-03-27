@@ -370,6 +370,8 @@ const PetShowcasePage = () => {
     .sort((a, b) => b.views - a.views)
     .slice(0, 10);
 
+  const goToDetail = (postId) => navigate(`/petstarDetail/${postId}`);
+
   return (
     <Container>
       <TopTenContainer>

@@ -46,16 +46,10 @@ const ProductBody = styled.div`
   margin-left: 0; /* 왼쪽 여백 없애기 */
 `;
 
-const ProductLeft = styled.div`
-  width: 45%;
-  margin-right: 20px;
-  position: relative;
-`;
-
 const ProductImage = styled.img`
   border: 1px solid rgb(207, 207, 207);
   border-radius: 25px;
-  width: 500px;
+  width: 700px;
   height: auto;
   margin-bottom: 30px;
 `;
@@ -72,10 +66,12 @@ const SellerInfo = styled.div`
   margin-left: 0; /* 왼쪽 여백 제거 */
   width: 100%; /* div의 너비를 100%로 설정 */
   padding: 10px; /* 내부 여백 */
+  /* border-bottom: 1px solid; */
 `;
 
 const SellerLeft = styled.div`
   display: flex;
+  flex-direction: row; /* 사진과 텍스트가 가로로 배치되도록 수정 */
   flex-direction: row; /* 사진과 텍스트가 가로로 배치되도록 수정 */
   align-items: center;
   margin-right: 20px;
@@ -94,6 +90,7 @@ const SellerImage = styled.img`
   height: 50px;
   border-radius: 50%;
   margin-right: 15px; /* 사진과 텍스트 간의 간격을 추가 */
+  margin-right: 15px; /* 사진과 텍스트 간의 간격을 추가 */
 `;
 
 const Nickname = styled.p`
@@ -106,13 +103,6 @@ const Location = styled.p`
   font-size: 14px;
   color: #777;
   margin: 0;
-`;
-
-const ProductRight = styled.div`
-  text-align: left;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
 `;
 
 const ProductTitle = styled.h2`
@@ -148,7 +138,8 @@ const EditButton = styled.button`
 function PetstarDetailPage() {
   const { postId } = useParams();
   const navigate = useNavigate();
-  const [newPost, setNewPost] = useState(null);
+  const [newPost, setNewPost] = useState(null); // 이거 다시 켜키
+  const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [imageBase64, setImageBase64] = useState("");
@@ -264,7 +255,10 @@ function PetstarDetailPage() {
         {/* 판매자 정보 */}
         <SellerInfo>
           <SellerLeft>
-            <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
+            <SellerImage
+              src="../src/assets/userimage.jpg"
+              alt="판매자 이미지"
+            />
             <div>
               <Nickname>{newPost.seller}</Nickname>
               <ProductCategory>

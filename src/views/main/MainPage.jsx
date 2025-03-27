@@ -201,7 +201,10 @@ function MainPage() {
         </SectionTitle>
         <TextGrid>
           {jobPosts.map((post) => (
-            <TextCard key={post.id} onClick={() => goToDetail(post.id)}>
+            <TextCard
+              key={post.id}
+              onClick={() => navigate(`/hire/${post.id}`)}
+            >
               <h4>{post.title}</h4>
               {/* <p>{post.content}</p> */}
             </TextCard>

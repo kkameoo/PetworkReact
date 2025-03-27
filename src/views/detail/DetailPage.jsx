@@ -110,8 +110,7 @@ const ProductDescription = styled.p`
 const EditButton = styled.button`
   position: absolute;
   right: 150px;
-  background-color: #007acc;
-
+  width: 150px;
   &:hover {
     background-color: #005c99;
     color: white;
