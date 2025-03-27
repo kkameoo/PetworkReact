@@ -98,7 +98,7 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error("로그인 오류", error);
-      setError("서버 오류가 발생했습니다.");
+      setError("이메일 또는 비밀번호 재확인 해주세요.");
     }
   };
 
