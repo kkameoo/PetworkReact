@@ -166,12 +166,6 @@ const TradeDetailPage = () => {
       );
       const data = await response.json();
 
-      const formattedDateTime = data.upd_date
-        ? new Date(data.upd_date)
-            .toISOString()
-            .replace("T", " ")
-            .substring(0, 19)
-        : "날짜 없음";
       const postData = {
         id: data.boardId,
         sellerUid: data.userId,
@@ -183,7 +177,7 @@ const TradeDetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: data.update,
+        updateTime: new Date(data.update).toLocaleString(),
         seller: data.nickname,
         price: data.tradePrice,
       };

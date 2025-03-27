@@ -165,13 +165,6 @@ const HireDetailPage = () => {
         `http://localhost:8087/api/board/hire/${postId}`
       );
       const data = await response.json();
-
-      const formattedDateTime = data.upd_date
-        ? new Date(data.upd_date)
-            .toISOString()
-            .replace("T", " ")
-            .substring(0, 19)
-        : "날짜 없음";
       const postData = {
         id: data.boardId,
         sellerUid: data.userId,
@@ -183,7 +176,7 @@ const HireDetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: data.update,
+        updateTime: new Date(data.update).toLocaleString(),
         hireCondition: data.hireCondition,
         hiredate: data.hireDate,
         seller: data.nickname,
