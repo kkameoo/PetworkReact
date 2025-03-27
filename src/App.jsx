@@ -113,7 +113,7 @@ function App() {
         <Route path="/edittrade/:postId" element={<EditTradePage />} />
         <Route path="/room" element={<Room />} />
         <Route path="/my" element={<UserDetailPage />} />
-        <Route path="/petstarDetail" element={<PetstarDetailPage />} />
+        <Route path="/petstarDetail/:postId" element={<PetstarDetailPage />} />
       </Routes>
       <Footer />
     </AuthContext.Provider>

@@ -360,18 +360,6 @@ const PetShowcasePage = () => {
     setFilteredPosts(filtered);
   }, [selectedCategory, selectedRegion, selectedGu, searchTerm, posts]);
 
-  useEffect(() => {
-    // 예시 데이터 불러오기 또는 API 연결
-    const exampleData = Array.from({ length: 20 }, (_, i) => ({
-      id: i + 1,
-      title: `귀여운 강아지 ${i + 1}`,
-      image: "/images/dog.jpg",
-      views: Math.floor(Math.random() * 1000),
-      date: new Date(Date.now() - i * 10000000),
-    }));
-    setPosts(exampleData);
-  }, []);
-
   const sortedPosts = [...petPosts].sort((a, b) => {
     if (sortType === "latest") return b.date - a.date;
     if (sortType === "views") return b.views - a.views;
@@ -412,7 +400,10 @@ const PetShowcasePage = () => {
 
       <PostGrid>
         {petPosts.slice(0, 12).map((post) => (
-          <PostCard key={post.id}>
+          <PostCard
+            key={post.id}
+            onClick={() => navigate(`/petstarDetail/${post.id}`)}
+          >
             <PostImage
               src={imageMap[post.id] || DEFAULT_IMAGE}
               alt={post.title}
