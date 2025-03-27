@@ -111,6 +111,7 @@ const EditButton = styled.button`
   position: absolute;
   right: 150px;
   width: 150px;
+
   &:hover {
     background-color: #005c99;
     color: white;

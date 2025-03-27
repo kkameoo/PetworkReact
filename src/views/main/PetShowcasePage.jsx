@@ -402,10 +402,7 @@ const PetShowcasePage = () => {
 
       <PostGrid>
         {petPosts.slice(0, 12).map((post) => (
-          <PostCard
-            key={post.id}
-            onClick={() => navigate(`/petstarDetail/${post.id}`)}
-          >
+          <PostCard key={post.id} onClick={() => goToDetail(post.id)}>
             <PostImage
               src={imageMap[post.id] || DEFAULT_IMAGE}
               alt={post.title}

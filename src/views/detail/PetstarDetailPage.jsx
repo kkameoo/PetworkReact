@@ -72,7 +72,6 @@ const SellerInfo = styled.div`
 const SellerLeft = styled.div`
   display: flex;
   flex-direction: row; /* 사진과 텍스트가 가로로 배치되도록 수정 */
-  flex-direction: row; /* 사진과 텍스트가 가로로 배치되도록 수정 */
   align-items: center;
   margin-right: 20px;
   margin-left: 0; /* 왼쪽 여백 제거 */
@@ -89,7 +88,6 @@ const SellerImage = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  margin-right: 15px; /* 사진과 텍스트 간의 간격을 추가 */
   margin-right: 15px; /* 사진과 텍스트 간의 간격을 추가 */
 `;
 
