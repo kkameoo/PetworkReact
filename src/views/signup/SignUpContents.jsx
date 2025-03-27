@@ -423,6 +423,13 @@ const SignupContents = () => {
     <SignupContainer>
       <Title>회원가입</Title>
       <Form onSubmit={handleSubmit}>
+        <button
+          type="button"
+          onClick={() => setModalVisible(true)}
+          disabled={isEmailVerified}
+        >
+          이메일 인증
+        </button>
         {/* 이메일 입력 */}
         <Input
           type="email"
@@ -431,13 +438,6 @@ const SignupContents = () => {
           disabled={isEmailVerified}
           placeholder="이메일 인증을 먼저해주세요."
         />
-        <button
-          type="button"
-          onClick={() => setModalVisible(true)}
-          disabled={isEmailVerified}
-        >
-          이메일 인증
-        </button>
         {modalVisible && (
           <ModalBackdrop>
             <ModalContainer>
