@@ -107,9 +107,17 @@ const ProductDescription = styled.p`
   margin-bottom: 20px;
 `;
 const EditButton = styled.button`
-  position: absolute;
+  background-color: #ffd85a;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
   right: 150px;
-  background-color: #007acc;
+  width: 150px;
+  /* background-color: #007acc; */
 
   &:hover {
     background-color: #005c99;
@@ -203,7 +211,7 @@ const DetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: formattedDateTime,
+        updateTime: data.update,
         seller: data.nickname,
       };
       console.log("Data", data);

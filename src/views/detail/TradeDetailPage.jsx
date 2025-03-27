@@ -107,9 +107,17 @@ const ProductDescription = styled.p`
   margin-bottom: 20px;
 `;
 const EditButton = styled.button`
-  position: absolute;
+  background-color: #ffd85a;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  /* position: absolute; */
+  width: 150px;
   right: 150px;
-  background-color: #007acc;
 
   &:hover {
     background-color: #005c99;
@@ -175,7 +183,7 @@ const TradeDetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: formattedDateTime,
+        updateTime: data.update,
         seller: data.nickname,
         price: data.tradePrice,
       };
@@ -228,7 +236,10 @@ const TradeDetailPage = () => {
           />
           <SellerInfo>
             <SellerLeft>
-              <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
+              <SellerImage
+                src="../src/assets/userimage.jpg"
+                alt="판매자 이미지"
+              />
               <div>
                 <Nickname>{newPost.seller}</Nickname>
                 <Location>

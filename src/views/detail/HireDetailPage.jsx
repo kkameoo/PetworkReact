@@ -107,30 +107,23 @@ const ProductDescription = styled.p`
   margin-bottom: 20px;
 `;
 const EditButton = styled.button`
-  position: absolute;
+  background-color: #ffd85a;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  /* position: absolute; */
+  width: 150px;
   right: 150px;
-  background-color: #007acc;
 
   &:hover {
     background-color: #005c99;
     color: white;
   }
 `;
-
-const newPost = {
-  id: 1,
-  sellerUid: "user1234",
-  regionSi: "서울",
-  regionGu: "강남구",
-  title: "산책할 인간.",
-  image: "../src/assets/KakaoTalk_20250320_174016642.jpg",
-  content: "나랑 놀사람.",
-  category: "소형견",
-  clickCnt: 150,
-  reportCnt: 3,
-  updateTime: "2025-03-24 14:30:00",
-  seller: "김경빈",
-};
 
 const HireDetailPage = () => {
   const { postId } = useParams();
@@ -190,7 +183,7 @@ const HireDetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: formattedDateTime,
+        updateTime: data.update,
         hireCondition: data.hireCondition,
         hiredate: data.hireDate,
         seller: data.nickname,
@@ -241,7 +234,10 @@ const HireDetailPage = () => {
 
           <SellerInfo>
             <SellerLeft>
-              <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
+              <SellerImage
+                src="../src/assets/userimage.jpg"
+                alt="판매자 이미지"
+              />
               <div>
                 <Nickname>{newPost.seller}</Nickname>
                 <Location>
