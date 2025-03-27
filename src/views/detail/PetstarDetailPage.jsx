@@ -1,250 +1,322 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useParams, useNavigate, data } from "react-router-dom";
 import styled from "styled-components";
-import { MessageCircle, Trash2 } from "lucide-react";
 
-const Container = styled.div`
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 16px;
+const ProductDetailWrapper = styled.div`
+  width: 100%;
+  max-width: 800px; /* 칸을 좁게 만듦. 필요에 따라 크기를 더 줄일 수 있습니다 */
+  margin: 0 auto; /* 화면 가운데 정렬 */
+  padding: 20px; /* 약간의 내부 여백 추가 */
+  border: 1px solid #ccc;
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: transparent; /* 배경색 제거 */
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  align-items: center; /* 내용 가로 가운데 정렬 */
 `;
 
-const Card = styled.div`
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-`;
-
-const CardHeader = styled.div`
+const DetailWrapper = styled.div`
+  width: 1600px;
+  margin-left: 100px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  padding: 12px;
 `;
 
-const PostImage = styled.img`
-  width: 100%;
-  height: 300px;
-  object-fit: contain;
-`;
-
-const Title = styled.h3`
-  font-size: 1.5em;
-  font-weight: bold;
-  margin: 10px 0;
-`;
-
-const CardActions = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px;
-`;
-
-const Caption = styled.div`
-  width: 100%;
-  padding: 16px;
-  background-color: #f7f7f7;
-  border-radius: 8px;
-  font-size: 1.1em;
-  min-height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #333;
-  white-space: pre-line;
-  box-sizing: border-box;
-`;
-
-const Comments = styled.p`
-  color: gray;
-  cursor: pointer;
-`;
-
-const CommentInput = styled.input`
-  width: 100%;
-  padding: 8px;
+const BackButton = styled.button`
+  align-self: flex-end;
+  width: 80px;
+  height: 60px;
+  margin-top: 10px;
+  background-color: transparent;
   border: none;
-  border-top: 1px solid #ddd;
-  outline: none;
-`;
-
-const NewPostForm = styled.div`
-  background: white;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  width: 100%;
-  box-sizing: border-box;
-`;
-
-const NewPostInput = styled.input`
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-`;
-
-const NewPostTextArea = styled.textarea`
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  box-sizing: border-box;
-  resize: vertical;
-  min-height: 100px;
-`;
-
-const Button = styled.button`
-  width: 100%;
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
+  font-size: 18px;
   cursor: pointer;
   &:hover {
-    background-color: #0056b3;
+    border: 1px solid black;
+    border-radius: 10px;
+    background-color: #ccc;
   }
 `;
 
-function PetstarDetailPage() {
-  const [comment, setComment] = useState("");
-  const [posts, setPosts] = useState([]);
-  const [newPost, setNewPost] = useState({
-    title: "",
-    caption: "",
-    postImage: "",
-  });
-  const [showComments, setShowComments] = useState(null);
+const ProductBody = styled.div`
+  width: 100%;
+  text-align: left; /* 상품 제목을 왼쪽 정렬 */
+  margin-left: 0; /* 왼쪽 여백 없애기 */
+`;
+
+const ProductLeft = styled.div`
+  width: 45%;
+  margin-right: 20px;
+  position: relative;
+`;
+
+const ProductImage = styled.img`
+  border: 1px solid rgb(207, 207, 207);
+  border-radius: 25px;
+  width: 500px;
+  height: auto;
+  margin-bottom: 30px;
+`;
+
+const SellerInfo = styled.div`
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-align: left; /* 판매자 정보 왼쪽 정렬 */
+  padding-bottom: 5px;
+  letter-spacing: 2px;
+  display: flex;
+  flex-direction: column; /* 세로로 배치 */
+  margin-top: 10px;
+  margin-left: 0; /* 왼쪽 여백 제거 */
+  width: 100%; /* div의 너비를 100%로 설정 */
+  padding: 10px; /* 내부 여백 */
+`;
+
+const SellerLeft = styled.div`
+  display: flex;
+  flex-direction: row;  /* 사진과 텍스트가 가로로 배치되도록 수정 */
+  align-items: center;
+  margin-right: 20px;
+  margin-left: 0;  /* 왼쪽 여백 제거 */
+`;
+
+const SellerRight = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 0;  /* 왼쪽 여백 제거 */
+`;
+
+const SellerImage = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;  /* 사진과 텍스트 간의 간격을 추가 */
+`;
+
+const Nickname = styled.p`
+  font-weight: bold;
+  font-size: 18px;
+  margin: 0;
+`;
+
+const Location = styled.p`
+  font-size: 14px;
+  color: #777;
+  margin: 0;
+`;
+
+const ProductRight = styled.div`
+  text-align: left;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const ProductTitle = styled.h2`
+  font-size: 35px;
+  font-weight: bold;
+  margin-bottom: 20px; /* 제목과 판매자 정보 사이의 간격을 조정 */
+  text-align: left; /* 제목 왼쪽 정렬 */
+  margin-left: 0; /* 왼쪽 여백 없애기 */
+`;
+
+const ProductCategory = styled.p`
+  font-size: 14px;
+  color: #007acc;
+  margin: 0;
+`;
+
+const ProductDescription = styled.p`
+  min-height: 240px;
+  font-size: 18px;
+  margin-bottom: 20px;
+`;
+const EditButton = styled.button`
+  position: absolute;
+  right: 150px;
+  background-color: #007acc;
+
+  &:hover {
+    background-color: #005c99;
+    color: white;
+  }
+`;
+
+function PetstarDetailPage () {
+  const { postId } = useParams();
+  const navigate = useNavigate();
+  // const [newPost, setNewPost] = useState(null);  // 이거 다시 켜키
+  const [user, setUser] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [imageBase64, setImageBase64] = useState("");
+  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  // const base64String = Array.isArray(base64Data) ? base64Data[0] : base64Data;
+
+  const fetchImageBase64 = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/photo/board/upload/${postId}`
+      );
+      if (response.ok) {
+        const base64Data = await response.json(); // ⚠ 서버가 JSON으로 배열 반환하는 경우
+        const base64String = Array.isArray(base64Data)
+          ? base64Data[0]
+          : base64Data;
+
+        const mimeType = "image/jpeg"; // 필요 시 서버에서 MIME 타입도 함께 받아올 수 있음
+        const fullBase64 = `data:${mimeType};base64,${base64String}`;
+        setImageBase64(fullBase64);
+      } else {
+        console.error("이미지 로드 실패");
+      }
+    } catch (error) {
+      console.error("이미지 로드 에러:", error);
+    }
+  };
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+  //   }, 5000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
+  //   로그인 상태 확인
+  const checkLoginStatus = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/user/session", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setIsLoggedIn(true);
+        setUser(data);
+        console.log(data + "세션정보");
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      console.error("로그인 상태 확인 실패:", error);
+      setIsLoggedIn(false);
+    }
+  };
 
   useEffect(() => {
-    const savedPosts = localStorage.getItem("posts");
-    if (savedPosts) {
-      setPosts(JSON.parse(savedPosts));
-    }
+    checkLoginStatus();
   }, []);
 
+  // const fetchPostDetail = async () => {
+  //   try {
+  //     const response = await fetch(`http://localhost:8087/api/board/${postId}`);
+  //     const data = await response.json();
+  //     const formattedDateTime = data.upd_date
+  //       ? new Date(data.upd_date)
+  //           .toISOString()
+  //           .replace("T", " ")
+  //           .substring(0, 19)
+  //       : "날짜 없음";
+  //     const postData = {
+  //       id: data.boardId,
+  //       sellerUid: data.userId,
+  //       regionSi: data.localSi,
+  //       regionGu: data.localGu,
+  //       title: data.title,
+  //       content: data.content,
+  //       category: data.category,
+  //       type: data.boardType,
+  //       clickCnt: data.clickCount,
+  //       reportCnt: data.reportCount,
+  //       updateTime: formattedDateTime,
+  //       seller: data.nickname,
+  //     };
+  //     console.log("Data", data);
+  //     setNewPost(postData);
+  //   } catch (error) {
+  //     console.error("상세 데이터 불러오기 오류:", error);
+  //   }
+  // };
+  const [newPost, setNewPost] = useState({
+    id: 1,
+    sellerUid: "user123",
+    regionSi: "서울",
+    regionGu: "강남구",
+    title: "귀여운 강아지 분양해요!",
+    content: "강아지를 사랑으로 키워주실 분을 찾습니다. 건강하고 활발한 아이예요!",
+    category: "분양",
+    type: "일반",
+    clickCnt: 123,
+    reportCnt: 0,
+    updateTime: "2025-03-27 14:00:00",
+    seller: "펫스타회원123",
+  });
+  
+  // API 호출을 사용하지 않고 더미 데이터로 바로 설정
   useEffect(() => {
-    if (posts.length > 0) {
-      localStorage.setItem("posts", JSON.stringify(posts));
+    setNewPost({
+      id: 1,
+      sellerUid: "user123",
+      regionSi: "서울",
+      regionGu: "강남구",
+      title: "귀여운 강아지 분양해요!",
+      content: "강아지를 사랑으로 키워주실 분을 찾습니다. 건강하고 활발한 아이예요!",
+      category: "분양",
+      type: "일반",
+      clickCnt: 123,
+      reportCnt: 0,
+      updateTime: "2025-03-27 14:00:00",
+      seller: "펫스타회원123",
+    });
+  }, []);
+
+  const onBack = () => navigate("/");
+
+  useEffect(() => {
+    if (postId) {
+      fetchPostDetail();
+      fetchImageBase64();
     }
-  }, [posts]);
+  }, [postId]);
 
-  const handleNewPostChange = (e) => {
-    const { name, value } = e.target;
-    setNewPost((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
-
-  const handleAddPost = () => {
-    if (newPost.title && newPost.caption && newPost.postImage) {
-      const newPostData = {
-        id: posts.length + 1,
-        username: "newuser",
-        userImage: "https://via.placeholder.com/40",
-        postImage: newPost.postImage,
-        title: newPost.title,
-        caption: newPost.caption,
-        likes: 0,
-        comments: 0,
-        commentsList: [],
-        liked: false,
-      };
-      setPosts([newPostData, ...posts]);
-      setNewPost({ title: "", caption: "", postImage: "" });
-    }
-  };
-
-  const handleAddComment = (id) => {
-    if (comment.trim()) {
-      setPosts(posts.map((post) =>
-        post.id === id
-          ? { ...post, commentsList: [...post.commentsList, comment], comments: post.comments + 1 }
-          : post
-      ));
-      setComment("");
-    }
-  };
-
-  const handleDeletePost = (id) => {
-    const updatedPosts = posts.filter((post) => post.id !== id);
-    setPosts(updatedPosts);
-    localStorage.setItem("posts", JSON.stringify(updatedPosts));
-  };
-
-  const toggleComments = (id) => {
-    setShowComments(showComments === id ? null : id);
-  };
+  if (!newPost) return <div>로딩 중...</div>;
 
   return (
-    <Container>
-      <NewPostForm>
-        <h3>새 게시물 작성</h3>
-        <NewPostInput
-          type="text"
-          name="title"
-          value={newPost.title}
-          placeholder="제목을 입력하세요"
-          onChange={handleNewPostChange}
-        />
-        <NewPostTextArea
-          name="caption"
-          value={newPost.caption}
-          placeholder="내용을 입력하세요"
-          onChange={handleNewPostChange}
-        />
-        <NewPostInput
-          type="text"
-          name="postImage"
-          value={newPost.postImage}
-          placeholder="이미지 URL을 입력하세요"
-          onChange={handleNewPostChange}
-        />
-        <Button onClick={handleAddPost}>게시물 추가</Button>
-      </NewPostForm>
+    <DetailWrapper>
+      <BackButton onClick={onBack}>← 뒤로</BackButton>
+      
+      <ProductDetailWrapper>
+        {/* 상품 제목 */}
+        <ProductBody>
+          <ProductTitle>{newPost.title}</ProductTitle>
+        </ProductBody>
 
-      {posts.map((post) => (
-        <Card key={post.id}>
-          <CardHeader>
-            <Title>{post.title}</Title>
-          </CardHeader>
-          <PostImage src={post.postImage} alt="Post" />
-          <Caption>{post.caption}</Caption>
-          <CardActions>
-            <MessageCircle cursor="pointer" onClick={() => toggleComments(post.id)} />
-            <Trash2 cursor="pointer" onClick={() => handleDeletePost(post.id)} />
-          </CardActions>
-          {showComments === post.id && (
-            <>
-              <Comments>모든 {post.comments}개의 댓글 보기</Comments>
-              <div>
-                {post.commentsList.map((comment, index) => (
-                  <p key={index}>{comment}</p>
-                ))}
-              </div>
-              <CommentInput
-                type="text"
-                placeholder="댓글을 추가하세요..."
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
-              />
-              <Button onClick={() => handleAddComment(post.id)}>댓글 추가</Button>
-            </>
-          )}
-        </Card>
-      ))}
-    </Container>
+        {/* 판매자 정보 */}
+        <SellerInfo>
+          <SellerLeft>
+            <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
+            <div>
+              <Nickname>{newPost.seller}</Nickname>
+              <ProductCategory>{newPost.category} | {newPost.updateTime}</ProductCategory>
+              <Location>{newPost.regionSi} {newPost.regionGu}</Location>
+            </div>
+          </SellerLeft>
+        </SellerInfo>
+
+        {/* 상품 이미지 */}
+        <ProductImage src={imageBase64 || DEFAULT_IMAGE} alt={newPost.title} />
+
+        {/* 상품 설명 */}
+        <ProductDescription>{newPost.content}</ProductDescription>
+      </ProductDetailWrapper>
+  
+      <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
+        게시물 수정
+      </EditButton>
+    </DetailWrapper>
   );
 }
 

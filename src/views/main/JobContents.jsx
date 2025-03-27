@@ -11,40 +11,6 @@ const ListContainer = styled.div`
   background-color: #f9fcff;
 `;
 
-/* 검색창 */
-const SearchInput = styled.input`
-  width: 100%;
-  padding: 10px;
-  font-size: 16px;
-  border: 2px solid #00bfff;
-  border-radius: 5px;
-  outline: none;
-  margin-bottom: 20px;
-  background-color: #ffffff;
-`;
-
-/* 인기검색어 */
-const PopularKeywords = styled.div`
-  font-size: 14px;
-  display: flex;
-  gap: 10px;
-`;
-
-const KeywordButton = styled.button`
-  background-color: white;
-  border: 1px solid #00bfff;
-  color: #00bfff;
-  padding: 8px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: 0.3s;
-
-  &:hover {
-    background-color: #00bfff;
-    color: white;
-  }
-`;
-
 /* 메인 콘텐츠 영역 */
 const ContentWrapper = styled.div`
   display: flex;
@@ -403,6 +369,7 @@ const JobContents = () => {
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
           price: item.price || 0,
+          nickname: item.nickname,
           seller: item.seller || "알 수 없음",
           regionDong: `${regionMap[item.localSi] || ""} ${
             guMap[item.localGu] || ""
@@ -554,7 +521,7 @@ const JobContents = () => {
                     alt={post.title}
                   />
                   <ProductTitle>{post.title}</ProductTitle>
-                  <Seller>판매자: {post.sellerUid}</Seller>
+                  <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{CATEGORY_ID[post.category]}</Seller>
                   {user?.is_admin && (

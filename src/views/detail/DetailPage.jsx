@@ -107,9 +107,17 @@ const ProductDescription = styled.p`
   margin-bottom: 20px;
 `;
 const EditButton = styled.button`
-  position: absolute;
+  background-color: #ffd85a;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
   right: 150px;
-  background-color: #007acc;
+  width: 150px;
+  /* background-color: #007acc; */
 
   &:hover {
     background-color: #005c99;
@@ -220,7 +228,11 @@ const DetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
+<<<<<<< HEAD
         updateTime: new Date(data.update).toLocaleString(),
+=======
+        updateTime: data.update,
+>>>>>>> e1aed5fc9ec93b9f3f84e5cd4d95b088e67c8fc5
         seller: data.nickname,
       };
       console.log("Data", data);
