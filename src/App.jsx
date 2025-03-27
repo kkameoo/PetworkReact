@@ -111,7 +111,7 @@ function App() {
         <Route path="/editWalk/:postId" element={<EditWalkPage />} />
         <Route path="/edithire/:postId" element={<EditHirePage />} />
         <Route path="/edittrade/:postId" element={<EditTradePage />} />
-        <Route path="/room" element={<Room />} />
+        <Route path="/room/:postId" element={<Room />} />
         <Route path="/my" element={<UserDetailPage />} />
         <Route path="/petstarDetail" element={<PetstarDetailPage />} />
       </Routes>

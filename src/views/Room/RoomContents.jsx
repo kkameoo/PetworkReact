@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
+import { useParams } from "react-router-dom";
 
 const ChatContainer = styled.div`
   min-height: 600px;
@@ -117,9 +118,11 @@ const RoomContents = () => {
   const [currentUser, setCurrentUser] = useState(null);
   // const [users, setUsers] = useState(["USER1", "USER2"]);
 
+  const [chatroom, setChatroom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const stompClientRef = useRef(null);
+  const { postId } = useParams();
 
   const checkLoginStatus = async () => {
     try {
@@ -138,7 +141,7 @@ const RoomContents = () => {
 
   const getChatHistory = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/chat/1", {
+      const response = await fetch("http://localhost:8087/api/chat/" + postId, {
         method: "GET",
         credentials: "include",
       });
@@ -153,10 +156,28 @@ const RoomContents = () => {
     }
   };
 
+  const getRoomInfo = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8087/api/chat/room/board/" + postId,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setChatroom(data);
+      }
+    } catch (error) {
+      console.error("채팅 방 정보 가져오기 실패", error);
+    }
+  };
+
   useEffect(() => {
     checkLoginStatus();
     getChatHistory();
-
+    getRoomInfo();
     const socket = new SockJS(SOCKET_URL);
     const stompClient = new Client({
       webSocketFactory: () => socket,
@@ -178,7 +199,7 @@ const RoomContents = () => {
     stompClientRef.current.publish({
       destination: "/app/chat",
       body: JSON.stringify({
-        chatroomId: 1,
+        chatroomId: chatroom.chatroomId,
         sender: "User",
         content: message,
         messageType: 3,
@@ -199,6 +220,7 @@ const RoomContents = () => {
   //   ]);
   //   setInputText("");
   // };
+  if (!messages || !chatroom) return <div>로딩 중...</div>;
 
   return (
     <ChatContainer>
@@ -218,7 +240,7 @@ const RoomContents = () => {
       <UserContainer>
         <h4>접속 중인 유저</h4>
       </UserContainer>
-
+      <h2>{chatroom.chatroomName}</h2>
       {messages.length === 0 ? (
         <p>메시지를 불러오는 중...</p>
       ) : (

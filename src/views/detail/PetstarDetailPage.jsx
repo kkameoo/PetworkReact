@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, data } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const ProductDetailWrapper = styled.div`
@@ -76,24 +76,24 @@ const SellerInfo = styled.div`
 
 const SellerLeft = styled.div`
   display: flex;
-  flex-direction: row;  /* 사진과 텍스트가 가로로 배치되도록 수정 */
+  flex-direction: row; /* 사진과 텍스트가 가로로 배치되도록 수정 */
   align-items: center;
   margin-right: 20px;
-  margin-left: 0;  /* 왼쪽 여백 제거 */
+  margin-left: 0; /* 왼쪽 여백 제거 */
 `;
 
 const SellerRight = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  margin-left: 0;  /* 왼쪽 여백 제거 */
+  margin-left: 0; /* 왼쪽 여백 제거 */
 `;
 
 const SellerImage = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  margin-right: 15px;  /* 사진과 텍스트 간의 간격을 추가 */
+  margin-right: 15px; /* 사진과 텍스트 간의 간격을 추가 */
 `;
 
 const Nickname = styled.p`
@@ -113,6 +113,9 @@ const ProductRight = styled.div`
   width: 50%;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const ProductTitle = styled.h2`
@@ -145,10 +148,10 @@ const EditButton = styled.button`
   }
 `;
 
-function PetstarDetailPage () {
+function PetstarDetailPage() {
   const { postId } = useParams();
   const navigate = useNavigate();
-  // const [newPost, setNewPost] = useState(null);  // 이거 다시 켜키
+  const [newPost, setNewPost] = useState(null); // 이거 다시 켜키
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -210,68 +213,36 @@ function PetstarDetailPage () {
     checkLoginStatus();
   }, []);
 
-  // const fetchPostDetail = async () => {
-  //   try {
-  //     const response = await fetch(`http://localhost:8087/api/board/${postId}`);
-  //     const data = await response.json();
-  //     const formattedDateTime = data.upd_date
-  //       ? new Date(data.upd_date)
-  //           .toISOString()
-  //           .replace("T", " ")
-  //           .substring(0, 19)
-  //       : "날짜 없음";
-  //     const postData = {
-  //       id: data.boardId,
-  //       sellerUid: data.userId,
-  //       regionSi: data.localSi,
-  //       regionGu: data.localGu,
-  //       title: data.title,
-  //       content: data.content,
-  //       category: data.category,
-  //       type: data.boardType,
-  //       clickCnt: data.clickCount,
-  //       reportCnt: data.reportCount,
-  //       updateTime: formattedDateTime,
-  //       seller: data.nickname,
-  //     };
-  //     console.log("Data", data);
-  //     setNewPost(postData);
-  //   } catch (error) {
-  //     console.error("상세 데이터 불러오기 오류:", error);
-  //   }
-  // };
-  const [newPost, setNewPost] = useState({
-    id: 1,
-    sellerUid: "user123",
-    regionSi: "서울",
-    regionGu: "강남구",
-    title: "귀여운 강아지 분양해요!",
-    content: "강아지를 사랑으로 키워주실 분을 찾습니다. 건강하고 활발한 아이예요!",
-    category: "분양",
-    type: "일반",
-    clickCnt: 123,
-    reportCnt: 0,
-    updateTime: "2025-03-27 14:00:00",
-    seller: "펫스타회원123",
-  });
-  
-  // API 호출을 사용하지 않고 더미 데이터로 바로 설정
-  useEffect(() => {
-    setNewPost({
-      id: 1,
-      sellerUid: "user123",
-      regionSi: "서울",
-      regionGu: "강남구",
-      title: "귀여운 강아지 분양해요!",
-      content: "강아지를 사랑으로 키워주실 분을 찾습니다. 건강하고 활발한 아이예요!",
-      category: "분양",
-      type: "일반",
-      clickCnt: 123,
-      reportCnt: 0,
-      updateTime: "2025-03-27 14:00:00",
-      seller: "펫스타회원123",
-    });
-  }, []);
+  const fetchPostDetail = async () => {
+    try {
+      const response = await fetch(`http://localhost:8087/api/board/${postId}`);
+      const data = await response.json();
+      const formattedDateTime = data.upd_date
+        ? new Date(data.upd_date)
+            .toISOString()
+            .replace("T", " ")
+            .substring(0, 19)
+        : "날짜 없음";
+      const postData = {
+        id: data.boardId,
+        sellerUid: data.userId,
+        regionSi: data.localSi,
+        regionGu: data.localGu,
+        title: data.title,
+        content: data.content,
+        category: data.category,
+        type: data.boardType,
+        clickCnt: data.clickCount,
+        reportCnt: data.reportCount,
+        updateTime: formattedDateTime,
+        seller: data.nickname,
+      };
+      console.log("Data", data);
+      setNewPost(postData);
+    } catch (error) {
+      console.error("상세 데이터 불러오기 오류:", error);
+    }
+  };
 
   const onBack = () => navigate("/");
 
@@ -287,7 +258,7 @@ function PetstarDetailPage () {
   return (
     <DetailWrapper>
       <BackButton onClick={onBack}>← 뒤로</BackButton>
-      
+
       <ProductDetailWrapper>
         {/* 상품 제목 */}
         <ProductBody>
@@ -300,8 +271,12 @@ function PetstarDetailPage () {
             <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
             <div>
               <Nickname>{newPost.seller}</Nickname>
-              <ProductCategory>{newPost.category} | {newPost.updateTime}</ProductCategory>
-              <Location>{newPost.regionSi} {newPost.regionGu}</Location>
+              <ProductCategory>
+                {newPost.category} | {newPost.updateTime}
+              </ProductCategory>
+              <Location>
+                {newPost.regionSi} {newPost.regionGu}
+              </Location>
             </div>
           </SellerLeft>
         </SellerInfo>
@@ -312,7 +287,7 @@ function PetstarDetailPage () {
         {/* 상품 설명 */}
         <ProductDescription>{newPost.content}</ProductDescription>
       </ProductDetailWrapper>
-  
+
       <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
         게시물 수정
       </EditButton>
