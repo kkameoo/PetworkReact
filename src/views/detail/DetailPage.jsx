@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, data } from "react-router-dom";
 import styled from "styled-components";
+import { getCategory } from "../../services/dataService";
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -107,17 +108,9 @@ const ProductDescription = styled.p`
   margin-bottom: 20px;
 `;
 const EditButton = styled.button`
-  background-color: #ffd85a;
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  margin: 0 5px;
-  cursor: pointer;
-  border-radius: 5px;
-  font-size: 16px;
+  position: absolute;
   right: 150px;
-  width: 150px;
-  /* background-color: #007acc; */
+  background-color: #007acc;
 
   &:hover {
     background-color: #005c99;
@@ -187,19 +180,19 @@ const DetailPage = () => {
     }
   };
 
-  const getCategory = async () => {
-    try {
-      const response = await fetch("src/data/category.json");
-      if (response.ok) {
-        const data = await response.json();
-        setCategory(data.walkCategory);
-      } else {
-        console.error("로그인 상태 확인 실패:");
-      }
-    } catch (error) {
-      console.error("로그인 상태 확인 실패:", error);
-    }
-  };
+  // const getCategory = async () => {
+  //   try {
+  //     const response = await fetch("src/data/category.json");
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setCategory(data.walkCategory);
+  //     } else {
+  //       console.error("로그인 상태 확인 실패:");
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 상태 확인 실패:", error);
+  //   }
+  // };
 
   useEffect(() => {
     checkLoginStatus();
@@ -207,7 +200,9 @@ const DetailPage = () => {
     //   .then((response) => response.json())
     //   .then((jsonData) => setCategory(jsonData.walkCategory))
     //   .catch((error) => console.error("Error fetching data:", error));
-    getCategory();
+    getCategory()
+      .then(setCategory)
+      .catch((error) => console.error("Fetching error:", error));
   }, []);
 
   const fetchPostDetail = async () => {
@@ -228,11 +223,7 @@ const DetailPage = () => {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-<<<<<<< HEAD
         updateTime: new Date(data.update).toLocaleString(),
-=======
-        updateTime: data.update,
->>>>>>> e1aed5fc9ec93b9f3f84e5cd4d95b088e67c8fc5
         seller: data.nickname,
       };
       console.log("Data", data);
