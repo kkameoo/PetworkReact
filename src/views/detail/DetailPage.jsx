@@ -124,6 +124,7 @@ const DetailPage = () => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [category, setCategory] = useState(null);
   const [imageBase64, setImageBase64] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   // const base64String = Array.isArray(base64Data) ? base64Data[0] : base64Data;
@@ -178,20 +179,36 @@ const DetailPage = () => {
     }
   };
 
+  const getCategory = async () => {
+    try {
+      const response = await fetch("src/data/category.json");
+      if (response.ok) {
+        const data = await response.json();
+        setCategory(data.walkCategory);
+      } else {
+        console.error("로그인 상태 확인 실패:");
+      }
+    } catch (error) {
+      console.error("로그인 상태 확인 실패:", error);
+    }
+  };
+
   useEffect(() => {
     checkLoginStatus();
+    // fetch("src/data/category.json")
+    //   .then((response) => response.json())
+    //   .then((jsonData) => setCategory(jsonData.walkCategory))
+    //   .catch((error) => console.error("Error fetching data:", error));
+    getCategory();
   }, []);
 
   const fetchPostDetail = async () => {
     try {
-      const response = await fetch(`http://localhost:8087/api/board/${postId}`);
+      const response = await fetch(
+        `http://localhost:8087/api/board/walk/${postId}`
+      );
       const data = await response.json();
-      const formattedDateTime = data.upd_date
-        ? new Date(data.upd_date)
-            .toISOString()
-            .replace("T", " ")
-            .substring(0, 19)
-        : "날짜 없음";
+
       const postData = {
         id: data.boardId,
         sellerUid: data.userId,
@@ -199,11 +216,11 @@ const DetailPage = () => {
         regionGu: data.localGu,
         title: data.title,
         content: data.content,
-        category: data.category,
+        category: data.walkCategory,
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: formattedDateTime,
+        updateTime: new Date(data.update).toLocaleString(),
         seller: data.nickname,
       };
       console.log("Data", data);
@@ -222,7 +239,7 @@ const DetailPage = () => {
     }
   }, [postId]);
 
-  if (!newPost) return <div>로딩 중...</div>;
+  if (!newPost || !category) return <div>로딩 중...</div>;
 
   return (
     <DetailWrapper>
@@ -248,7 +265,7 @@ const DetailPage = () => {
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>
           <ProductCategory>
-            {newPost.category} | {newPost.updateTime}
+            {category[newPost.category].name} | {newPost.updateTime}
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
         </ProductRight>

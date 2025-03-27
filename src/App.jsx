@@ -24,7 +24,6 @@ import UserDetailPage from "./views/detail/UserDetailPage";
 import { useState } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
-import { useMemo } from "react";
 import Header from "./components/Header";
 
 export const AuthContext = createContext(null);
@@ -52,7 +51,7 @@ function App() {
         if (JSON.stringify(user) !== JSON.stringify(data)) {
           setUser(data);
         }
-        console.log("세션 체크"+  user);
+        console.log("세션 체크" + user);
       } else {
         setIsLoggedIn(false);
         setUser(null);
@@ -90,8 +89,8 @@ function App() {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{user, setUser}}>
-      <Header handleLogout={invalidSession} isLoggedIn={isLoggedIn}/>
+    <AuthContext.Provider value={{ user, setUser }}>
+      <Header handleLogout={invalidSession} isLoggedIn={isLoggedIn} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/main" element={<MainPage />} />
