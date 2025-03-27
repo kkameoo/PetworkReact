@@ -63,7 +63,7 @@ const SellerInfo = styled.div`
   display: flex;
   flex-direction: column; /* 세로로 배치 */
   margin-top: 10px;
-  margin-left: 0; /* 왼쪽 여백 제거 */
+  margin-left: 100px;
   width: 100%; /* div의 너비를 100%로 설정 */
   padding: 10px; /* 내부 여백 */
   /* border-bottom: 1px solid; */
@@ -74,13 +74,6 @@ const SellerLeft = styled.div`
   flex-direction: row; /* 사진과 텍스트가 가로로 배치되도록 수정 */
   align-items: center;
   margin-right: 20px;
-  margin-left: 0; /* 왼쪽 여백 제거 */
-`;
-
-const SellerRight = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   margin-left: 0; /* 왼쪽 여백 제거 */
 `;
 
@@ -108,7 +101,7 @@ const ProductTitle = styled.h2`
   font-weight: bold;
   margin-bottom: 20px; /* 제목과 판매자 정보 사이의 간격을 조정 */
   text-align: left; /* 제목 왼쪽 정렬 */
-  margin-left: 0; /* 왼쪽 여백 없애기 */
+  margin-left: 50px; /* 왼쪽 여백 없애기 */
 `;
 
 const ProductCategory = styled.p`
