@@ -246,7 +246,7 @@ const DetailPage = () => {
 
   return (
     <DetailWrapper>
-      <BackButton onClick={onBack}>← 뒤로</BackButton>
+      {/* <BackButton onClick={onBack}>← 뒤로</BackButton> */}
       <ProductBody>
         <ProductLeft>
           <ProductImage

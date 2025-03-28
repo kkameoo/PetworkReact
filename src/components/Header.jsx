@@ -5,12 +5,12 @@ import { useAuth } from "../hooks/useAuth";
 import { connectSocket } from "../hooks/socket";
 
 const HeaderContainer = styled.div`
-  position: fixed;
+  /* position: relative; */
   top: 0;
   left: 0;
   width: 100%;
   background: white;
-  z-index: 1000;
+  /* z-index: 1000; */
   padding: -20px 0;
   display: flex;
   justify-content: center;
@@ -18,7 +18,7 @@ const HeaderContainer = styled.div`
 `;
 
 const LeftImage = styled.img`
-  position: fixed;
+  position: absolute;
   top: 10px;
   left: 100px;
   width: 100px;

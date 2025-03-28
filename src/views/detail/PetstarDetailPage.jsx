@@ -231,10 +231,12 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
         `http://localhost:8087/api/board/${postId}/comment`
       );
       const data = await response.json();
+      console.log(data);
+
       const postData3 = {
-        commentDescription: data.commentContent,
-        reg_date: new Date(data.reg_date).toLocaleString(),
-        comment_user: data.commentUser,
+        commentContent: data.commentContent,
+        regDate: new Date(data.regDate).toLocaleString(),
+        commentUser: data.commentUser,
       };
       console.log("Data", data);
       setNewComment(postData3);
@@ -243,7 +245,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
     }
   };
 
-  const handleSubmit = async (event) => {
+  const handleCommentSubmit = async (event) => {
     event.preventDefault();
     if (!user) {
       alert("로그인이 필요합니다.");
@@ -252,7 +254,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
     const postData2 = {
       commentContent: description,
-      reg_date: new Date().toISOString(),
+      regDate: new Date().toISOString(),
       commentUser: user.nickname,
     };
     console.log("postdata", postData2);
@@ -270,7 +272,8 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
       if (response.ok) {
         alert("게시물이 성공적으로 등록되었습니다!");
-        onSubmitSuccess();
+        setNewComment(postData2);
+        // onSubmitSuccess();
         // navigate("/");
       } else {
         alert("게시물 등록 실패. 다시 시도해주세요.");
@@ -291,7 +294,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
     }
   }, [postId]);
 
-  if (!newPost) return <div>로딩 중...</div>;
+  if (!newPost || !newComment) return <div>로딩 중...</div>;
 
   return (
     <DetailWrapper>
@@ -325,9 +328,9 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
         <ProductDescription>{newPost.content}</ProductDescription>
       </ProductDetailWrapper>
 
-      <ProductDescription>{newComment.commentDescription}</ProductDescription>
+      <ProductDescription>{newComment?.commentContent}</ProductDescription>
       <h2>댓글 등록</h2>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleCommentSubmit}>
         <div className="sell-product-row">
           <textarea
             value={description}
