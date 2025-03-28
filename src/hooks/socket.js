@@ -10,6 +10,7 @@ export const connectSocket = (userId, onNotification) => {
   onNotificationCallback = onNotification;
   stompClient.onConnect = () => {
     stompClient.subscribe(`/user/${userId}/notification`, (message) => {
+      console.log(message);
       if (onNotificationCallback) {
         onNotificationCallback(JSON.parse(message.body));
       }

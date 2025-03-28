@@ -137,7 +137,7 @@ function Header({ handleLogout, isLoggedIn }) {
         setNotifications((prev) => [noti, ...prev]);
       });
       // 로그인 후 저장된 알람 불러오기
-      fetch(`http://localhost:8087/alarm/list?userId=${user.userId}`)
+      fetch(`http://localhost:8087/alarm/list/byuser/` + user.userId)
         .then((res) => res.json())
         // .then((data) => setNotifications(data))
         .then((data) => {

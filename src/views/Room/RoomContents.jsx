@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useParams } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const ChatContainer = styled.div`
   min-height: 600px;
@@ -117,12 +118,14 @@ const RoomContents = () => {
   // const [inputText, setInputText] = useState("");
   const [currentUser, setCurrentUser] = useState(null);
   // const [users, setUsers] = useState(["USER1", "USER2"]);
-
+  const [chatrooms, setChatrooms] = useState([]);
   const [chatroom, setChatroom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const stompClientRef = useRef(null);
   const { postId } = useParams();
+  const { user } = useAuth();
+  // console.log(user);
 
   const checkLoginStatus = async () => {
     try {
@@ -153,6 +156,24 @@ const RoomContents = () => {
       }
     } catch (error) {
       console.error("채팅 내역 가져오기 실패", error);
+    }
+  };
+
+  const getChatrooms = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8087/api/chat/room/byuser/" + user.userId,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setChatrooms(data);
+      }
+    } catch (error) {
+      console.error("채팅 방 이름 가져오기 실패", error);
     }
   };
 
@@ -194,6 +215,12 @@ const RoomContents = () => {
     return () => stompClient.deactivate();
   }, []);
 
+  useEffect(() => {
+    if (user !== null && user !== undefined) {
+      getChatrooms();
+    }
+  }, [user]);
+
   const sendMessage = () => {
     if (!message.trim()) return;
     stompClientRef.current.publish({
@@ -220,7 +247,7 @@ const RoomContents = () => {
   //   ]);
   //   setInputText("");
   // };
-  if (!messages || !chatroom) return <div>로딩 중...</div>;
+  if (!messages || !chatroom || !user) return <div>로딩 중...</div>;
 
   return (
     <ChatContainer>
@@ -239,6 +266,19 @@ const RoomContents = () => {
       */}
       <UserContainer>
         <h4>접속 중인 유저</h4>
+        {user.name}
+        <h4>채팅 방</h4>
+        <div>
+          {chatrooms.length === 0 ? (
+            <p>나의 채팅방들을 불러오는 중...</p>
+          ) : (
+            <div>
+              {chatrooms.map((room, idx) => (
+                <div key={idx}>{room.chatroomName}</div>
+              ))}
+            </div>
+          )}
+        </div>
       </UserContainer>
       <h2>{chatroom.chatroomName}</h2>
       {messages.length === 0 ? (
