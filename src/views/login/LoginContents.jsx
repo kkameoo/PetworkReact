@@ -13,7 +13,7 @@ const Container = styled.div`
 
 const FormWrapper = styled.div`
   width: 100%;
-  max-width: 400px;
+  max-width: 700px;
   padding: 40px;
   background: white;
   border-radius: 12px;
@@ -21,10 +21,12 @@ const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  height: 600px;
+  margin-top: inherit;
 `;
 
 const Title = styled.h1`
-  font-size: 22px;
+  font-size: 50px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
@@ -105,7 +107,7 @@ const Login = () => {
   return (
     <Container>
       <FormWrapper>
-        <Title>로그인</Title>
+        <Title>로 그 인</Title>
         <InputWrapper>
           <Input
             type="email"
