@@ -2,227 +2,275 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-const PageContainer = styled.div`
-  margin-left: 120px;
-  max-width: 1500px;
-  padding: 2rem;
-  background-color: #fffefc;
-`;
-
-const Section = styled.section`
-  margin-bottom: 3rem;
+const SectionWrapper = styled.div`
+  margin: 50px;
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.8rem;
+  font-size: 24px;
   font-weight: bold;
-  color: #7b4f1d;
-  margin-bottom: 1rem;
+  margin-bottom: 20px;
 `;
 
-const CardGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 1rem;
-`;
-
-const HomeCard = styled.div`
-  background-color: #fff2cf;
-  border-radius: 16px;
-  padding: 1rem;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  img {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 0.5rem;
-  }
-
-  h4 {
-    font-size: 1rem;
-    color: #3b2e1a;
-  }
-`;
-
-const TextGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); // 항상 2열
-  gap: 1rem;
-`;
-
-const TextCard = styled.div`
-  background-color: #fff6e0;
-  border-radius: 16px;
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-
-  h4 {
-    font-size: 1.1rem;
-    font-weight: bold;
-    color: #4b3d2a;
-    margin-bottom: 0.5rem;
-    &:hover {
-      border-bottom: 1px solid steelblue;
-    }
-  }
-
-  p {
-    font-size: 0.95rem;
-    color: #5c4a32;
-  }
-`;
-
-const ImageRow = styled.div`
+const PostsWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  justify-content: flex-start;
+  gap: 20px;
 `;
 
-const PetImage = styled.img`
+// 기본 카드 스타일 (산책/거래용)
+const DefaultPostCard = styled.div`
+  width: 200px;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f9f9f9;
+  }
+`;
+
+// 알바 전용 카드
+const HirePostCard = styled.div`
+  width: 200px;
+  border: 2px dashed #a2e4b8;
+  padding: 12px;
+  border-radius: 10px;
+  background-color: #a2e4b8;
+  cursor: pointer;
+  &:hover {
+    background-color: #a2e4b8;
+  }
+`;
+
+// 펫스타그램 전용 카드
+const PetstarPostCard = styled.div`
+  width: 120px;
+  padding: 6px;
+  border-radius: 12px;
+  background-color: #fff;
+  cursor: pointer;
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const Thumbnail = styled.img`
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 5px;
+`;
+
+const PetThumbnail = styled.img`
   width: 80px;
   height: 80px;
   border-radius: 30px;
   object-fit: cover;
-  border: 2px solid #ffd38b;
+  border: 2px solid #a2e4b8;
 `;
 
-const petImages = Array.from(
-  { length: 10 },
-  (_, i) => `https://place-puppy.com/100x100?pet${i}`
-);
+const Title = styled.h3`
+  font-size: 16px;
+  margin: 10px 0 5px;
+`;
+
+const Info = styled.p`
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+`;
 
 function MainPage() {
-  const API_POST_URL = "http://localhost:8087/api/board";
-  const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
   const navigate = useNavigate();
-
-  const [posts, setPosts] = useState([]);
   const [homePosts, setHomePosts] = useState([]);
   const [tradePosts, setTradePosts] = useState([]);
   const [jobPosts, setJobPosts] = useState([]);
-  const [petPosts, setPetPosts] = useState([]);
-  const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
+  const [petstarPosts, setPetstarPosts] = useState([]);
+  const [imageMap, setImageMap] = useState({});
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
+  const fetchImageBase64 = async (boardId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/photo/board/upload/${boardId}`
+      );
+      if (response.ok) {
+        const base64Data = await response.json();
+        const base64String = Array.isArray(base64Data)
+          ? base64Data[0]
+          : base64Data;
+        const mimeType = "image/jpeg";
+        return `data:${mimeType};base64,${base64String}`;
+      } else {
+        return null;
+      }
+    } catch (error) {
+      console.error("이미지 로딩 에러:", error);
+      return null;
+    }
+  };
+
+  const fetchPostsWithImages = async (url, setPosts, filterType = null) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("데이터 불러오기 실패");
+      const data = await response.json();
+      const filteredData =
+        filterType !== null
+          ? data.filter((item) => item.boardType === filterType)
+          : data;
+
+      const transformedData = filteredData.map((item) => ({
+        id: item.boardId,
+        sellerUid: item.userId,
+        regionSi: item.localSi,
+        regionGu: item.localGu,
+        title: item.title,
+        content: item.content,
+        category: item.category,
+        type: item.boardType,
+        clickCnt: item.clickCount,
+        reportCnt: item.reportCount,
+        boardId: item.boardId,
+        nickname: item.nickname,
+        localSi: item.localSi,
+        localGu: item.localGu,
+      }));
+
+      setPosts(transformedData);
+
+      const imageMapTemp = {};
+      for (const post of transformedData) {
+        const img = await fetchImageBase64(post.boardId);
+        if (img) imageMapTemp[post.boardId] = img;
+      }
+      setImageMap((prev) => ({ ...prev, ...imageMapTemp }));
+    } catch (error) {
+      console.error("게시글 불러오기 실패:", error);
+    }
+  };
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const res = await fetch(API_POST_URL);
-        const data = await res.json();
-        const postData = Object.values(data).map((item) => ({
-          id: item.boardId,
-          sellerUid: item.userId,
-          regionSi: item.localSi,
-          regionGu: item.localGu,
-          title: item.title,
-          content: item.content,
-          category: item.category,
-          type: item.boardType,
-          clickCnt: item.clickCount,
-          reportCnt: item.reportCount,
-        }));
-
-        setPosts(postData);
-        setHomePosts(postData.filter((p) => p.type === 1));
-        setTradePosts(postData.filter((p) => p.type === 2));
-        setJobPosts(postData.filter((p) => p.type === 3));
-        setPetPosts(postData.filter((p) => p.type === 4));
-
-        // 이미지 병렬로 불러오기
-        postData.forEach((post) => fetchImage(post.id));
-      } catch (err) {
-        console.error("게시글 불러오기 오류:", err);
-      }
+    const fetchAll = async () => {
+      await fetchPostsWithImages(
+        "http://localhost:8087/api/board/walk/popular",
+        setHomePosts
+      );
+      await fetchPostsWithImages(
+        "http://localhost:8087/api/board/trade/popular",
+        setTradePosts
+      );
+      await fetchPostsWithImages(
+        "http://localhost:8087/api/board/hire/popular",
+        setJobPosts
+      );
+      await fetchPostsWithImages(
+        "http://localhost:8087/api/board",
+        setPetstarPosts,
+        4
+      );
     };
-
-    const fetchImage = async (postId) => {
-      try {
-        const res = await fetch(`${API_IMAGE_URL}/${postId}`);
-        if (res.ok) {
-          const base64Data = await res.json();
-          const base64String = Array.isArray(base64Data)
-            ? base64Data[0]
-            : base64Data;
-          const fullBase64 = `data:image/jpeg;base64,${base64String}`;
-          setImageMap((prev) => ({ ...prev, [postId]: fullBase64 }));
-        } else {
-          console.warn(`이미지 불러오기 실패: ${postId}`);
-        }
-      } catch (e) {
-        console.error(`이미지 요청 에러 (${postId}):`, e);
-      }
-    };
-
-    fetchPosts();
+    fetchAll();
   }, []);
 
-  const goToDetail = (postId) => navigate(`/${postId}`);
+  const renderPostCard = (post, image) => {
+    if (post.type === 4) {
+      return (
+        <PetstarPostCard
+          key={post.boardId}
+          onClick={() => navigate(`/petstarDetail/${post.boardId}`)}
+        >
+          <PetThumbnail src={image} alt="펫스타그램 이미지" />
+        </PetstarPostCard>
+      );
+    }
+    if (post.type === 3) {
+      return (
+        <HirePostCard
+          key={post.boardId}
+          onClick={() => navigate(`/hire/${post.boardId}`)}
+        >
+          <Title>{post.title}</Title>
+          <Info>{post.nickname}</Info>
+          <Info>
+            {post.localSi} {post.localGu}
+          </Info>
+        </HirePostCard>
+      );
+    }
+    if (post.type === 2) {
+      return (
+        <DefaultPostCard
+          key={post.boardId}
+          onClick={() => navigate(`/trade/${post.boardId}`)}
+        >
+          <Thumbnail
+            src={imageMap[post.id] || DEFAULT_IMAGE}
+            alt={post.title}
+          />
+          <Title>{post.title}</Title>
+          <Info>{post.nickname}</Info>
+          <Info>
+            {post.localSi} {post.localGu}
+          </Info>
+        </DefaultPostCard>
+      );
+    }
+    return (
+      <DefaultPostCard
+        key={post.boardId}
+        onClick={() => navigate(`/${post.boardId}`)}
+      >
+        <Thumbnail src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
+        <Title>{post.title}</Title>
+        <Info>{post.nickname}</Info>
+        <Info>
+          {post.localSi} {post.localGu}
+        </Info>
+      </DefaultPostCard>
+    );
+  };
 
   return (
-    <PageContainer>
-      <Section>
-        <SectionTitle onClick={() => navigate("/walk")}>
-          🏠 산책 게시판
-        </SectionTitle>
-        <CardGrid>
-          {homePosts.map((post) => (
-            <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
-              <img src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
-              <h4>{post.title}</h4>
-            </HomeCard>
-          ))}
-        </CardGrid>
-      </Section>
+    <div>
+      <SectionWrapper>
+        <SectionTitle>산책 게시판 인기글</SectionTitle>
+        <PostsWrapper>
+          {homePosts.map((post) =>
+            renderPostCard(post, imageMap[post.boardId], "walk")
+          )}
+        </PostsWrapper>
+      </SectionWrapper>
 
-      <Section>
-        <SectionTitle onClick={() => navigate("/sell")}>
-          💰 나눔 게시판
-        </SectionTitle>
-        <CardGrid>
-          {tradePosts.map((post) => (
-            <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
-              <img src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
-              <h4>{post.title}</h4>
-            </HomeCard>
-          ))}
-        </CardGrid>
-      </Section>
+      <SectionWrapper>
+        <SectionTitle>나눔 게시판 인기글</SectionTitle>
+        <PostsWrapper>
+          {tradePosts.map((post) =>
+            renderPostCard(post, imageMap[post.boardId], "trade")
+          )}
+        </PostsWrapper>
+      </SectionWrapper>
 
-      <Section>
-        <SectionTitle onClick={() => navigate("/hire")}>
-          📋 알바 게시판
-        </SectionTitle>
-        <TextGrid>
-          {jobPosts.map((post) => (
-            <TextCard
-              key={post.id}
-              onClick={() => navigate(`/hire/${post.id}`)}
-            >
-              <h4>{post.title}</h4>
-              {/* <p>{post.content}</p> */}
-            </TextCard>
-          ))}
-        </TextGrid>
-      </Section>
+      <SectionWrapper>
+        <SectionTitle>알바 게시판 인기글</SectionTitle>
+        <PostsWrapper>
+          {jobPosts.map((post) =>
+            renderPostCard(post, imageMap[post.boardId], "hire")
+          )}
+        </PostsWrapper>
+      </SectionWrapper>
 
-      <Section>
-        <SectionTitle onClick={() => navigate("/petshow")}>
-          🐶 Pet Showcase
-        </SectionTitle>
-        <ImageRow>
-          {petPosts.slice(0, 10).map((post) => (
-            <PetImage key={post.id} src={imageMap[post.id]} alt={post.title} />
-          ))}
-        </ImageRow>
-      </Section>
-    </PageContainer>
+      <SectionWrapper>
+        <SectionTitle>펫스타그램 인기글</SectionTitle>
+        <PostsWrapper>
+          {petstarPosts.map((post) =>
+            renderPostCard(post, imageMap[post.boardId], "petstar")
+          )}
+        </PostsWrapper>
+      </SectionWrapper>
+    </div>
   );
 }
+
 export default MainPage;
