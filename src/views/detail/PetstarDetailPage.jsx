@@ -125,12 +125,12 @@ const EditButton = styled.button`
     color: white;
   }
 `;
-
+const CommentWrapper = styled.div``;
 function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
   const { postId } = useParams();
   const navigate = useNavigate();
-  const [newPost, setNewPost] = useState(null); // 이거 다시 켜키
-  const [newComment, setNewComment] = useState();
+  const [newPost, setNewPost] = useState(null);
+  const [newComment, setNewComment] = useState([]); // 배열로 변경
 
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -230,18 +230,23 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
       const response = await fetch(
         `http://localhost:8087/api/board/${postId}/comment`
       );
-      const data = await response.json();
-      console.log(data);
+      const data = await response.json(); // 서버에서 배열로 온다고 가정
 
-      const postData3 = {
-        commentContent: data.commentContent,
-        regDate: new Date(data.regDate).toLocaleString(),
-        commentUser: data.commentUser,
-      };
-      console.log("Data", data);
-      setNewComment(postData3);
+      if (Array.isArray(data)) {
+        // 배열 형태로 변환
+        const formattedComments = data.map((comment) => ({
+          commentContent: comment.commentContent,
+          regDate: new Date(comment.regDate).toLocaleString(),
+          commentUser: comment.commentUser,
+        }));
+
+        setNewComment(formattedComments);
+      } else {
+        setNewComment([]);
+      }
     } catch (error) {
-      console.error("상세 데이터 불러오기 오류:", error);
+      console.error("댓글 데이터 불러오기 오류:", error);
+      setNewComment([]);
     }
   };
 
@@ -257,7 +262,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
       regDate: new Date().toISOString(),
       commentUser: user.nickname,
     };
-    console.log("postdata", postData2);
+
     try {
       const response = await fetch(
         `http://localhost:8087/api/board/${postId}/comment`,
@@ -271,15 +276,14 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
       );
 
       if (response.ok) {
-        alert("게시물이 성공적으로 등록되었습니다!");
-        setNewComment(postData2);
-        // onSubmitSuccess();
-        // navigate("/");
+        // alert("댓글이 등록되었습니다!");
+        setNewComment([...newComment, postData2]); // 새로운 댓글 추가
+        setDescription(""); // 입력 필드 초기화
       } else {
-        alert("게시물 등록 실패. 다시 시도해주세요.");
+        alert("댓글 등록 실패. 다시 시도해주세요.");
       }
     } catch (error) {
-      console.error("게시물 등록 중 오류 발생:", error);
+      console.error("댓글 등록 중 오류 발생:", error);
       alert("오류가 발생했습니다.");
     }
   };
@@ -329,15 +333,26 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
       </ProductDetailWrapper>
 
       <ProductDescription>{newComment?.commentContent}</ProductDescription>
+      <h2>댓글</h2>
+      {newComment.length > 0 ? (
+        newComment.map((comment, index) => (
+          <CommentWrapper key={index}>
+            <p>
+              <strong>{comment.commentUser}</strong>: {comment.commentContent}
+            </p>
+            <span>{comment.regDate}</span>
+          </CommentWrapper>
+        ))
+      ) : (
+        <p>댓글이 없습니다.</p>
+      )}
       <h2>댓글 등록</h2>
       <form onSubmit={handleCommentSubmit}>
-        <div className="sell-product-row">
-          <textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
+        <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+        />
         <button type="submit">등록</button>
       </form>
 
