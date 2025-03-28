@@ -26,7 +26,7 @@ const FormWrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 50px;
+  font-size: 60px;
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;

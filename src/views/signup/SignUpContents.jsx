@@ -10,15 +10,16 @@ const SignupContainer = styled.div`
   background-color: #f9f9f9;
 `;
 const Title = styled.h2`
-  font-size: 28px;
-  color: #333;
+  font-size: 60px;
+  color: #007acc;
   margin-bottom: 20px;
 `;
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: 600px;
   padding: 20px;
+  height: 60%;
   background: white;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
@@ -32,7 +33,7 @@ const Input = styled.input`
    padding: 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   font-size: 14px;
   &:focus {
     outline: none;
@@ -67,44 +68,40 @@ const ErrorMessage = styled.p`
   font-size: 14px;
 `;
 /* 드롭다운 스타일 */
-const Dropdown = styled.div`
-  position: relative;
-  margin-bottom: 15px;
-`;
-
-const DropdownHeader = styled.div`
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  background: white;
-  font-size: 14px;
+const SelectBox = styled.select`
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #93c572;
+  border-radius: 8px;
+  background-color: #fff;
+  appearance: none; /* 기본 화살표 제거 */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='gray'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.3s ease-in-out;
+  margin-bottom: 20px;
+
   &:hover {
-    background-color: #f4f4f4;
+    background-color: #ffeadb;
+  }
+
+  &:focus {
+    border-color: #93c572;
+    box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    outline: none;
   }
 `;
-
-const DropdownList = styled.ul`
-  position: absolute;
-  width: 100%;
-  background: white;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  margin-top: 5px;
-  padding: 0;
-  list-style: none;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  max-height: 150px;
-  overflow-y: auto;
-`;
-
-const DropdownItem = styled.li`
+const Option = styled.option`
+  font-size: 16px;
   padding: 10px;
-  font-size: 14px;
-  cursor: pointer;
+  background-color: #fff;
+  color: #333;
+
   &:hover {
-    background-color: #ff8c00;
+    background-color: #93c572;
     color: white;
   }
 `;
@@ -525,7 +522,7 @@ const SignupContents = () => {
         /> */}
 
         {/* 시 선택 */}
-        <select
+        <SelectBox
           name="localSi"
           value={formData.localSi}
           // onChange={handleRegionChange}
@@ -537,22 +534,17 @@ const SignupContents = () => {
             }));
           }}
         >
-          {/* <option value="">시 선택</option>
-          {Object.keys(regionData).map((city) => (
-            <option key={city} value={city}>
-              {city}
-            </option> */}
-          <option value="">시 선택</option>
+          <Option value="">시 선택</Option>
           {regions.map((city) => (
-            <option key={city} value={city[0]}>
+            <Option key={city} value={city[0]}>
               {city[1]}
-            </option>
+            </Option>
           ))}
-        </select>
+        </SelectBox>
 
         {/* 군구 선택 */}
         {formData.localSi && allSis[formData.localSi] && (
-          <select
+          <SelectBox
             name="localGu"
             value={formData.localGu}
             onChange={(e) => {
@@ -562,13 +554,13 @@ const SignupContents = () => {
               }));
             }}
           >
-            <option value="">군/구 선택</option>
+            <Option value="">군/구 선택</Option>
             {allSis[formData.localSi].map((district) => (
-              <option key={district} value={district[0]}>
+              <Option key={district} value={district[0]}>
                 {district[1]}
-              </option>
+              </Option>
             ))}
-          </select>
+          </SelectBox>
         )}
         {/* 회원가입 버튼 */}
         <Button type="submit">가입하기</Button>
