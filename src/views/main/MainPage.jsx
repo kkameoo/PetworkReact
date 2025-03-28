@@ -98,6 +98,66 @@ const petImages = Array.from(
   (_, i) => `https://place-puppy.com/100x100?pet${i}`
 );
 
+const PageLayout = styled.div`
+  display: flex;
+  justify-content: space-between;
+  min-height: 100vh; /* 페이지 높이를 100%로 설정 */
+  padding: 2rem;
+  background-color: #fffefc;
+  margin-left: 120px;
+`;
+
+const ContentArea = styled.div`
+  width: 75%; /* 게시판 섹션을 왼쪽에 75% */
+  padding-right: 2rem;
+`;
+
+const UserInfoContainer = styled.div`
+
+  background-color: #a2e4b8;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  height: 250px;
+  margin-top: 115px; /* 위로 띄우기 */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; // 버튼을 아래로 정렬
+`;
+
+const UserTitle = styled.h3`
+  font-size: 1.2rem; /* 제목 크기 줄이기 */
+  color: #3b2e1a;
+  margin-bottom: 0.8rem; /* 제목과 내용 사이 간격 */
+`;
+
+const UserInfo = styled.div`
+  font-size: 0.9rem; /* 내용 글자 크기 줄이기 */
+  color: #4b3d2a;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* 내용들 간의 간격을 약간 늘려줌 */
+`;
+
+const Button = styled.button`
+  background-color: #fdfdfd;
+  border: none;
+  padding: 6px 14px; /* 버튼 크기 줄이기 */
+  border-radius: 8px;
+  font-size: 0.9rem; /* 버튼 크기 줄이기 */
+  color: #4b3d2a;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #6dbe92;
+  }
+`;
+
+
+
+
 function MainPage() {
   const API_POST_URL = "http://localhost:8087/api/board";
   const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
@@ -109,6 +169,11 @@ function MainPage() {
   const [jobPosts, setJobPosts] = useState([]);
   const [petPosts, setPetPosts] = useState([]);
   const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
+  const [userInfo, setUserInfo] = useState({
+    email: "user@example.com",
+    nickname: "username123",
+  });
+
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
   useEffect(() => {
@@ -166,63 +231,65 @@ function MainPage() {
   const goToDetail = (postId) => navigate(`/${postId}`);
 
   return (
-    <PageContainer>
-      <Section>
-        <SectionTitle onClick={() => navigate("/walk")}>
-          🏠 산책 게시판
-        </SectionTitle>
-        <CardGrid>
-          {homePosts.map((post) => (
-            <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
-              <img src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
-              <h4>{post.title}</h4>
-            </HomeCard>
-          ))}
-        </CardGrid>
-      </Section>
+    <PageLayout>
+      {/* 게시판 영역 */}
+      <ContentArea>
+        <Section>
+          <SectionTitle onClick={() => navigate("/walk")}>🏠 산책 게시판</SectionTitle>
+          <CardGrid>
+            {homePosts.map((post) => (
+              <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
+                <img src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
+                <h4>{post.title}</h4>
+              </HomeCard>
+            ))}
+          </CardGrid>
+        </Section>
 
-      <Section>
-        <SectionTitle onClick={() => navigate("/sell")}>
-          💰 나눔 게시판
-        </SectionTitle>
-        <CardGrid>
-          {tradePosts.map((post) => (
-            <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
-              <img src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
-              <h4>{post.title}</h4>
-            </HomeCard>
-          ))}
-        </CardGrid>
-      </Section>
+        <Section>
+          <SectionTitle onClick={() => navigate("/sell")}>💰 나눔 게시판</SectionTitle>
+          <CardGrid>
+            {tradePosts.map((post) => (
+              <HomeCard key={post.id} onClick={() => goToDetail(post.id)}>
+                <img src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
+                <h4>{post.title}</h4>
+              </HomeCard>
+            ))}
+          </CardGrid>
+        </Section>
 
-      <Section>
-        <SectionTitle onClick={() => navigate("/hire")}>
-          📋 알바 게시판
-        </SectionTitle>
-        <TextGrid>
-          {jobPosts.map((post) => (
-            <TextCard
-              key={post.id}
-              onClick={() => navigate(`/hire/${post.id}`)}
-            >
-              <h4>{post.title}</h4>
-              {/* <p>{post.content}</p> */}
-            </TextCard>
-          ))}
-        </TextGrid>
-      </Section>
+        <Section>
+          <SectionTitle onClick={() => navigate("/hire")}>📋 알바 게시판</SectionTitle>
+          <TextGrid>
+            {jobPosts.map((post) => (
+              <TextCard key={post.id} onClick={() => navigate(`/hire/${post.id}`)}>
+                <h4>{post.title}</h4>
+              </TextCard>
+            ))}
+          </TextGrid>
+        </Section>
 
-      <Section>
-        <SectionTitle onClick={() => navigate("/petshow")}>
-          🐶 Pet Showcase
-        </SectionTitle>
-        <ImageRow>
-          {petPosts.slice(0, 10).map((post) => (
-            <PetImage key={post.id} src={imageMap[post.id]} alt={post.title} />
-          ))}
-        </ImageRow>
-      </Section>
-    </PageContainer>
+        <Section>
+          <SectionTitle onClick={() => navigate("/petshow")}>🐶 Pet Showcase</SectionTitle>
+          <ImageRow>
+            {petPosts.slice(0, 10).map((post) => (
+              <PetImage key={post.id} src={imageMap[post.id]} alt={post.title} />
+            ))}
+          </ImageRow>
+        </Section>
+      </ContentArea>
+
+      {/* 유저 정보 영역 */}
+      <UserInfoContainer>
+        <UserTitle>📍 사용자 정보</UserTitle>
+        <UserInfo>
+          <div><strong>이메일:</strong> {userInfo.email}</div>
+          <div><strong>닉네임:</strong> {userInfo.nickname}</div>
+        </UserInfo>
+        <Button>버어어ㅓㅓㅓ튼</Button>
+      </UserInfoContainer>
+    </PageLayout>
   );
 }
 export default MainPage;
+
