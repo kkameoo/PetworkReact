@@ -28,8 +28,12 @@ const Sidebar = styled.div`
 
 // 지역 선택 부분을 감싸는 div에 스타일 추가
 const RegionSection = styled.div`
-  max-height: 300px; /* 원하는 최대 높이 */
-  overflow-y: auto; /* 세로 스크롤 추가 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
 `;
 const CategorySection = styled.div`
   margin-top: 20px;
@@ -42,15 +46,72 @@ const SidebarTitle = styled.h3`
 `;
 
 const SidebarLabel = styled.label`
-  margin-left: 30px;
-  text-align: left;
-  display: block;
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 14px;
   color: #007acc;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid transparent;
+
+  ${({ selected }) =>
+    selected
+      ? `
+    background-color: #007acc;
+    color: white;
+    border-color: #005c99;
+  `
+      : `
+    background-color: #e0f7ff;
+    &:hover {
+      background-color: #bde4f6;
+    }
+  `}
 `;
 
 const SidebarInput = styled.input`
   margin-right: 5px;
+  display: none;
+`;
+// 구선택 드롭다운
+const SelectBox = styled.select`
+  width: 150px;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #93c572;
+  border-radius: 8px;
+  background-color: #fff;
+  appearance: none; /* 기본 화살표 제거 */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='gray'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  margin-bottom: 20px;
+
+  &:hover {
+    background-color: #ffeadb;
+  }
+
+  &:focus {
+    border-color: #93c572;
+    box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    outline: none;
+  }
+`;
+const Option = styled.option`
+  font-size: 16px;
+  padding: 10px;
+  background-color: #fff;
+  color: #333;
+
+  &:hover {
+    background-color: #93c572;
+    color: white;
+  }
 `;
 
 /* 상품 리스트 */
@@ -435,7 +496,7 @@ const JobContents = () => {
             <RegionSection>
               <SidebarTitle>지역 선택</SidebarTitle>
               {Object.values(regionMap).map((region) => (
-                <SidebarLabel key={region}>
+                <SidebarLabel key={region} selected={selectedRegion === region}>
                   <SidebarInput
                     type="radio"
                     name="region"
@@ -452,7 +513,7 @@ const JobContents = () => {
             </RegionSection>
 
             {selectedRegion !== "전체" && (
-              <select
+              <SelectBox
                 value={selectedGu}
                 onChange={(e) => setSelectedGu(e.target.value)}
                 style={{
@@ -461,13 +522,13 @@ const JobContents = () => {
                   padding: "5px",
                 }}
               >
-                <option value="전체">-- 구 선택 --</option>
+                <Option value="전체">-- 구 선택 --</Option>
                 {regionGuMap[selectedRegion]?.map((gu) => (
-                  <option key={gu} value={gu}>
+                  <Option key={gu} value={gu}>
                     {gu}
-                  </option>
+                  </Option>
                 ))}
-              </select>
+              </SelectBox>
             )}
 
             <CategorySection>
