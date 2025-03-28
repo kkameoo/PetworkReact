@@ -43,13 +43,14 @@ const InputWrapper = styled.div`
 
 const Input = styled.input`
   width: 100%;
-  padding: 12px;
+  padding: 20px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 20px;
   background-color: white;
   box-sizing: border-box;
   transition: border 0.3s;
+  margin-bottom: 20px;
 
   &:focus {
     border-color: #007acc;
@@ -65,9 +66,11 @@ const Button = styled.button`
   padding: 12px;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 16px;
+  font-size: 20px;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin-top: auto;
+  margin-bottom: 20px;
 
   &:hover {
     background-color: #005f99;
