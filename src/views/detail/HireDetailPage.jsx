@@ -217,7 +217,7 @@ const HireDetailPage = () => {
 
   return (
     <DetailWrapper>
-      <BackButton onClick={onBack}>← 뒤로</BackButton>
+      {/* <BackButton onClick={onBack}>← 뒤로</BackButton> */}
       <ProductBody>
         <ProductLeft>
           <ProductImage
@@ -243,7 +243,7 @@ const HireDetailPage = () => {
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>
           <ProductCategory>
-            {newPost.category} | {newPost.updateTime}
+            {newPost.category} | {newPost.updateTime} 가격: {newPost.price}원
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
         </ProductRight>
