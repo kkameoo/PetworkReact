@@ -30,6 +30,7 @@ export const AuthContext = createContext(null);
 
 import PostPet from "./views/post/postPet";
 import PetstarDetailPage from "./views/detail/PetstarDetailPage";
+import PostUserPet from "./views/post/PostUserPet";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -114,6 +115,7 @@ function App() {
         <Route path="/room/:postId" element={<Room />} />
         <Route path="/my" element={<UserDetailPage />} />
         <Route path="/petstarDetail/:postId" element={<PetstarDetailPage />} />
+        <Route path="/postpet" element={<PostUserPet />} />
       </Routes>
       <Footer />
     </AuthContext.Provider>

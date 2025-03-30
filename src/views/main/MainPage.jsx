@@ -221,7 +221,11 @@ function MainPage() {
           console.warn(`이미지 불러오기 실패: ${postId}`);
         }
       } catch (e) {
-        console.error(`이미지 요청 에러 (${postId}):`, e);
+        if (e.message.includes("404")) {
+          console.warn("반환된 사진이 없습니다.");
+        } else { 
+          console.error(`이미지 요청 에러 (${postId}):`, e);
+        }
       }
     };
 

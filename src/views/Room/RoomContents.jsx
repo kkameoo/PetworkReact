@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const ChatContainer = styled.div`
@@ -122,25 +122,31 @@ const RoomContents = () => {
   const [chatroom, setChatroom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [connectedUser, setConnectedUser] = useState("");
+
+  const chatroomRef = useRef(null);
+  const userRef = useRef(null);
   const stompClientRef = useRef(null);
   const { postId } = useParams();
   const { user } = useAuth();
+  const navigate = useNavigate();
+
   // console.log(user);
 
-  const checkLoginStatus = async () => {
-    try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setCurrentUser(data.userId);
-      }
-    } catch (error) {
-      console.error("로그인 상태 확인 실패:", error);
-    }
-  };
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:8087/api/user/session", {
+  //       method: "GET",
+  //       credentials: "include",
+  //     });
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setCurrentUser(data.userId);
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 상태 확인 실패:", error);
+  //   }
+  // };
 
   const getChatHistory = async () => {
     try {
@@ -150,7 +156,17 @@ const RoomContents = () => {
       });
       if (response.ok) {
         const data = await response.json();
-        const jsonData = data.map((item) => JSON.parse(item));
+        const jsonData = data.map((item) => {
+          const getdata = JSON.parse(item);
+          const data = {
+            chatroomId: getdata.chatroomId,
+            sender: getdata.sender,
+            content: getdata.content,
+            messageType: getdata.messageType,
+            regDate: new Date(getdata.regDate).toLocaleString(),
+          }
+          return data;
+        });
         jsonData.reverse();
         setMessages(jsonData);
       }
@@ -196,24 +212,85 @@ const RoomContents = () => {
   };
 
   useEffect(() => {
-    checkLoginStatus();
+    // checkLoginStatus();
     getChatHistory();
     getRoomInfo();
+  }, []);
+
+  useEffect(() => {
+    if (!chatroom || !user) return;
+
+    chatroomRef.current = chatroom;
+    userRef.current = user;
+
     const socket = new SockJS(SOCKET_URL);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {
         console.log("WebSocket Connected");
+        // 채팅방 구독
         stompClient.subscribe("/topic/messages", (msg) => {
-          setMessages((prev) => [...prev, JSON.parse(msg.body)]);
+          const postData = JSON.parse(msg.body);
+          const data = {
+            chatroomId: postData.chatroomId,
+            sender: postData.sender,
+            content: postData.content,
+            messageType: postData.messageType,
+            regDate: new Date(postData.regDate).toLocaleString(),
+          };
+          setMessages((prev) => [...prev, data]);
         });
+         // 채팅 접속중인 유저 리스트 구독
+        stompClient.subscribe("/topic/userlist", (msg) => {
+          setConnectedUser(JSON.parse(msg.body).map((data) => JSON.parse(data)));
+        });
+        if (chatroom.chatroomId && user.userId) {
+          stompClient.publish({
+          destination: "/app/chat/join",
+          body: JSON.stringify({
+              chatroomId: chatroom.chatroomId,
+              userId: user.userId,
+              userName: user.nickname,
+            })
+        });
+      }
       },
       onStompError: (frame) => console.error("Error: ", frame),
     });
     stompClient.activate();
     stompClientRef.current = stompClient;
-    return () => stompClient.deactivate();
-  }, []);
+
+    const handleBeforeUnload = () => {
+      if (stompClientRef.current && chatroomRef.current && userRef.current) {
+        stompClientRef.current.publish({
+          destination: "/app/chat/leave",
+          body: JSON.stringify({
+            chatroomId: chatroomRef.current.chatroomId,
+            userId: userRef.current.userId,
+            userName: userRef.current.nickname,
+          }),
+        });
+      }
+    }
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      if (stompClientRef.current && chatroomRef.current && userRef.current) {
+      stompClientRef.current.publish({
+        destination: "/app/chat/leave",
+        body: JSON.stringify({
+          chatroomId: chatroomRef.current.chatroomId,
+          userId: userRef.current.userId,
+          userName: userRef.current.nickname,
+        }),
+      });
+    }
+    stompClient.deactivate();
+    window.removeEventListener("beforeunload", handleBeforeUnload);
+    }
+  }, [user, chatroom]);
+  
+
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
@@ -227,11 +304,13 @@ const RoomContents = () => {
       destination: "/app/chat",
       body: JSON.stringify({
         chatroomId: chatroom.chatroomId,
-        sender: "User",
+        sender: user.nickname,
         content: message,
         messageType: 3,
+        regDate: new Date().toISOString(),
       }),
     });
+    console.log(user.nickname);
     setMessage("");
   };
 
@@ -247,7 +326,13 @@ const RoomContents = () => {
   //   ]);
   //   setInputText("");
   // };
-  if (!messages || !chatroom || !user) return <div>로딩 중...</div>;
+  const goToDetail = (postId) => {
+    navigate(`/room/${postId}`);
+    window.location.reload();
+  }
+  ;
+  if(!user) return <div>인증이 필요...</div>;
+  if (!messages || !chatroom || !user || !connectedUser) return <div>로딩 중...</div>;
 
   return (
     <ChatContainer>
@@ -266,7 +351,18 @@ const RoomContents = () => {
       */}
       <UserContainer>
         <h4>접속 중인 유저</h4>
-        {user.name}
+        <div>
+          {connectedUser.length === 0 ? (
+            <p>d</p>
+          ) : (
+            <div>
+              {connectedUser.map((user, idx) => (
+                <div key={idx}>{user.userName}</div>
+              ))}
+            </div>
+          )}
+        </div>
+        
         <h4>채팅 방</h4>
         <div>
           {chatrooms.length === 0 ? (
@@ -274,7 +370,7 @@ const RoomContents = () => {
           ) : (
             <div>
               {chatrooms.map((room, idx) => (
-                <div key={idx}>{room.chatroomName}</div>
+                <button key={idx} onClick={() => goToDetail(room.chatroomId)} >{room.chatroomName}</button>
               ))}
             </div>
           )}
@@ -288,7 +384,7 @@ const RoomContents = () => {
           {messages.map((msg, idx) => (
             <Message key={idx}>
               <b>{msg.sender}: </b> {msg.content}
-              <Timestamp>{new Date().toLocaleTimeString()}</Timestamp>
+              <Timestamp>{msg.regDate}</Timestamp>
             </Message>
           ))}
         </MessageList>
