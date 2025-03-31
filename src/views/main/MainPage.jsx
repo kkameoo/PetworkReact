@@ -112,6 +112,7 @@ const UserInfo = styled.div`
 `;
 
 const Button = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #fdfdfd;
   border: none;
   padding: 6px 14px; /* 버튼 크기 줄이기 */

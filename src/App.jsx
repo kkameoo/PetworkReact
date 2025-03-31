@@ -2,6 +2,7 @@ import { Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import GlobalStyle from "./data/GlobalStyle";
 
 import DetailPage from "./views/detail/DetailPage";
 import PostWalk from "./views/post/PostWalk";
@@ -90,35 +91,41 @@ function App() {
   }, [user]);
 
   return (
-    <AuthContext.Provider value={{ user, setUser }}>
-      <Header handleLogout={invalidSession} isLoggedIn={isLoggedIn} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/main" element={<MainPage />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/:postId" element={<DetailPage />} />
-        <Route path="/Detail" element={<DetailPage />} />
-        <Route path="/walk" element={<WalkContents />} />
-        <Route path="/sell" element={<SellContents />} />
-        <Route path="/hire" element={<JobContents />} />
-        <Route path="/postTrade" element={<PostTrade />} />
-        <Route path="/postWalk" element={<PostWalk />} />
-        <Route path="/postPet" element={<PostPet />} />
-        <Route path="/postHire" element={<PostHire />} />
-        <Route path="/petshow" element={<PetShowcasePage />} />
-        <Route path="/trade/:postId" element={<TradeDetailPage />} />
-        <Route path="/hire/:postId" element={<HireDetailPage />} />
-        <Route path="/editWalk/:postId" element={<EditWalkPage />} />
-        <Route path="/edithire/:postId" element={<EditHirePage />} />
-        <Route path="/edittrade/:postId" element={<EditTradePage />} />
-        <Route path="/room/:postId" element={<Room />} />
-        <Route path="/my" element={<UserDetailPage />} />
-        <Route path="/petstarDetail/:postId" element={<PetstarDetailPage />} />
-        <Route path="/postUserPet" element={<PostUserPet />} />
-      </Routes>
-      <Footer />
-    </AuthContext.Provider>
+    <>
+      <GlobalStyle />
+      <AuthContext.Provider value={{ user, setUser }}>
+        <Header handleLogout={invalidSession} isLoggedIn={isLoggedIn} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/main" element={<MainPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/:postId" element={<DetailPage />} />
+          <Route path="/Detail" element={<DetailPage />} />
+          <Route path="/walk" element={<WalkContents />} />
+          <Route path="/sell" element={<SellContents />} />
+          <Route path="/hire" element={<JobContents />} />
+          <Route path="/postTrade" element={<PostTrade />} />
+          <Route path="/postWalk" element={<PostWalk />} />
+          <Route path="/postPet" element={<PostPet />} />
+          <Route path="/postHire" element={<PostHire />} />
+          <Route path="/petshow" element={<PetShowcasePage />} />
+          <Route path="/trade/:postId" element={<TradeDetailPage />} />
+          <Route path="/hire/:postId" element={<HireDetailPage />} />
+          <Route path="/editWalk/:postId" element={<EditWalkPage />} />
+          <Route path="/edithire/:postId" element={<EditHirePage />} />
+          <Route path="/edittrade/:postId" element={<EditTradePage />} />
+          <Route path="/room/:postId" element={<Room />} />
+          <Route path="/my" element={<UserDetailPage />} />
+          <Route
+            path="/petstarDetail/:postId"
+            element={<PetstarDetailPage />}
+          />
+          <Route path="/postUserPet" element={<PostUserPet />} />
+        </Routes>
+        <Footer />
+      </AuthContext.Provider>
+    </>
   );
 }
 export default App;
