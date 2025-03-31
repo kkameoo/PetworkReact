@@ -246,7 +246,7 @@ const TradeDetailPage = () => {
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>
           <ProductCategory>
-            {newPost.category} | {newPost.updateTime}
+            {newPost.category} | {newPost.updateTime} {newPost.price}원
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
         </ProductRight>
