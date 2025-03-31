@@ -1,0 +1,21 @@
+{
+    "region": [
+      { "id": 1, "name": "서울시", "latitude": 37.5665, "longitude": 126.9780 },
+      { "id": 2, "name": "수원시", "latitude": 37.2636, "longitude": 127.0286 },
+      { "id": 3, "name": "성남시", "latitude": 37.4138, "longitude": 127.1286 },
+      { "id": 4, "name": "안양시", "latitude": 37.3944, "longitude": 126.9271 },
+      { "id": 5, "name": "부천시", "latitude": 37.4813, "longitude": 126.7734 },
+      { "id": 6, "name": "광명시", "latitude": 37.4783, "longitude": 126.8734 },
+      { "id": 7, "name": "평택시", "latitude": 36.9983, "longitude": 127.1183 },
+      { "id": 8, "name": "시흥시", "latitude": 37.4682, "longitude": 126.7835 },
+      { "id": 9, "name": "안산시", "latitude": 37.3213, "longitude": 126.8312 },
+      { "id": 10, "name": "고양시", "latitude": 37.6578, "longitude": 126.8310 },
+      { "id": 11, "name": "과천시", "latitude": 37.4231, "longitude": 127.0381 },
+      { "id": 12, "name": "구리시", "latitude": 37.6133, "longitude": 127.1252 },
+      { "id": 13, "name": "남양주시", "latitude": 37.6367, "longitude": 127.1771 },
+      { "id": 14, "name": "오산시", "latitude": 37.1500, "longitude": 127.0667 },
+      { "id": 15, "name": "화성시", "latitude": 37.2000, "longitude": 126.8000 },
+      { "id": 16, "name": "인천시", "latitude": 37.4563, "longitude": 126.7052 }
+    ]
+  }
+  

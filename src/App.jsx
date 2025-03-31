@@ -31,6 +31,7 @@ export const AuthContext = createContext(null);
 import PostPet from "./views/post/postPet";
 import PetstarDetailPage from "./views/detail/PetstarDetailPage";
 import PostUserPet from "./views/post/PostUserPet";
+import ViewMap from "./views/map/ViewMap";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -116,6 +117,8 @@ function App() {
         <Route path="/my" element={<UserDetailPage />} />
         <Route path="/petstarDetail/:postId" element={<PetstarDetailPage />} />
         <Route path="/postUserPet" element={<PostUserPet />} />
+        <Route path="/postpet" element={<PostUserPet />} />
+        <Route path="/viewmap/:lat/:lng" element={<ViewMap />} />
       </Routes>
       <Footer />
     </AuthContext.Provider>
