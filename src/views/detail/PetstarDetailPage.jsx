@@ -146,7 +146,7 @@ const CommentItem = styled.div`
   padding: 0px 5px; /* 여백을 줄여서 댓글이 더 밀착되게 함 */
   margin-bottom: 5px; /* 각 댓글 간 간격 줄임 */
   font-size: 16px;
-  
+
   strong {
     font-weight: bold;
   }
@@ -164,7 +164,6 @@ const CommentItem = styled.div`
     border-bottom: none; /* 마지막 댓글은 밑줄 제거 */
   }
 `;
-
 
 const CommentInputWrapper = styled.div`
   display: flex;
@@ -342,7 +341,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
       if (response.ok) {
         setNewComment([...newComment, postData2]);
-        setDescription(""); 
+        setDescription("");
       } else {
         alert("댓글 등록 실패. 다시 시도해주세요.");
       }
@@ -394,36 +393,37 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
         <ProductDescription>{newPost.content}</ProductDescription>
       </ProductDetailWrapper>
 
-<CommentWrapper>
-  <CommentHeader>
-    <CommentTitle>댓글창</CommentTitle> {/* 여기에 '댓글창' 텍스트 추가 */}
-  </CommentHeader>
+      <CommentWrapper>
+        <CommentHeader>
+          <CommentTitle>댓글창</CommentTitle>{" "}
+          {/* 여기에 '댓글창' 텍스트 추가 */}
+        </CommentHeader>
 
-  {newComment.length > 0 ? (
-    newComment.map((comment, index) => (
-      <CommentItem key={index}>
-        <strong>{comment.commentUser}</strong>: {comment.commentContent}
-        <p>{comment.regDate}</p>
-      </CommentItem>
-    ))
-  ) : (
-    <p>댓글이 없습니다.</p>
-  )}
-</CommentWrapper>
+        {newComment.length > 0 ? (
+          newComment.map((comment, index) => (
+            <CommentItem key={index}>
+              <strong>{comment.commentUser}</strong>: {comment.commentContent}
+              <p>{comment.regDate}</p>
+            </CommentItem>
+          ))
+        ) : (
+          <p>댓글이 없습니다.</p>
+        )}
+      </CommentWrapper>
 
-<CommentInputWrapper>
-    <CommentHeader>
-      <CommentTitle>댓글 등록</CommentTitle>
-      <CommentSubmitButton type="submit" onClick={handleCommentSubmit}>
-        등록
-      </CommentSubmitButton>
-    </CommentHeader>
-    <CommentTextArea
-      value={description}
-      onChange={(e) => setDescription(e.target.value)}
-      required
-    />
-  </CommentInputWrapper>
+      <CommentInputWrapper>
+        <CommentHeader>
+          <CommentTitle>댓글 등록</CommentTitle>
+          <CommentSubmitButton type="submit" onClick={handleCommentSubmit}>
+            등록
+          </CommentSubmitButton>
+        </CommentHeader>
+        <CommentTextArea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+        />
+      </CommentInputWrapper>
 
       <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
         게시물 수정

@@ -164,7 +164,7 @@ const RoomContents = () => {
             content: getdata.content,
             messageType: getdata.messageType,
             regDate: new Date(getdata.regDate).toLocaleString(),
-          }
+          };
           return data;
         });
         jsonData.reverse();
@@ -240,20 +240,22 @@ const RoomContents = () => {
           };
           setMessages((prev) => [...prev, data]);
         });
-         // 채팅 접속중인 유저 리스트 구독
+        // 채팅 접속중인 유저 리스트 구독
         stompClient.subscribe("/topic/userlist", (msg) => {
-          setConnectedUser(JSON.parse(msg.body).map((data) => JSON.parse(data)));
+          setConnectedUser(
+            JSON.parse(msg.body).map((data) => JSON.parse(data))
+          );
         });
         if (chatroom.chatroomId && user.userId) {
           stompClient.publish({
-          destination: "/app/chat/join",
-          body: JSON.stringify({
+            destination: "/app/chat/join",
+            body: JSON.stringify({
               chatroomId: chatroom.chatroomId,
               userId: user.userId,
               userName: user.nickname,
-            })
-        });
-      }
+            }),
+          });
+        }
       },
       onStompError: (frame) => console.error("Error: ", frame),
     });
@@ -271,26 +273,24 @@ const RoomContents = () => {
           }),
         });
       }
-    }
+    };
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       if (stompClientRef.current && chatroomRef.current && userRef.current) {
-      stompClientRef.current.publish({
-        destination: "/app/chat/leave",
-        body: JSON.stringify({
-          chatroomId: chatroomRef.current.chatroomId,
-          userId: userRef.current.userId,
-          userName: userRef.current.nickname,
-        }),
-      });
-    }
-    stompClient.deactivate();
-    window.removeEventListener("beforeunload", handleBeforeUnload);
-    }
+        stompClientRef.current.publish({
+          destination: "/app/chat/leave",
+          body: JSON.stringify({
+            chatroomId: chatroomRef.current.chatroomId,
+            userId: userRef.current.userId,
+            userName: userRef.current.nickname,
+          }),
+        });
+      }
+      stompClient.deactivate();
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, [user, chatroom]);
-  
-
 
   useEffect(() => {
     if (user !== null && user !== undefined) {
@@ -329,10 +329,9 @@ const RoomContents = () => {
   const goToDetail = (postId) => {
     navigate(`/room/${postId}`);
     window.location.reload();
-  }
-  ;
-  if(!user) return <div>인증이 필요...</div>;
-  if (!messages || !chatroom || !user || !connectedUser) return <div>로딩 중...</div>;
+  };
+  if (!user) return <div>인증이 필요...</div>;
+  if (!chatroom || !user || !connectedUser) return <div>로딩 중...</div>;
 
   return (
     <ChatContainer>
@@ -362,7 +361,7 @@ const RoomContents = () => {
             </div>
           )}
         </div>
-        
+
         <h4>채팅 방</h4>
         <div>
           {chatrooms.length === 0 ? (
@@ -370,7 +369,9 @@ const RoomContents = () => {
           ) : (
             <div>
               {chatrooms.map((room, idx) => (
-                <button key={idx} onClick={() => goToDetail(room.chatroomId)} >{room.chatroomName}</button>
+                <button key={idx} onClick={() => goToDetail(room.chatroomId)}>
+                  {room.chatroomName}
+                </button>
               ))}
             </div>
           )}

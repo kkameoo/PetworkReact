@@ -115,7 +115,7 @@ function App() {
         <Route path="/room/:postId" element={<Room />} />
         <Route path="/my" element={<UserDetailPage />} />
         <Route path="/petstarDetail/:postId" element={<PetstarDetailPage />} />
-        <Route path="/postpet" element={<PostUserPet />} />
+        <Route path="/postUserPet" element={<PostUserPet />} />
       </Routes>
       <Footer />
     </AuthContext.Provider>

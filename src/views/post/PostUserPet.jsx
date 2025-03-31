@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const FormContainer = styled.form`
   display: flex;
@@ -80,21 +81,53 @@ const SubmitButton = styled.button`
   }
 `;
 
+const FormRow = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
 
-const PostUserPet = ({ user, onSubmitSuccess }) => {
+  label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #007acc;
+  }
+
+  input,
+  select,
+  textarea {
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 100px;
+  }
+`;
+
+const CATEGORY_ID = [
+  [1, "소형"],
+  [2, "중형"],
+  [3, "대형"],
+];
+
+function PostUserPet(onSubmitSuccess) {
   const [petName, setPetName] = useState("");
-  const [petCategory, setPetCategory] = useState("");
+  const [petType, setPetType] = useState("");
   const [petIntroduce, setPetIntroduce] = useState("");
+  const [category, setCategory] = useState("1");
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
+  const { user } = useAuth();
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreview(URL.createObjectURL(file));
-    }
+    if (!file) return;
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
   };
 
   const handleSubmit = async (e) => {
@@ -103,9 +136,9 @@ const PostUserPet = ({ user, onSubmitSuccess }) => {
     const postData = {
       userId: user.userId,
       petName: petName,
-      petCategory: petCategory,
+      petCategory: Number(category),
+      petType: petType,
       petIntroduce: petIntroduce,
-      boardType: 3,
     };
 
     const formData = new FormData();
@@ -117,7 +150,7 @@ const PostUserPet = ({ user, onSubmitSuccess }) => {
     console.log(postData, "데이터");
 
     try {
-      const response = await fetch("http://localhost:8087/api/user/pet", {
+      const response = await fetch("http://localhost:8087/api/pet/create", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -139,25 +172,52 @@ const PostUserPet = ({ user, onSubmitSuccess }) => {
   return (
     <FormContainer onSubmit={handleSubmit}>
       <ImageContainer>
-        {preview ? <PreviewImage src={preview} alt="미리보기" /> : <Placeholder>이미지를 선택하세요</Placeholder>}
+        {preview ? (
+          <PreviewImage src={preview} alt="미리보기" />
+        ) : (
+          <Placeholder>이미지를 선택하세요</Placeholder>
+        )}
         <ImageInput type="file" accept="image/*" onChange={handleImageChange} />
       </ImageContainer>
       <InputField>
         <Label>이름</Label>
-        <Input type="text" value={petName} onChange={(e) => setPetName(e.target.value)} required />
+        <Input
+          type="text"
+          value={petName}
+          onChange={(e) => setPetName(e.target.value)}
+          required
+        />
       </InputField>
+      <FormRow>
+        <label>카테고리</label>
+        <select value={category} onChange={(e) => setCategory(e.target.value)}>
+          {CATEGORY_ID.map(([id, name]) => (
+            <option key={id} value={id}>
+              {name}
+            </option>
+          ))}
+        </select>
+      </FormRow>
       <InputField>
-        <Label>종류</Label>
-        <Input type="text" value={petCategory} onChange={(e) => setPetCategory(e.target.value)} required />
+        <Label>견종</Label>
+        <Input
+          type="text"
+          value={petType}
+          onChange={(e) => setPetType(e.target.value)}
+          required
+        />
       </InputField>
       <InputField>
         <Label>소개글</Label>
-        <Textarea value={petIntroduce} onChange={(e) => setPetIntroduce(e.target.value)} required />
+        <Textarea
+          value={petIntroduce}
+          onChange={(e) => setPetIntroduce(e.target.value)}
+          required
+        />
       </InputField>
       <SubmitButton type="submit">등록</SubmitButton>
     </FormContainer>
   );
-};
+}
 
 export default PostUserPet;
-
