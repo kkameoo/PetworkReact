@@ -6,7 +6,7 @@ const ListContainer = styled.div`
   max-width: 1600px;
   margin: 20px auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #f9fcff;
 `;
 
@@ -32,6 +32,7 @@ const CategorySection = styled.div`
   margin-top: 20px;
 `;
 const SidebarTitle = styled.h3`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   margin-left: 25px;
   text-align: left;
   margin-bottom: 10px;
@@ -39,6 +40,7 @@ const SidebarTitle = styled.h3`
 `;
 
 const SidebarLabel = styled.label`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   margin-left: 30px;
   text-align: left;
   display: block;
@@ -47,6 +49,7 @@ const SidebarLabel = styled.label`
 `;
 
 const SidebarInput = styled.input`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   margin-right: 5px;
 `;
 
@@ -58,6 +61,7 @@ const ProductList = styled.div`
 `;
 
 const ProductCard = styled.div`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: white;
   border-radius: 10px;
   padding: 10px;
@@ -119,6 +123,7 @@ const PaginationWrapper = styled.div`
 `;
 
 const PaginationButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #a2e4b8;
   color: white;
   border: none;
@@ -136,6 +141,7 @@ const PaginationButton = styled.button`
 `;
 
 const CreateButton = styled(PaginationButton)`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   position: absolute;
   right: 0;
   background-color: #a2e4b8;
@@ -147,6 +153,7 @@ const CreateButton = styled(PaginationButton)`
 `;
 
 const PageNumber = styled.span`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 18px;
   font-weight: bold;
   color: #a2e4b8;

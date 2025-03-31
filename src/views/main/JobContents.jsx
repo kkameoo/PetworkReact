@@ -7,7 +7,7 @@ const ListContainer = styled.div`
   max-width: 1600px;
   margin: 20px auto;
   padding: 20px;
-  font-family: Arial, sans-serif;
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #f9fcff;
 `;
 

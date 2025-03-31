@@ -46,6 +46,7 @@ const ProductImage = styled.img`
 `;
 
 const SellerInfo = styled.div`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   margin-bottom: 70px;
   font-size: 20px;
   text-align: left;
@@ -72,12 +73,14 @@ const SellerImage = styled.img`
 `;
 
 const Nickname = styled.p`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-weight: bold;
   line-height: 25px;
   margin: 0;
 `;
 
 const Location = styled.p`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 14px;
   margin: 0;
 `;
@@ -90,23 +93,27 @@ const ProductRight = styled.div`
 `;
 
 const ProductTitle = styled.h2`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 35px;
   font-weight: bold;
   margin-bottom: 3px;
 `;
 
 const ProductCategory = styled.p`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 14px;
   color: #007acc;
   margin-bottom: 10px;
 `;
 
 const ProductDescription = styled.p`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   min-height: 240px;
   font-size: 18px;
   margin-bottom: 20px;
 `;
 const EditButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #ffd85a;
   color: white;
   border: none;

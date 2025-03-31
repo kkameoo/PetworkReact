@@ -26,6 +26,7 @@ const FormWrapper = styled.div`
 `;
 
 const Title = styled.h1`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 60px;
   font-weight: bold;
   text-align: center;
@@ -42,6 +43,7 @@ const InputWrapper = styled.div`
 `;
 
 const Input = styled.input`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   width: 100%;
   padding: 20px;
   border: 1px solid #ddd;
@@ -59,6 +61,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   width: 100%;
   background-color: #a2e4b8;
   color: white;
