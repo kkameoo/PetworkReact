@@ -53,14 +53,14 @@ const ButtonSection = styled.div`
 const ActionButton = styled.button`
   padding: 10px 15px;
   border: none;
-  background: #00bfff;
+  background: #a2e4b8;
   color: white;
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
 
   &:hover {
-    background: #007acc;
+    background: #6dbe92;
   }
 `;
 
@@ -75,14 +75,14 @@ const BoardNav = styled.div`
 const BoardButton = styled.button`
   padding: 10px 15px;
   border: none;
-  background: ${(props) => (props.isActive ? "#00bfff" : "#ddd")};
+  background: ${(props) => (props.isActive ? "#a2e4b8" : "#ddd")};
   color: ${(props) => (props.isActive ? "white" : "black")};
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
 
   &:hover {
-    background: #00bfff;
+    background: #6dbe92;
     color: white;
   }
 `;
@@ -125,21 +125,75 @@ const PostCard = styled.div`
   }
 `;
 
+const ModalOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+`;
+
+const ModalContent = styled.div`
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  min-width: 300px;
+  text-align: center;
+
+  img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+  }
+`;
+
+const ModalButton = styled.button`
+  background-color: #a2e4b8;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin: 0.5rem;
+  cursor: pointer;
+`;
+
+const CloseButton = styled(ModalButton)`
+  background-color: gray;
+`;
+
 const UserDetailPage = () => {
-  // const [user, setUser] = useState(null);
   const { user } = useAuth();
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
   const [selectedBoard, setSelectedBoard] = useState("community");
   const [posts, setPosts] = useState([]);
-  const navigate = useNavigate();
   const [pets, setPets] = useState([]);
+  const [selectedPet, setSelectedPet] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    petId: "",
+    petName: "",
+    petType: "",
+    petCategory: "",
+    petIntroduce: "",
+  });
+  const [newPhotoFile, setNewPhotoFile] = useState(null);
+  const navigate = useNavigate();
 
   const API_POST_URL = "http://localhost:8087/api/board";
 
@@ -169,21 +223,73 @@ const UserDetailPage = () => {
           return [];
         });
 
-  useEffect(() => {
-    const fetchPets = async () => {
-      try {
-        const response = await fetch("http://localhost:8087/api/pet/list", {
-          credentials: "include", // 세션 쿠키 유지
-        });
-        const data = await response.json();
-        setPets(data);
-      } catch (error) {
-        console.error("펫 정보 불러오기 실패:", error);
-      }
-    };
+  const fetchPets = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/pet/list", {
+        credentials: "include",
+      });
+      const data = await response.json();
+      setPets(data);
+    } catch (error) {
+      console.error("펫 정보 불러오기 실패:", error);
+    }
+  };
 
+  useEffect(() => {
     fetchPets();
   }, []);
+
+  const openEditModal = (pet) => {
+    setEditForm({
+      petId: pet.petId,
+      petName: pet.petName,
+      petType: pet.petType,
+      petCategory: pet.petCategory,
+      petIntroduce: pet.petIntroduce,
+    });
+    setNewPhotoFile(null);
+    setIsEditModalOpen(true);
+  };
+
+  const handlePetUpdate = async () => {
+    try {
+      const response = await fetch("http://localhost:8087/api/pet/update", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(editForm),
+      });
+
+      if (!response.ok) throw new Error("정보 수정 실패");
+
+      if (newPhotoFile) {
+        const formData = new FormData();
+        formData.append("file", newPhotoFile);
+        formData.append("petId", editForm.petId);
+
+        const photoRes = await fetch(
+          "http://localhost:8087/api/pet/photo/update",
+          {
+            method: "PUT",
+            credentials: "include",
+            body: formData,
+          }
+        );
+
+        if (!photoRes.ok) throw new Error("사진 수정 실패");
+      }
+
+      alert("수정 완료!");
+      setIsEditModalOpen(false);
+      setIsModalOpen(false);
+      fetchPets();
+    } catch (error) {
+      console.error("펫 수정 실패:", error);
+      alert("수정에 실패했습니다.");
+    }
+  };
 
   return (
     <Container>
@@ -230,7 +336,13 @@ const UserDetailPage = () => {
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) =>
             selectedBoard === "mypet" ? (
-              <PostCard key={post.petId}>
+              <PostCard
+                key={post.petId}
+                onClick={() => {
+                  setSelectedPet(post);
+                  setIsModalOpen(true);
+                }}
+              >
                 <h4>{post.petName}</h4>
                 <p>
                   {post.petType} - {post.petCategory}
@@ -251,6 +363,93 @@ const UserDetailPage = () => {
           <p>게시글이 없습니다.</p>
         )}
       </BoardContent>
+
+      {isModalOpen && selectedPet && (
+        <ModalOverlay onClick={() => setIsModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <img
+              src={`http://localhost:8087/api/photo/pet/upload/${selectedPet.petId}`}
+              alt="펫 이미지"
+            />
+            <h3>{selectedPet.petName}</h3>
+            <p>
+              {selectedPet.petType} - {selectedPet.petCategory}
+            </p>
+            <p>{selectedPet.petIntroduce}</p>
+            <ModalButton onClick={() => openEditModal(selectedPet)}>
+              수정
+            </ModalButton>
+            <ModalButton
+              onClick={async () => {
+                await fetch(
+                  `http://localhost:8087/api/pet/delete/${selectedPet.petId}`,
+                  {
+                    method: "DELETE",
+                    credentials: "include",
+                  }
+                );
+                setPets((prev) =>
+                  prev.filter((p) => p.petId !== selectedPet.petId)
+                );
+                setIsModalOpen(false);
+              }}
+            >
+              삭제
+            </ModalButton>
+            <CloseButton onClick={() => setIsModalOpen(false)}>
+              닫기
+            </CloseButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+
+      {isEditModalOpen && (
+        <ModalOverlay onClick={() => setIsEditModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <h3>펫 정보 수정</h3>
+            <input
+              type="text"
+              placeholder="이름"
+              value={editForm.petName}
+              onChange={(e) =>
+                setEditForm({ ...editForm, petName: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="타입"
+              value={editForm.petType}
+              onChange={(e) =>
+                setEditForm({ ...editForm, petType: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="카테고리"
+              value={editForm.petCategory}
+              onChange={(e) =>
+                setEditForm({ ...editForm, petCategory: e.target.value })
+              }
+            />
+            <textarea
+              placeholder="소개"
+              value={editForm.petIntroduce}
+              onChange={(e) =>
+                setEditForm({ ...editForm, petIntroduce: e.target.value })
+              }
+            />
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setNewPhotoFile(e.target.files[0])}
+            />
+            <ModalButton onClick={handlePetUpdate}>수정 완료</ModalButton>
+            <CloseButton onClick={() => setIsEditModalOpen(false)}>
+              닫기
+            </CloseButton>
+          </ModalContent>
+        </ModalOverlay>
+      )}
     </Container>
   );
 };
