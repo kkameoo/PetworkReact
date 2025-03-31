@@ -3,6 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { connectSocket } from "../hooks/socket";
+import WalkButtonImage from "../assets/KakaoTalk_20250320_191922332.jpg";
+import SellButtonImage from "../assets/KakaoTalk_20250320_183321982.jpg";
+import JobButtonImage from "../assets/KakaoTalk_20250320_184745054.jpg";
+import PetStarImage from "../assets/KakaoTalk_20250320_174016642.jpg";
+import LogoImage from "../assets/TalkMedia_i_2a4ebc04392c.png.png";
+import AlertImage from "../assets/bell.png";
 
 const HeaderContainer = styled.div`
   /* position: relative; */
@@ -170,7 +176,7 @@ function Header({ handleLogout, isLoggedIn }) {
     <HeaderContainer>
       <div>
         <LeftImage
-          src="src/assets/TalkMedia_i_2a4ebc04392c.png.png"
+          src={LogoImage}
           alt="left-image"
           onClick={() => handleImageClick("/")}
         />
@@ -208,7 +214,7 @@ function Header({ handleLogout, isLoggedIn }) {
           }}
           onClick={() => setDropdownOpen(!dropdownOpen)}
         >
-          <BellIcon src="src/assets/bell.png" />
+          <BellIcon src={AlertImage} />
           {notifications.length > 0 && <span style={{ color: "red" }}> ●</span>}
         </div>
         {dropdownOpen && (
@@ -248,7 +254,7 @@ function Header({ handleLogout, isLoggedIn }) {
         <BoardButtonContainer>
           <BoardButtonWrapper onClick={() => navigate("/walk")}>
             <BoardButtonImage
-              src="src/assets/KakaoTalk_20250320_191922332.jpg"
+              src={WalkButtonImage}
               onClick={() => handleImageClick("/walk")}
             />
             <BoardButtonText onClick={() => handleTextClick("/walk")}>
@@ -258,7 +264,7 @@ function Header({ handleLogout, isLoggedIn }) {
 
           <BoardButtonWrapper onClick={() => navigate("/sell")}>
             <BoardButtonImage
-              src="src/assets/KakaoTalk_20250320_183321982.jpg"
+              src={SellButtonImage}
               onClick={() => handleImageClick("/sell")}
             />
             <BoardButtonText onClick={() => handleTextClick("/sell")}>
@@ -268,7 +274,7 @@ function Header({ handleLogout, isLoggedIn }) {
 
           <BoardButtonWrapper onClick={() => navigate("/hire")}>
             <BoardButtonImage
-              src="src/assets/KakaoTalk_20250320_184745054.jpg"
+              src={JobButtonImage}
               onClick={() => handleImageClick("/hire")}
             />
             <BoardButtonText onClick={() => handleTextClick("/hire")}>
@@ -277,7 +283,7 @@ function Header({ handleLogout, isLoggedIn }) {
           </BoardButtonWrapper>
           <BoardButtonWrapper onClick={() => navigate("/petshow")}>
             <BoardButtonImage
-              src="src/assets/KakaoTalk_20250320_174016642.jpg"
+              src={PetStarImage}
               onClick={() => handleImageClick("/petshow")}
             />
             <BoardButtonText onClick={() => handleTextClick("/petshow")}>
