@@ -3,15 +3,26 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
-const FormContainer = styled.form`
+const OuterContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 20px;
+  height: 101vh, 500px;
+  width: 60%;
+  margin-left: 300px;
+  background-color: #f9f9f9;
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 20px;
+  padding: 40px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  width: 400px;
+  width: 1200px;
+  height: 500px;
   background-color: #fff;
 `;
 
@@ -19,19 +30,21 @@ const ImageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  width: 50%;
 `;
 
 const PreviewImage = styled.img`
-  width: 150px;
-  height: 150px;
+  width: 300px;
+  height: 300px;
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid #ccc;
 `;
 
 const Placeholder = styled.div`
-  width: 150px;
-  height: 150px;
+  width: 300px;
+  height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -40,8 +53,29 @@ const Placeholder = styled.div`
   color: #888;
 `;
 
-const ImageInput = styled.input`
+const HiddenFileInput = styled.input`
+  display: none;
+`;
+
+const CustomFileButton = styled.label`
+  padding: 10px 15px;
+  background-color: #ff7f50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
   margin-top: 10px;
+  &:hover {
+    background-color: #ff6347;
+  }
+`;
+
+const InputContainer = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 50%;
+  gap: 10px;
 `;
 
 const InputField = styled.div`
@@ -142,12 +176,8 @@ function PostUserPet({ onSubmitSuccess }) {
     };
 
     const formData = new FormData();
-    console.log(postData);
-    const postData2 = JSON.stringify(postData);
-    console.log(postData2);
     formData.append("file", imageFile);
-    formData.append("requestJson", postData2);
-    console.log(postData, "데이터");
+    formData.append("requestJson", JSON.stringify(postData));
 
     try {
       const response = await fetch("http://localhost:8087/api/pet/create", {
@@ -161,7 +191,6 @@ function PostUserPet({ onSubmitSuccess }) {
         if (typeof onSubmitSuccess === "function") {
           onSubmitSuccess();
         }
-
         navigate("/");
       } else {
         alert("게시물 등록 실패. 다시 시도해주세요.");
@@ -173,53 +202,66 @@ function PostUserPet({ onSubmitSuccess }) {
   };
 
   return (
-    <FormContainer onSubmit={handleSubmit}>
-      <ImageContainer>
-        {preview ? (
-          <PreviewImage src={preview} alt="미리보기" />
-        ) : (
-          <Placeholder>이미지를 선택하세요</Placeholder>
-        )}
-        <ImageInput type="file" accept="image/*" onChange={handleImageChange} />
-      </ImageContainer>
-      <InputField>
-        <Label>이름</Label>
-        <Input
-          type="text"
-          value={petName}
-          onChange={(e) => setPetName(e.target.value)}
-          required
-        />
-      </InputField>
-      <FormRow>
-        <label>카테고리</label>
-        <select value={category} onChange={(e) => setCategory(e.target.value)}>
-          {CATEGORY_ID.map(([id, name]) => (
-            <option key={id} value={id}>
-              {name}
-            </option>
-          ))}
-        </select>
-      </FormRow>
-      <InputField>
-        <Label>견종</Label>
-        <Input
-          type="text"
-          value={petType}
-          onChange={(e) => setPetType(e.target.value)}
-          required
-        />
-      </InputField>
-      <InputField>
-        <Label>소개글</Label>
-        <Textarea
-          value={petIntroduce}
-          onChange={(e) => setPetIntroduce(e.target.value)}
-          required
-        />
-      </InputField>
-      <SubmitButton type="submit">등록</SubmitButton>
-    </FormContainer>
+    <OuterContainer>
+      <FormContainer>
+        <ImageContainer>
+          {preview ? (
+            <PreviewImage src={preview} alt="미리보기" />
+          ) : (
+            <Placeholder>이미지를 선택하세요</Placeholder>
+          )}
+          <HiddenFileInput
+            id="file-upload"
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          <CustomFileButton htmlFor="file-upload">이미지 선택</CustomFileButton>
+        </ImageContainer>
+        <InputContainer onSubmit={handleSubmit}>
+          <InputField>
+            <Label>이름</Label>
+            <Input
+              type="text"
+              value={petName}
+              onChange={(e) => setPetName(e.target.value)}
+              required
+            />
+          </InputField>
+          <FormRow>
+            <label>카테고리</label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              {CATEGORY_ID.map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </FormRow>
+          <InputField>
+            <Label>견종</Label>
+            <Input
+              type="text"
+              value={petType}
+              onChange={(e) => setPetType(e.target.value)}
+              required
+            />
+          </InputField>
+          <InputField>
+            <Label>소개글</Label>
+            <Textarea
+              value={petIntroduce}
+              onChange={(e) => setPetIntroduce(e.target.value)}
+              required
+            />
+          </InputField>
+          <SubmitButton type="submit">등록</SubmitButton>
+        </InputContainer>
+      </FormContainer>
+    </OuterContainer>
   );
 }
 

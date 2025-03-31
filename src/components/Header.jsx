@@ -9,6 +9,7 @@ import JobButtonImage from "../assets/KakaoTalk_20250320_184745054.jpg";
 import PetStarImage from "../assets/KakaoTalk_20250320_174016642.jpg";
 import LogoImage from "../assets/TalkMedia_i_2a4ebc04392c.png.png";
 import AlertImage from "../assets/bell.png";
+import GlobalStyle from "../data/GlobalStyle";
 
 const HeaderContainer = styled.div`
   /* position: relative; */
@@ -36,6 +37,7 @@ const LeftImage = styled.img`
 `;
 
 const AuthButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   padding: 15px 30px; // 여백을 반으로 줄임
   font-size: 15px; // 폰트 크기를 줄임
   background-color: #a2e4b8;
@@ -101,6 +103,7 @@ const BoardButtonImage = styled.img`
 `;
 
 const BoardButtonText = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 14px; // 텍스트 크기를 줄임
   background-color: transparent;
   color: black;
@@ -173,126 +176,133 @@ function Header({ handleLogout, isLoggedIn }) {
   };
 
   return (
-    <HeaderContainer>
-      <div>
-        <LeftImage
-          src={LogoImage}
-          alt="left-image"
-          onClick={() => handleImageClick("/")}
-        />
-        <AuthButtonContainer>
-          {/* 로그인 여부에 따라 다른 버튼을 렌더링 */}
-          {isLoggedIn ? (
-            <>
-              <AuthButton onClick={() => handleLogout()}>로그아웃</AuthButton>
-              <AuthButton onClick={() => navigate("/my")}>
-                마이페이지
-              </AuthButton>
-            </>
-          ) : (
-            <>
-              {/* <AuthButton onClick={handleLoginClick}>로그인</AuthButton> */}
-              {/* <AuthButton onClick={handleLogin}>로그인</AuthButton> */}
-              <AuthButton onClick={() => navigate("/login")}>로그인</AuthButton>
-              <AuthButton onClick={() => navigate("/signup")}>
-                회원가입
-              </AuthButton>
-            </>
-          )}
-        </AuthButtonContainer>
-        {/* <AuthButtonContainer>
+    <>
+      <GlobalStyle />
+      <HeaderContainer>
+        <div>
+          <LeftImage
+            src={LogoImage}
+            alt="left-image"
+            onClick={() => handleImageClick("/")}
+          />
+          <AuthButtonContainer>
+            {/* 로그인 여부에 따라 다른 버튼을 렌더링 */}
+            {isLoggedIn ? (
+              <>
+                <AuthButton onClick={() => handleLogout()}>로그아웃</AuthButton>
+                <AuthButton onClick={() => navigate("/my")}>
+                  마이페이지
+                </AuthButton>
+              </>
+            ) : (
+              <>
+                {/* <AuthButton onClick={handleLoginClick}>로그인</AuthButton> */}
+                {/* <AuthButton onClick={handleLogin}>로그인</AuthButton> */}
+                <AuthButton onClick={() => navigate("/login")}>
+                  로그인
+                </AuthButton>
+                <AuthButton onClick={() => navigate("/signup")}>
+                  회원가입
+                </AuthButton>
+              </>
+            )}
+          </AuthButtonContainer>
+          {/* <AuthButtonContainer>
         <AuthButton onClick={() => navigate("/login")}>로그인</AuthButton>
         <AuthButton onClick={() => navigate("/signup")}>회원가입</AuthButton>
       </AuthButtonContainer> */}
-        {/* :종: 알림 벨 아이콘 + 드롭다운 */}
-        <div
-          style={{
-            position: "absolute",
-            top: 38,
-            right: 350,
-            cursor: "pointer",
-          }}
-          onClick={() => setDropdownOpen(!dropdownOpen)}
-        >
-          <BellIcon src={AlertImage} />
-          {notifications.length > 0 && <span style={{ color: "red" }}> ●</span>}
-        </div>
-        {dropdownOpen && (
+          {/* :종: 알림 벨 아이콘 + 드롭다운 */}
           <div
-            ref={dropdownRef}
             style={{
               position: "absolute",
-              top: "60px",
-              right: "100px",
-              width: "250px",
-              background: "white",
-              border: "1px solid #ddd",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              borderRadius: "8px",
-              zIndex: 999,
+              top: 38,
+              right: 350,
+              cursor: "pointer",
             }}
+            onClick={() => setDropdownOpen(!dropdownOpen)}
           >
-            <ul style={{ listStyle: "none", padding: "1rem", margin: 0 }}>
-              {notifications.length === 0 ? (
-                <li style={{ color: "#888" }}>알림이 없습니다</li>
-              ) : (
-                notifications.map((n, i) => (
-                  <li
-                    key={i}
-                    style={{
-                      padding: "0.5rem 0",
-                      borderBottom: "1px solid #eee",
-                    }}
-                  >
-                    {n.content}
-                  </li>
-                ))
-              )}
-            </ul>
+            <BellIcon src={AlertImage} />
+            {notifications.length > 0 && (
+              <span style={{ color: "red" }}> ●</span>
+            )}
           </div>
-        )}
-        <BoardButtonContainer>
-          <BoardButtonWrapper onClick={() => navigate("/walk")}>
-            <BoardButtonImage
-              src={WalkButtonImage}
-              onClick={() => handleImageClick("/walk")}
-            />
-            <BoardButtonText onClick={() => handleTextClick("/walk")}>
-              산책 게시판
-            </BoardButtonText>
-          </BoardButtonWrapper>
+          {dropdownOpen && (
+            <div
+              ref={dropdownRef}
+              style={{
+                position: "absolute",
+                top: "60px",
+                right: "100px",
+                width: "250px",
+                background: "white",
+                border: "1px solid #ddd",
+                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+                borderRadius: "8px",
+                zIndex: 999,
+              }}
+            >
+              <ul style={{ listStyle: "none", padding: "1rem", margin: 0 }}>
+                {notifications.length === 0 ? (
+                  <li style={{ color: "#888" }}>알림이 없습니다</li>
+                ) : (
+                  notifications.map((n, i) => (
+                    <li
+                      key={i}
+                      style={{
+                        padding: "0.5rem 0",
+                        borderBottom: "1px solid #eee",
+                      }}
+                    >
+                      {n.content}
+                    </li>
+                  ))
+                )}
+              </ul>
+            </div>
+          )}
+          <BoardButtonContainer>
+            <BoardButtonWrapper onClick={() => navigate("/walk")}>
+              <BoardButtonImage
+                src={WalkButtonImage}
+                onClick={() => handleImageClick("/walk")}
+              />
+              <BoardButtonText onClick={() => handleTextClick("/walk")}>
+                산책 게시판
+              </BoardButtonText>
+            </BoardButtonWrapper>
 
-          <BoardButtonWrapper onClick={() => navigate("/sell")}>
-            <BoardButtonImage
-              src={SellButtonImage}
-              onClick={() => handleImageClick("/sell")}
-            />
-            <BoardButtonText onClick={() => handleTextClick("/sell")}>
-              나눔 게시판
-            </BoardButtonText>
-          </BoardButtonWrapper>
+            <BoardButtonWrapper onClick={() => navigate("/sell")}>
+              <BoardButtonImage
+                src={SellButtonImage}
+                onClick={() => handleImageClick("/sell")}
+              />
+              <BoardButtonText onClick={() => handleTextClick("/sell")}>
+                나눔 게시판
+              </BoardButtonText>
+            </BoardButtonWrapper>
 
-          <BoardButtonWrapper onClick={() => navigate("/hire")}>
-            <BoardButtonImage
-              src={JobButtonImage}
-              onClick={() => handleImageClick("/hire")}
-            />
-            <BoardButtonText onClick={() => handleTextClick("/hire")}>
-              알바 게시판
-            </BoardButtonText>
-          </BoardButtonWrapper>
-          <BoardButtonWrapper onClick={() => navigate("/petshow")}>
-            <BoardButtonImage
-              src={PetStarImage}
-              onClick={() => handleImageClick("/petshow")}
-            />
-            <BoardButtonText onClick={() => handleTextClick("/petshow")}>
-              게스타그램
-            </BoardButtonText>
-          </BoardButtonWrapper>
-        </BoardButtonContainer>
-      </div>
-    </HeaderContainer>
+            <BoardButtonWrapper onClick={() => navigate("/hire")}>
+              <BoardButtonImage
+                src={JobButtonImage}
+                onClick={() => handleImageClick("/hire")}
+              />
+              <BoardButtonText onClick={() => handleTextClick("/hire")}>
+                알바 게시판
+              </BoardButtonText>
+            </BoardButtonWrapper>
+            <BoardButtonWrapper onClick={() => navigate("/petshow")}>
+              <BoardButtonImage
+                src={PetStarImage}
+                onClick={() => handleImageClick("/petshow")}
+              />
+              <BoardButtonText onClick={() => handleTextClick("/petshow")}>
+                게스타그램
+              </BoardButtonText>
+            </BoardButtonWrapper>
+          </BoardButtonContainer>
+        </div>
+      </HeaderContainer>
+    </>
   );
 }
 

@@ -19,7 +19,7 @@ const Sidebar = styled.div`
   width: 200px;
   padding: 10px;
   border-radius: 10px;
-  background-color: #e0f7ff;
+  background-color: #a2e4b8;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 `;
 
@@ -35,7 +35,7 @@ const SidebarTitle = styled.h3`
   margin-left: 25px;
   text-align: left;
   margin-bottom: 10px;
-  color: #007acc;
+  color: #727d73;
 `;
 
 const SidebarLabel = styled.label`
@@ -43,7 +43,7 @@ const SidebarLabel = styled.label`
   text-align: left;
   display: block;
   margin-bottom: 8px;
-  color: #007acc;
+  color: #727d73;
 `;
 
 const SidebarInput = styled.input`
@@ -119,7 +119,7 @@ const PaginationWrapper = styled.div`
 `;
 
 const PaginationButton = styled.button`
-  background-color: #00bfff;
+  background-color: #a2e4b8;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -129,7 +129,7 @@ const PaginationButton = styled.button`
   font-size: 16px;
 
   &:disabled {
-    background-color: #ccefff;
+    background-color: #a2e4b8;
     color: #aaa;
     cursor: not-allowed;
   }
@@ -138,10 +138,10 @@ const PaginationButton = styled.button`
 const CreateButton = styled(PaginationButton)`
   position: absolute;
   right: 0;
-  background-color: #007acc;
+  background-color: #a2e4b8;
 
   &:hover {
-    background-color: #005c99;
+    background-color: #6dbe92;
     color: white;
   }
 `;
@@ -149,7 +149,7 @@ const CreateButton = styled(PaginationButton)`
 const PageNumber = styled.span`
   font-size: 18px;
   font-weight: bold;
-  color: #007acc;
+  color: #a2e4b8;
 `;
 
 // 지역 및 카테고리 매핑

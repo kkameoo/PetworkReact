@@ -112,6 +112,7 @@ const UserInfo = styled.div`
 `;
 
 const Button = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #fdfdfd;
   border: none;
   padding: 6px 14px; /* 버튼 크기 줄이기 */
@@ -337,18 +338,20 @@ function MainPage() {
           </PostsWrapper>
         </SectionWrapper>
       </ContentArea>
-      <UserInfoContainer>
-        <UserTitle>📍 사용자 정보</UserTitle>
-        <UserInfo>
-          <div>
-            <strong>이메일:</strong> {user.email}
-          </div>
-          <div>
-            <strong>닉네임:</strong> {user.nickname}
-          </div>
-        </UserInfo>
-        <Button onClick={() => navigate("/my")}>마이페이지</Button>
-      </UserInfoContainer>
+      {isLoggedin && (
+        <UserInfoContainer>
+          <UserTitle>📍 사용자 정보</UserTitle>
+          <UserInfo>
+            <div>
+              <strong>이메일:</strong> {user.email}
+            </div>
+            <div>
+              <strong>닉네임:</strong> {user.nickname}
+            </div>
+          </UserInfo>
+          <Button onClick={() => navigate("/my")}>마이페이지</Button>
+        </UserInfoContainer>
+      )}
     </PageLayout>
   );
 }
