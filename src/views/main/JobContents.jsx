@@ -184,6 +184,7 @@ const PaginationWrapper = styled.div`
 `;
 
 const PaginationButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #00bfff;
   color: white;
   border: none;
@@ -201,6 +202,7 @@ const PaginationButton = styled.button`
 `;
 
 const CreateButton = styled(PaginationButton)`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   position: absolute;
   right: 0;
   background-color: #007acc;
@@ -212,6 +214,7 @@ const CreateButton = styled(PaginationButton)`
 `;
 
 const PageNumber = styled.span`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 18px;
   font-weight: bold;
   color: #007acc;
