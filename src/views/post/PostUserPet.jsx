@@ -113,7 +113,7 @@ const CATEGORY_ID = [
   [3, "대형"],
 ];
 
-function PostUserPet(onSubmitSuccess) {
+function PostUserPet({ onSubmitSuccess }) {
   const [petName, setPetName] = useState("");
   const [petType, setPetType] = useState("");
   const [petIntroduce, setPetIntroduce] = useState("");
@@ -158,7 +158,10 @@ function PostUserPet(onSubmitSuccess) {
 
       if (response.ok) {
         alert("게시물이 성공적으로 등록되었습니다!");
-        onSubmitSuccess();
+        if (typeof onSubmitSuccess === "function") {
+          onSubmitSuccess();
+        }
+
         navigate("/");
       } else {
         alert("게시물 등록 실패. 다시 시도해주세요.");
