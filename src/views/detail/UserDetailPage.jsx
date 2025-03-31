@@ -75,7 +75,7 @@ const BoardNav = styled.div`
 const BoardButton = styled.button`
   padding: 10px 15px;
   border: none;
-  background: ${(props) => (props.isActive ? "#a2e4b8" : "#ddd")};
+  background: ${(props) => (props.isActive ? "#a2e4b8" : "#a2e4b8")};
   color: ${(props) => (props.isActive ? "white" : "black")};
   border-radius: 5px;
   cursor: pointer;
@@ -90,7 +90,7 @@ const BoardButton = styled.button`
 const BoardContent = styled.div`
   margin-top: 20px;
   padding: 15px;
-  background: #f9f9f9;
+  background: #a2e4b8;
   border-radius: 10px;
   display: flex;
   flex-wrap: wrap;
@@ -99,7 +99,7 @@ const BoardContent = styled.div`
 `;
 
 const PostCard = styled.div`
-  background: #fff6e0;
+  background: #ecebde;
   border-radius: 10px;
   padding: 1rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);

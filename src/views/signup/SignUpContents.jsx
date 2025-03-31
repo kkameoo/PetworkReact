@@ -11,7 +11,7 @@ const SignupContainer = styled.div`
 `;
 const Title = styled.h2`
   font-size: 60px;
-  color: #007acc;
+  color: #6dbe92;
   margin-bottom: 20px;
 `;
 const Form = styled.form`
@@ -30,17 +30,19 @@ const Label = styled.label`
   margin-bottom: 5px;
 `;
 const Input = styled.input`
-   padding: 12px;
+  padding: 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
   margin-bottom: 20px;
   font-size: 14px;
   &:focus {
     outline: none;
-    border-color: #93C572;
+    border-color: #93c572;
+  }
 `;
+
 const Select = styled.select`
-   padding: 12px;
+  padding: 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
   margin-bottom: 15px;
@@ -48,10 +50,12 @@ const Select = styled.select`
   background: white;
   &:focus {
     outline: none;
-    border-color: #93C572;
+    border-color: #93c572;
+  }
 `;
+
 const Button = styled.button`
-  background-color: #007acc;
+  background-color: #a2e4b8;
   color: white;
   padding: 12px;
   font-size: 16px;
@@ -60,7 +64,7 @@ const Button = styled.button`
   cursor: pointer;
   transition: background 0.3s ease;
   &:hover {
-    background-color: #00bfff;
+    background-color: #6dbe92;
   }
 `;
 const ErrorMessage = styled.p`
@@ -467,7 +471,7 @@ const SignupContents = () => {
           </ModalBackdrop>
         )}
 
-        {isEmailVerified && <p>이메일 인증 완료 ✅</p>}
+        {isEmailVerified && <p>이메일 인증 완료 </p>}
 
         {/* 비밀번호 입력 */}
         <Input
@@ -530,7 +534,7 @@ const SignupContents = () => {
             setFormData((prev) => ({
               ...prev,
               localSi: e.target.value,
-              localGu: "", // ✅ 시 변경 시 군/구 초기화
+              localGu: "", //  시 변경 시 군/구 초기화
             }));
           }}
         >

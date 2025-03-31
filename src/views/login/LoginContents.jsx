@@ -30,7 +30,7 @@ const Title = styled.h1`
   font-weight: bold;
   text-align: center;
   margin-bottom: 20px;
-  color: #007acc;
+  color: #a2e4b8;
 `;
 
 const InputWrapper = styled.div`
@@ -53,14 +53,14 @@ const Input = styled.input`
   margin-bottom: 20px;
 
   &:focus {
-    border-color: #007acc;
+    border-color: #f1f0e8;
     outline: none;
   }
 `;
 
 const Button = styled.button`
   width: 100%;
-  background-color: #007acc;
+  background-color: #a2e4b8;
   color: white;
   border: none;
   padding: 12px;
@@ -73,7 +73,7 @@ const Button = styled.button`
   margin-bottom: 20px;
 
   &:hover {
-    background-color: #005f99;
+    background-color: #6dbe92;
   }
 `;
 
