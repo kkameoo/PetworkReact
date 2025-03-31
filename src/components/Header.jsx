@@ -138,24 +138,89 @@ function Header({ handleLogout, isLoggedIn }) {
 
   const [notifications, setNotifications] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [isRead, setIsRead] = useState(true);
   const dropdownRef = useRef();
+
+  const checkNotification = () => {
+    let flag = false;
+    notifications.map((data)=> {
+      if(data.read === false) flag = true;
+    })
+    if(flag === true) {
+      setIsRead(false);
+    } else {
+      setIsRead(true);
+    }
+  }
+
+  const updateIsRead = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/alarm/isread/${user.userId}`,
+        {
+          method: "PUT",
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        console.log("isRead가 수정되었습니다.");
+      } else if (response.status === 404){
+        console.log("읽음 처리 할 데이터가 없습니다.");
+      } else {
+        console.log("에러 발생");
+      }
+      
+    } catch (error) {
+      console.error("수정 오류:", error);
+    }
+    getAlarms();
+  }
+
+  const deleteNotification = async (notificationId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/alarm/${notificationId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        console.log("isRead가 삭제되었습니다.");
+      } else {
+        console.log("에러 발생");
+      }
+      
+    } catch (error) {
+      console.error("삭제 오류:", error);
+    }
+    getAlarms();
+  }
+
+  const getAlarms = async () => {
+    // 로그인 후 저장된 알람 불러오기
+    fetch(`http://localhost:8087/alarm/list/byuser/` + user.userId)
+    .then((res) => res.json())
+    // .then((data) => setNotifications(data))
+    .then((data) => {
+      console.log("불러온 알림:", data);
+      setNotifications(data);
+    })
+    .catch((err) => console.error("알림 불러오기 실패", err));
+  }
 
   useEffect(() => {
     if (user) {
       connectSocket(user.userId, (noti) => {
         setNotifications((prev) => [noti, ...prev]);
       });
-      // 로그인 후 저장된 알람 불러오기
-      fetch(`http://localhost:8087/alarm/list/byuser/` + user.userId)
-        .then((res) => res.json())
-        // .then((data) => setNotifications(data))
-        .then((data) => {
-          console.log("불러온 알림:", data);
-          setNotifications(data);
-        })
-        .catch((err) => console.error("알림 불러오기 실패", err));
+      getAlarms();
     }
   }, [user]);
+
+  useEffect(() => {
+    checkNotification();
+  }, [notifications])
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -219,10 +284,13 @@ function Header({ handleLogout, isLoggedIn }) {
               right: 350,
               cursor: "pointer",
             }}
-            onClick={() => setDropdownOpen(!dropdownOpen)}
+            onClick={() => {
+              setDropdownOpen(!dropdownOpen);
+              updateIsRead();
+            }}
           >
             <BellIcon src={AlertImage} />
-            {notifications.length > 0 && (
+            {!isRead && (
               <span style={{ color: "red" }}> ●</span>
             )}
           </div>
@@ -253,7 +321,7 @@ function Header({ handleLogout, isLoggedIn }) {
                         borderBottom: "1px solid #eee",
                       }}
                     >
-                      {n.content}
+                    <button onClick={() => deleteNotification(n.notificationId)} >x</button> {n.content}
                     </li>
                   ))
                 )}
