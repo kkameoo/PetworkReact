@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
 import defaultProfile from "../../assets/basic.jpg";
+import { useNavigate } from "react-router-dom";
 
 const UserDetailPage = () => {
   // const [user, setUser] = useState(null);
@@ -16,6 +17,7 @@ const UserDetailPage = () => {
 
   const [selectedBoard, setSelectedBoard] = useState("community");
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
 
   const API_POST_URL = "http://localhost:8087/api/board";
 
@@ -82,7 +84,10 @@ const UserDetailPage = () => {
       <BoardContent>
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) => (
-            <PostCard key={post.id}>
+            <PostCard
+              key={post.id}
+              onClick={() => navigate(`/board/${post.id}`)}
+            >
               <h4>{post.title}</h4>
               <p>{post.content}</p>
             </PostCard>
