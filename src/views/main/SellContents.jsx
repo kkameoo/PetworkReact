@@ -506,7 +506,7 @@ const SellContents = () => {
                   onClick={() => goToDetail(post.id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <ReportOverlay style={{ backgroundColor }} />
+                  {user?.admin && <ReportOverlay style={{ backgroundColor }} />}
                   <ProductImage
                     src={imageMap[post.id] || DEFAULT_IMAGE}
                     alt={post.title}
@@ -515,7 +515,7 @@ const SellContents = () => {
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{CATEGORY_ID[post.category]}</Seller>
-                  {user?.is_admin && (
+                  {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}
                 </ProductCard>

@@ -579,7 +579,7 @@ const JobContents = () => {
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{CATEGORY_ID[post.category]}</Seller>
-                  {user?.is_admin && (
+                  {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}
                 </ProductCard>
