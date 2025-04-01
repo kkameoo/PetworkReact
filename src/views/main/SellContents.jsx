@@ -325,7 +325,7 @@ const SellContents = () => {
   const [selectedRegion, setSelectedRegion] = useState("전체");
   const [selectedGu, setSelectedGu] = useState("전체");
   const [searchTerm, setSearchTerm] = useState("");
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [imageMap, setImageMap] = useState({});
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
@@ -489,15 +489,6 @@ const SellContents = () => {
               ))}
             </CategorySection>
           </Sidebar>
-
-          {/* 관리자 모드 알림 */}
-          {user?.admin && (
-            <div
-              style={{ marginLeft: "20px", color: "red", fontWeight: "bold" }}
-            >
-              관리자 모드 활성화됨 ✅
-            </div>
-          )}
 
           {/* 게시글 리스트 */}
 
