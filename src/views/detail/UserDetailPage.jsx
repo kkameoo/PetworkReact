@@ -299,6 +299,21 @@ const UserDetailPage = () => {
     }
   };
 
+  const getBoardPath = (type, id) => {
+    switch (type) {
+      case 1:
+        return `/${id}`;
+      case 2:
+        return `/trade/${id}`;
+      case 3:
+        return `/hire/${id}`;
+      case 4:
+        return `/petstagram/${id}`;
+      default:
+        return `/board/${id}`;
+    }
+  };
+
   return (
     <Container>
       {user ? (
@@ -360,7 +375,7 @@ const UserDetailPage = () => {
             ) : (
               <PostCard
                 key={post.id}
-                onClick={() => navigate(`/board/${post.id}`)}
+                onClick={() => navigate(getBoardPath(post.type, post.id))}
               >
                 <h4>{post.title}</h4>
                 <p>{post.content}</p>
