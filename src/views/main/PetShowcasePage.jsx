@@ -38,9 +38,11 @@ const TopTenItem = styled.li`
 
 const SortButtons = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-end; /* 오른쪽 정렬 */
   margin-bottom: 20px;
+  gap: 10px; /* 버튼 사이 간격 */
 `;
+
 
 const SortButton = styled.button`
   background-color: ${(props) => (props.active ? "#00BFFF" : "#e0e0e0")};
@@ -49,10 +51,25 @@ const SortButton = styled.button`
   border-radius: 8px;
   padding: 10px 15px;
   font-size: 15px;
-  margin-left: 10px;
   cursor: pointer;
   &:hover {
     background-color: #00bfff;
+    color: white;
+  }
+`;
+
+const CreateButton = styled.button`
+  background-color: #00bfff;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #007acc;
+
+  &:hover {
+    background-color: #005c99;
     color: white;
   }
 `;
@@ -88,9 +105,18 @@ const PostViews = styled.p`
   font-size: 14px;
   color: #666;
 `;
+/* 페이지네이션 */
+const PaginationWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  position: relative;
+`;
 
-const CreateButton = styled.button`
-  background-color: #00bfff;
+const PaginationButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  background-color: #a2e4b8;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -99,15 +125,20 @@ const CreateButton = styled.button`
   border-radius: 5px;
   font-size: 16px;
 
-  position: absolute;
-  right: 0;
-  background-color: #007acc;
-
-  &:hover {
-    background-color: #005c99;
-    color: white;
+  &:disabled {
+    background-color: #a2e4b8;
+    color: #aaa;
+    cursor: not-allowed;
   }
 `;
+
+const PageNumber = styled.span`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  font-size: 18px;
+  font-weight: bold;
+  color: #a2e4b8;
+`;
+
 
 const regionMap = {
   1: "서울시",
@@ -253,12 +284,12 @@ const regionGuMap = {
     "옹진군",
   ],
 };
+const ITEMS_PER_PAGE = 12;
 
 const PetShowcasePage = () => {
   const [sortType, setSortType] = useState("latest");
   const API_POST_URL = "http://localhost:8087/api/board";
   const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
-  // const navigate = useNavigate();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -269,11 +300,10 @@ const PetShowcasePage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [user, setUser] = useState({});
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
+  const [imageMap, setImageMap] = useState({});
   const [petPosts, setPetPosts] = useState([]);
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
-  //   로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
       const response = await fetch("http://localhost:8087/api/user/session", {
@@ -313,9 +343,7 @@ const PetShowcasePage = () => {
           type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
-          regionDong: `${regionMap[item.localSi] || ""} ${
-            guMap[item.localGu] || ""
-          }`,
+          regionDong: `${regionMap[item.localSi] || ""} ${guMap[item.localGu] || ""}`,
           image: item.image || "/no-image.png",
         }));
         setPetPosts(postData.filter((p) => p.type === 4));
@@ -326,6 +354,7 @@ const PetShowcasePage = () => {
       })
       .catch((err) => console.error("게시글 불러오기 오류:", err));
   }, []);
+
   const fetchImage = async (postId) => {
     try {
       const res = await fetch(`${API_IMAGE_URL}/${postId}`);
@@ -344,7 +373,6 @@ const PetShowcasePage = () => {
     }
   };
 
-  // 필터링 로직
   useEffect(() => {
     const filtered = posts.filter((post) => {
       const matchesCategory =
@@ -365,6 +393,13 @@ const PetShowcasePage = () => {
     if (sortType === "views") return b.views - a.views;
     return 0;
   });
+  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const displayedPosts = filteredPosts.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
 
   const topTenPosts = [...petPosts]
     .sort((a, b) => b.views - a.views)
@@ -386,16 +421,11 @@ const PetShowcasePage = () => {
       </TopTenContainer>
 
       <SortButtons>
-        <SortButton
-          active={sortType === "latest"}
-          onClick={() => setSortType("latest")}
-        >
+        <CreateButton onClick={() => navigate("/postPet")}>게시물 작성</CreateButton>
+        <SortButton active={sortType === "latest"} onClick={() => setSortType("latest")}>
           최신순
         </SortButton>
-        <SortButton
-          active={sortType === "views"}
-          onClick={() => setSortType("views")}
-        >
+        <SortButton active={sortType === "views"} onClick={() => setSortType("views")}>
           조회순
         </SortButton>
       </SortButtons>
@@ -412,9 +442,24 @@ const PetShowcasePage = () => {
           </PostCard>
         ))}
       </PostGrid>
-      <CreateButton onClick={() => navigate("/postPet")}>
-        게시물 작성
-      </CreateButton>
+            {/* 페이지네이션 */}
+            <PaginationWrapper>
+          <PaginationButton
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+          >
+            이전
+          </PaginationButton>
+          <PageNumber>
+            {currentPage} / {totalPages}
+          </PageNumber>
+          <PaginationButton
+            disabled={currentPage === totalPages}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            다음
+          </PaginationButton>
+        </PaginationWrapper>
     </Container>
   );
 };
