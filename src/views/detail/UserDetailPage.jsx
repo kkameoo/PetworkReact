@@ -200,6 +200,18 @@ const UserDetailPage = () => {
     petCategory: "",
     petIntroduce: "",
   });
+
+  const CATEGORY_ID = [
+    [1, "소형"],
+    [2, "중형"],
+    [3, "대형"],
+  ];
+
+  const getCategoryLabel = (id) => {
+    const found = CATEGORY_ID.find(([key]) => key === Number(id));
+    return found ? found[1] : "알 수 없음";
+  };
+
   const [newPhotoFile, setNewPhotoFile] = useState(null);
   const navigate = useNavigate();
 
@@ -366,11 +378,13 @@ const UserDetailPage = () => {
                   setIsModalOpen(true);
                 }}
               >
+                <h3>
+                  <img
+                    src={`http://localhost:8087/api/photo/pet/upload/${post.petId}`}
+                    alt="펫 이미지"
+                  />
+                </h3>
                 <h4>{post.petName}</h4>
-                <p>
-                  {post.petType} - {post.petCategory}
-                </p>
-                <p>{post.petIntroduce}</p>
               </PostCard>
             ) : (
               <PostCard
@@ -396,7 +410,8 @@ const UserDetailPage = () => {
             />
             <h3>{selectedPet.petName}</h3>
             <p>
-              {selectedPet.petType} - {selectedPet.petCategory}
+              {selectedPet.petType} -{" "}
+              {getCategoryLabel(selectedPet.petCategory)}
             </p>
             <p>{selectedPet.petIntroduce}</p>
             <ModalButton onClick={() => openEditModal(selectedPet)}>
@@ -446,14 +461,16 @@ const UserDetailPage = () => {
                 setEditForm({ ...editForm, petType: e.target.value })
               }
             />
-            <input
-              type="text"
-              placeholder="카테고리"
+            <select
               value={editForm.petCategory}
-              onChange={(e) =>
-                setEditForm({ ...editForm, petCategory: e.target.value })
-              }
-            />
+              onChange={(e) => setEditForm(e.target.value)}
+            >
+              {CATEGORY_ID.map(([id, name]) => (
+                <option key={id} value={id}>
+                  {name}
+                </option>
+              ))}
+            </select>
             <textarea
               placeholder="소개"
               value={editForm.petIntroduce}
