@@ -123,6 +123,20 @@ const EditButton = styled.button`
     color: white;
   }
 `;
+const DeleteButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  position: absolute;
+  right: 10px;
+  width: 150px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  &:hover {
+    background-color: darkred;
+  }
+`;
 
 const DetailPage = () => {
   const { postId } = useParams();
@@ -239,7 +253,33 @@ const DetailPage = () => {
     }
   };
 
-  const onBack = () => navigate("/");
+  const deletePost = async () => {
+    if (!window.confirm("정말로 삭제하시겠습니까?")) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/board/${postId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // 세션 인증이 필요할 경우
+        }
+      );
+
+      if (response.ok) {
+        alert("게시물이 삭제되었습니다.");
+        navigate("/"); // 삭제 후 홈으로 이동
+      } else {
+        const errorData = await response.json();
+        alert(`삭제 실패: ${errorData.message}`);
+      }
+    } catch (error) {
+      console.error("게시물 삭제 오류:", error);
+      alert("삭제 중 오류가 발생했습니다.");
+    }
+  };
 
   useEffect(() => {
     if (postId) {
@@ -282,6 +322,7 @@ const DetailPage = () => {
       <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
         게시물 수정
       </EditButton>
+      <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>
     </DetailWrapper>
   );
 };
