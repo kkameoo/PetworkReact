@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Report from "../report/Report";
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -8,22 +9,6 @@ const DetailWrapper = styled.div`
   margin-top: 30px;
   display: flex;
   flex-direction: column;
-`;
-
-const BackButton = styled.button`
-  align-self: flex-end;
-  width: 80px;
-  height: 60px;
-  margin-top: 10px;
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  &:hover {
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color: #ccc;
-  }
 `;
 
 const ProductBody = styled.div`
@@ -225,7 +210,6 @@ const HireDetailPage = () => {
       console.error("이미지 로드 에러:", error);
     }
   };
-  const onBack = () => navigate("/");
   const deletePost = async () => {
     if (!window.confirm("정말로 삭제하시겠습니까?")) return;
 
@@ -264,7 +248,6 @@ const HireDetailPage = () => {
 
   return (
     <DetailWrapper>
-      <BackButton onClick={onBack}>← 뒤로</BackButton>
       <ProductBody>
         <ProductLeft>
           <ProductImage
@@ -284,6 +267,7 @@ const HireDetailPage = () => {
                   {newPost.regionSi} {newPost.regionGu}
                 </Location>
               </div>
+              <Report postId={postId} userId={user.userId} />
             </SellerLeft>
           </SellerInfo>
         </ProductLeft>

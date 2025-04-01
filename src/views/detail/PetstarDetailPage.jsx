@@ -50,7 +50,7 @@ const ProductBody = styled.div`
 const ProductImage = styled.img`
   border: 1px solid rgb(207, 207, 207);
   border-radius: 25px;
-  width: 700px;
+  width: 400px;
   height: auto;
   margin-bottom: 30px;
 `;

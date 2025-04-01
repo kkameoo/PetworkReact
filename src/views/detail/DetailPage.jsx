@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, data } from "react-router-dom";
 import styled from "styled-components";
 import { getCategory } from "../../services/dataService";
+import Report from "../report/Report";
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -308,6 +309,7 @@ const DetailPage = () => {
                   {newPost.regionSi} {newPost.regionGu}
                 </Location>
               </div>
+              <Report postId={postId} userId={user.userId} />
             </SellerLeft>
           </SellerInfo>
         </ProductLeft>
