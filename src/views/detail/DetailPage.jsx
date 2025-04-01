@@ -138,7 +138,37 @@ const DeleteButton = styled.button`
     background-color: darkred;
   }
 `;
+const ChatButton = styled.button`
+  width: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px; /* 아이콘과 텍스트 간격 */
+  background-color: #007acc;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, transform 0.2s ease;
 
+  &:hover {
+    background-color: #005fa3;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    background-color: #004080;
+    transform: translateY(0);
+  }
+`;
+
+const ChatIcon = styled.span`
+  font-size: 20px;
+`;
 const DetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
@@ -293,7 +323,6 @@ const DetailPage = () => {
 
   return (
     <DetailWrapper>
-      {/* <BackButton onClick={onBack}>← 뒤로</BackButton> */}
       <ProductBody>
         <ProductLeft>
           <ProductImage
@@ -319,6 +348,9 @@ const DetailPage = () => {
             {category[newPost.category].name} | {newPost.updateTime}
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
+          <ChatButton>
+            <ChatIcon>💬</ChatIcon> 채팅 시작
+          </ChatButton>
         </ProductRight>
       </ProductBody>
       {isLoggedIn && user?.userId === newPost.sellerUid && (

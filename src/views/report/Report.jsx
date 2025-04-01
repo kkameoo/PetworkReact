@@ -23,7 +23,7 @@ const ReportButton = styled.button`
 const ReportPopup = styled.div`
   position: fixed;
   width: 300px;
-  height: 350px;  // 팝업 높이를 크게 증가
+  height: 350px; // 팝업 높이를 크게 증가
   border: 1px solid black;
   top: 50%;
   left: 50%;
@@ -80,13 +80,13 @@ const CancelButton = styled.button`
 `;
 
 const Textarea = styled.textarea`
-  height: 200px;  // 신고 내용 입력란 높이를 크게 설정
+  height: 200px; // 신고 내용 입력란 높이를 크게 설정
   margin-top: 10px;
-  padding: 12px;  // 넉넉한 여백 추가
+  padding: 12px; // 넉넉한 여백 추가
   border-radius: 8px;
   border: 1px solid #ccc;
-  font-size: 16px;  // 글자 크기를 키워서 가독성 향상
-  line-height: 1.6;  // 줄 간격을 넓혀 가독성 향상
+  font-size: 16px; // 글자 크기를 키워서 가독성 향상
+  line-height: 1.6; // 줄 간격을 넓혀 가독성 향상
 `;
 
 function Report({ postId, userId }) {
@@ -144,22 +144,6 @@ function Report({ postId, userId }) {
 
       alert("신고가 접수되었습니다.");
       handleCloseReportPopup();
-
-      // 신고 완료 후 report_cnt 업데이트
-      const updateResponse = await fetch(
-        `http://localhost:8087/api/report/${postId}/reportCnt`,
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ report_cnt: 1 }),
-        }
-      );
-
-      if (!updateResponse.ok) {
-        throw new Error("report_cnt 업데이트 실패");
-      }
     } catch (error) {
       console.error("🚨 신고 오류:", error);
       alert("신고 처리 중 오류가 발생했습니다.");
