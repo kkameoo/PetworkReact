@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, use } from "react";
 import styled from "styled-components";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -103,25 +103,12 @@ const SendButton = styled.button`
 
 const RoomContents = () => {
   const SOCKET_URL = "http://localhost:8087/ws";
-  // const [messages, setMessages] = useState([
-  //   {
-  //     sender: "USER2",
-  //     text: "안녕!",
-  //     timestamp: new Date().toLocaleTimeString(),
-  //   },
-  //   {
-  //     sender: "USER1",
-  //     text: "안녕! 반가워!",
-  //     timestamp: new Date().toLocaleTimeString(),
-  //   },
-  // ]);
-  // const [inputText, setInputText] = useState("");
-  const [currentUser, setCurrentUser] = useState(null);
-  // const [users, setUsers] = useState(["USER1", "USER2"]);
+  const API_URL = "http://localhost:8087/api";
   const [chatrooms, setChatrooms] = useState([]);
   const [chatroom, setChatroom] = useState(null);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [roomUserlist, setRoomUserList] = useState([]);
   const [connectedUser, setConnectedUser] = useState("");
 
   const chatroomRef = useRef(null);
@@ -147,10 +134,21 @@ const RoomContents = () => {
   //     console.error("로그인 상태 확인 실패:", error);
   //   }
   // };
+  const handleConnectUser = () => {
+    const list = roomUserlist.map((user) => {
+      connectedUser.map((cUser) => {
+        if (cUser.userId === user.userId) {
+          user.connected = true;
+        }
+      });
+      return user;
+    });
+    setRoomUserList(list);
+  };
 
   const getChatHistory = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/chat/" + postId, {
+      const response = await fetch(API_URL + "/chat/" + postId, {
         method: "GET",
         credentials: "include",
       });
@@ -178,7 +176,7 @@ const RoomContents = () => {
   const getChatrooms = async () => {
     try {
       const response = await fetch(
-        "http://localhost:8087/api/chat/room/byuser/" + user.userId,
+        API_URL + "/chat/room/byuser/" + user.userId,
         {
           method: "GET",
           credentials: "include",
@@ -195,13 +193,10 @@ const RoomContents = () => {
 
   const getRoomInfo = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8087/api/chat/room/board/" + postId,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
+      const response = await fetch(API_URL + "/chat/room/board/" + postId, {
+        method: "GET",
+        credentials: "include",
+      });
       if (response.ok) {
         const data = await response.json();
         setChatroom(data);
@@ -209,6 +204,60 @@ const RoomContents = () => {
     } catch (error) {
       console.error("채팅 방 정보 가져오기 실패", error);
     }
+  };
+
+  const getChatroomUserList = async () => {
+    try {
+      const response = await fetch(
+        API_URL + "/chat/room/userlist/" + chatroom.chatroomId,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      const responseData = await response.text();
+
+      if (response.ok) {
+        console.log(responseData);
+        const jsonData = JSON.parse(responseData);
+        const updatedData = jsonData.map((data) => ({
+          ...data,
+          connected: false,
+        }));
+        setRoomUserList(updatedData);
+      } else {
+        console.log(responseData);
+      }
+    } catch (error) {
+      console.error("채팅 방 유저 정보 가져오기 실패", error);
+    }
+  };
+
+  const checkUserlist = async () => {
+    if (!chatroom || !user) return;
+    const roomUserData = {
+      chatroomId: chatroom.chatroomId,
+      userId: user.userId,
+      userName: user.nickname,
+    };
+
+    try {
+      const response = await fetch(API_URL + "/chat/room/userlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(roomUserData),
+        credentials: "include",
+      });
+      const responseData = await response.text();
+      if (response.ok && responseData == "NoInsert") {
+        console.log(responseData);
+      } else if (response.ok) {
+        console.log(responseData);
+      }
+    } catch (error) {
+      console.error("오류:", error.message);
+    }
+    getChatroomUserList();
   };
 
   useEffect(() => {
@@ -219,6 +268,7 @@ const RoomContents = () => {
 
   useEffect(() => {
     if (!chatroom || !user) return;
+    checkUserlist();
 
     chatroomRef.current = chatroom;
     userRef.current = user;
@@ -298,6 +348,11 @@ const RoomContents = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (!roomUserlist || !connectedUser) return;
+    handleConnectUser();
+  }, [connectedUser]);
+
   const sendMessage = () => {
     if (!message.trim()) return;
     stompClientRef.current.publish({
@@ -331,7 +386,8 @@ const RoomContents = () => {
     window.location.reload();
   };
   if (!user) return <div>인증이 필요...</div>;
-  if (!chatroom || !user || !connectedUser) return <div>로딩 중...</div>;
+  if (!chatroom || !user || !connectedUser || !roomUserlist)
+    return <div>로딩 중...</div>;
 
   return (
     <ChatContainer>
@@ -349,14 +405,32 @@ const RoomContents = () => {
       </MessageList>
       */}
       <UserContainer>
-        <h4>접속 중인 유저</h4>
+        <h4>유저</h4>
         <div>
+          ------------ (Redis 저장소)
           {connectedUser.length === 0 ? (
-            <p>d</p>
+            <p>접속 중인 유저 없음</p>
           ) : (
             <div>
               {connectedUser.map((user, idx) => (
                 <div key={idx}>{user.userName}</div>
+              ))}
+            </div>
+          )}
+          ------------
+        </div>
+        <div>
+          {roomUserlist.length === 0 ? (
+            <p>유저 없음</p>
+          ) : (
+            <div>
+              {roomUserlist.map((user, idx) => (
+                <div key={idx}>
+                  {user.userName}
+                  {user.connected && (
+                    <span style={{ color: "green" }}> ● </span>
+                  )}
+                </div>
               ))}
             </div>
           )}
@@ -369,7 +443,7 @@ const RoomContents = () => {
           ) : (
             <div>
               {chatrooms.map((room, idx) => (
-                <button key={idx} onClick={() => goToDetail(room.chatroomId)}>
+                <button key={idx} onClick={() => goToDetail(room.boardId)}>
                   {room.chatroomName}
                 </button>
               ))}
@@ -379,7 +453,7 @@ const RoomContents = () => {
       </UserContainer>
       <h2>{chatroom.chatroomName}</h2>
       {messages.length === 0 ? (
-        <p>메시지를 불러오는 중...</p>
+        <p>메시지...</p>
       ) : (
         <MessageList>
           {messages.map((msg, idx) => (

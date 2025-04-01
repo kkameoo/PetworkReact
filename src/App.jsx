@@ -33,10 +33,12 @@ import PostPet from "./views/post/postPet";
 import PetstarDetailPage from "./views/detail/PetstarDetailPage";
 import PostUserPet from "./views/post/PostUserPet";
 import ViewMap from "./views/map/ViewMap";
+import { connectSocket } from "./hooks/socket";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
+  const [notifications, setNotifications] = useState([]);
   // const value = useMemo(() => ({ user }), [user]);
   const navigate = useNavigate();
 
@@ -86,14 +88,40 @@ function App() {
     }
   };
 
+  const getAlarms = async () => {
+    // 로그인 후 저장된 알람 불러오기
+    fetch(`http://localhost:8087/alarm/list/byuser/` + user.userId)
+      .then((res) => res.json())
+      // .then((data) => setNotifications(data))
+      .then((data) => {
+        console.log("불러온 알림:", data);
+        setNotifications(data);
+      })
+      .catch((err) => console.error("알림 불러오기 실패", err));
+  };
+
   // 처음 컴포넌트가 임포트 될 때 유저세션을 가져오는 메서드
   useEffect(() => {
     checkLoginStatus();
+    if (user) {
+      console.log("여기");
+      connectSocket(user.userId, (noti) => {
+        console.log("abc");
+        setNotifications((prev) => [noti, ...prev]);
+      });
+      getAlarms();
+    }
   }, [user]);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
-      <Header handleLogout={invalidSession} isLoggedIn={isLoggedIn} />
+      <Header
+        handleLogout={invalidSession}
+        isLoggedIn={isLoggedIn}
+        notifications={notifications}
+        setNotifications={setNotifications}
+        getAlarms={getAlarms}
+      />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/main" element={<MainPage />} />
