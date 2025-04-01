@@ -40,6 +40,7 @@ const ProfileSection = styled.div`
     margin: 10px 0 5px;
   }
   p {
+    font-family: "Ownglyph_meetme-Rg", sans-serif;
     color: gray;
   }
 `;
@@ -51,6 +52,7 @@ const ButtonSection = styled.div`
 `;
 
 const ActionButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   padding: 10px 15px;
   border: none;
   background: #a2e4b8;
@@ -73,6 +75,7 @@ const BoardNav = styled.div`
 `;
 
 const BoardButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   padding: 10px 15px;
   border: none;
   background: ${(props) => (props.isActive ? "#a2e4b8" : "#a2e4b8")};
@@ -99,6 +102,7 @@ const BoardContent = styled.div`
 `;
 
 const PostCard = styled.div`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background: #ecebde;
   border-radius: 10px;
   padding: 1rem;
@@ -119,6 +123,7 @@ const PostCard = styled.div`
   }
 
   h4 {
+    font-family: "Ownglyph_meetme-Rg", sans-serif;
     font-size: 1rem;
     margin-top: 0.5rem;
     color: #3b2e1a;
@@ -155,6 +160,7 @@ const ModalContent = styled.div`
 
   input,
   textarea {
+    font-family: "Ownglyph_meetme-Rg", sans-serif;
     width: 100%;
     margin-bottom: 0.5rem;
     padding: 0.5rem;
@@ -164,6 +170,7 @@ const ModalContent = styled.div`
 `;
 
 const ModalButton = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #a2e4b8;
   color: white;
   border: none;
@@ -174,6 +181,7 @@ const ModalButton = styled.button`
 `;
 
 const CloseButton = styled(ModalButton)`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: gray;
 `;
 
@@ -195,7 +203,7 @@ const UserDetailPage = () => {
   const [newPhotoFile, setNewPhotoFile] = useState(null);
   const navigate = useNavigate();
 
-  const API_POST_URL = "http://localhost:8087/api/board";
+  const API_POST_URL = `http://localhost:8087/api/board/user/${user.userId}`;
 
   useEffect(() => {
     fetch(API_POST_URL)
