@@ -319,10 +319,14 @@ const DetailPage = () => {
           <ProductDescription>{newPost.content}</ProductDescription>
         </ProductRight>
       </ProductBody>
-      <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
-        게시물 수정
-      </EditButton>
-      <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>
+      {isLoggedIn && user?.userId === newPost.sellerUid && (
+        <>
+          <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
+            게시물 수정
+          </EditButton>
+          <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>
+        </>
+      )}
     </DetailWrapper>
   );
 };
