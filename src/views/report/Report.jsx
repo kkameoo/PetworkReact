@@ -23,13 +23,14 @@ const ReportButton = styled.button`
 const ReportPopup = styled.div`
   position: fixed;
   width: 300px;
-  height: 180px;
+  height: 350px;  // 팝업 높이를 크게 증가
   border: 1px solid black;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
   padding: 20px;
+  padding-bottom: 40px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   z-index: 1000;
@@ -37,22 +38,27 @@ const ReportPopup = styled.div`
 
 const PopupContent = styled.div`
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 `;
 
 const PopupButtons = styled.div`
   display: flex;
   justify-content: space-around;
   margin-top: 15px;
+  margin-bottom: 10px;
 `;
 
 const SubmitButton = styled.button`
   background-color: #ff4d4d;
   color: white;
   border: none;
-  padding: 8px 15px;
+  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
 
   &:hover {
     background-color: #d93636;
@@ -63,14 +69,24 @@ const CancelButton = styled.button`
   background-color: gray;
   color: white;
   border: none;
-  padding: 8px 15px;
+  padding: 10px 20px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 16px;
 
   &:hover {
     background-color: darkgray;
   }
+`;
+
+const Textarea = styled.textarea`
+  height: 200px;  // 신고 내용 입력란 높이를 크게 설정
+  margin-top: 10px;
+  padding: 12px;  // 넉넉한 여백 추가
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 16px;  // 글자 크기를 키워서 가독성 향상
+  line-height: 1.6;  // 줄 간격을 넓혀 가독성 향상
 `;
 
 function Report({ postId, userId }) {
@@ -170,7 +186,7 @@ function Report({ postId, userId }) {
               ))}
             </select>
             <label>신고 내용</label>
-            <textarea
+            <Textarea
               value={reportComment}
               onChange={(e) => setReportComment(e.target.value)}
               required
