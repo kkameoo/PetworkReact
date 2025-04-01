@@ -164,6 +164,8 @@ function MainPage() {
       const response = await fetch(
         `http://localhost:8087/api/photo/board/upload/${boardId}`
       );
+      // const responseText = await response.text();
+      // console.log(responseText);
       if (response.ok) {
         const base64Data = await response.json();
         const base64String = Array.isArray(base64Data)
@@ -175,8 +177,11 @@ function MainPage() {
         return null;
       }
     } catch (error) {
-      console.error("이미지 로딩 에러:", error);
-      return null;
+      if (error instanceof SyntaxError) {
+        console.log("JSON 파싱 오류: 사진이 존재하지 않습니다.");
+      } else {
+        console.error("네트워크 또는 서버 오류:", error.message);
+      }
     }
   };
   const fetchPostsWithImages = async (url, setPosts, filterType = null) => {
