@@ -326,7 +326,7 @@ const WalkContents = () => {
   const [selectedRegion, setSelectedRegion] = useState("전체");
   const [selectedGu, setSelectedGu] = useState("전체");
   const [searchTerm, setSearchTerm] = useState("");
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
@@ -491,21 +491,12 @@ const WalkContents = () => {
             </CategorySection>
           </Sidebar>
 
-          {/* 관리자 모드 알림 */}
-          {user?.is_admin && (
-            <div
-              style={{ marginLeft: "20px", color: "red", fontWeight: "bold" }}
-            >
-              관리자 모드 활성화됨 ✅
-            </div>
-          )}
-
           {/* 게시글 리스트 */}
 
           <ProductList>
             {displayedPosts.map((post) => {
               console.log(post);
-              const opacity = user?.is_admin
+              const opacity = user?.admin
                 ? Math.min(post.reportCnt / 20, 1)
                 : 0;
               const backgroundColor = `rgba(255, 0, 0, ${opacity})`;
@@ -525,7 +516,7 @@ const WalkContents = () => {
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{CATEGORY_ID[post.category]}</Seller>
-                  {user?.is_admin && (
+                  {user?.iadmin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}
                 </ProductCard>
