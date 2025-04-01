@@ -355,6 +355,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
   useEffect(() => {
     if (postId) {
+      checkLoginStatus();
       fetchPostDetail();
       fetchImageBase64();
       fetchComment();
