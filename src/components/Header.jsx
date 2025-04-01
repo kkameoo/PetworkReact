@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../hooks/useAuth";
-import { connectSocket } from "../hooks/socket";
 import WalkButtonImage from "../assets/KakaoTalk_20250320_191922332.jpg";
 import SellButtonImage from "../assets/KakaoTalk_20250320_183321982.jpg";
 import JobButtonImage from "../assets/KakaoTalk_20250320_184745054.jpg";
@@ -10,6 +9,8 @@ import PetStarImage from "../assets/KakaoTalk_20250320_174016642.jpg";
 import LogoImage from "../assets/TalkMedia_i_2a4ebc04392c.png.png";
 import AlertImage from "../assets/bell.png";
 import GlobalStyle from "../data/GlobalStyle";
+import { Client } from "@stomp/stompjs";
+import SockJS from "sockjs-client";
 
 const HeaderContainer = styled.div`
   /* position: relative; */
@@ -202,13 +203,22 @@ function Header({
   };
 
   useEffect(() => {
-    if (user) {
-      connectSocket(user.userId, (noti) => {
-        console.log("abc");
-        setNotifications((prev) => [noti, ...prev]);
-      });
-      getAlarms();
-    }
+    if (!user) return;
+    const socket = new SockJS("http://localhost:8087/ws/alarm");
+    const stompClient = new Client({
+      webSocketFactory: () => socket,
+      onConnect: () => {
+        stompClient.subscribe(
+          `/user/${user.userId}/notification`,
+          (message) => {
+            console.log(message);
+            setNotifications((prev) => [...prev, JSON.parse(message.body)]);
+          }
+        );
+      },
+    });
+    stompClient.activate();
+    getAlarms();
   }, [user]);
 
   useEffect(() => {

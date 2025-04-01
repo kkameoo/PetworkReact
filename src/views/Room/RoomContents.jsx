@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
@@ -102,7 +102,7 @@ const SendButton = styled.button`
 `;
 
 const RoomContents = () => {
-  const SOCKET_URL = "http://localhost:8087/ws";
+  const SOCKET_URL = "http://localhost:8087/ws/chat";
   const API_URL = "http://localhost:8087/api";
   const [chatrooms, setChatrooms] = useState([]);
   const [chatroom, setChatroom] = useState(null);
