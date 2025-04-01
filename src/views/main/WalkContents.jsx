@@ -492,7 +492,7 @@ const WalkContents = () => {
           </Sidebar>
 
           {/* 관리자 모드 알림 */}
-          {user?.is_admin && (
+          {user?.admin && (
             <div
               style={{ marginLeft: "20px", color: "red", fontWeight: "bold" }}
             >
@@ -505,7 +505,7 @@ const WalkContents = () => {
           <ProductList>
             {displayedPosts.map((post) => {
               console.log(post);
-              const opacity = user?.is_admin
+              const opacity = user?.admin
                 ? Math.min(post.reportCnt / 20, 1)
                 : 0;
               const backgroundColor = `rgba(255, 0, 0, ${opacity})`;

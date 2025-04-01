@@ -135,7 +135,7 @@ function MainPage() {
   const [petstarPosts, setPetstarPosts] = useState([]);
   const [imageMap, setImageMap] = useState({});
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState(null);
   const [isLoggedin, setIsLoggedIn] = useState();
 
   const checkLoginStatus = async () => {
@@ -146,6 +146,7 @@ function MainPage() {
       });
       if (response.ok) {
         const data = await response.json();
+        console.log("유저", data);
         setIsLoggedIn(true);
         setUser(data);
         console.log(data + "세션정보");
@@ -348,6 +349,14 @@ function MainPage() {
             <div>
               <strong>닉네임:</strong> {user.nickname}
             </div>
+            {/* 관리자 모드 알림 */}
+            {user?.admin && (
+              <div
+                style={{ marginLeft: "20px", color: "red", fontWeight: "bold" }}
+              >
+                관리자 모드 활성화됨 ✅
+              </div>
+            )}
           </UserInfo>
           <Button onClick={() => navigate("/my")}>마이페이지</Button>
         </UserInfoContainer>
