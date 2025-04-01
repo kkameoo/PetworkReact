@@ -43,7 +43,6 @@ const SortButtons = styled.div`
   gap: 10px; /* 버튼 사이 간격 */
 `;
 
-
 const SortButton = styled.button`
   background-color: ${(props) => (props.active ? "#00BFFF" : "#e0e0e0")};
   color: ${(props) => (props.active ? "white" : "#333")};
@@ -138,7 +137,6 @@ const PageNumber = styled.span`
   font-weight: bold;
   color: #a2e4b8;
 `;
-
 
 const regionMap = {
   1: "서울시",
@@ -343,14 +341,18 @@ const PetShowcasePage = () => {
           type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
-          regionDong: `${regionMap[item.localSi] || ""} ${guMap[item.localGu] || ""}`,
+          regionDong: `${regionMap[item.localSi] || ""} ${
+            guMap[item.localGu] || ""
+          }`,
           image: item.image || "/no-image.png",
         }));
-        setPetPosts(postData.filter((p) => p.type === 4));
-        console.log("데이터:", data);
-        setPosts(postData);
-        setFilteredPosts(postData);
-        postData.forEach((post) => fetchImage(post.id));
+
+        const petOnlyPosts = postData.filter((p) => p.type === 4);
+        setPetPosts(petOnlyPosts);
+        setPosts(petOnlyPosts);
+        setFilteredPosts(petOnlyPosts);
+
+        petOnlyPosts.forEach((post) => fetchImage(post.id));
       })
       .catch((err) => console.error("게시글 불러오기 오류:", err));
   }, []);
@@ -400,7 +402,6 @@ const PetShowcasePage = () => {
     startIndex + ITEMS_PER_PAGE
   );
 
-
   const topTenPosts = [...petPosts]
     .sort((a, b) => b.views - a.views)
     .slice(0, 10);
@@ -419,19 +420,25 @@ const PetShowcasePage = () => {
           ))}
         </TopTenList>
       </TopTenContainer>
-
       <SortButtons>
-        <CreateButton onClick={() => navigate("/postPet")}>게시물 작성</CreateButton>
-        <SortButton active={sortType === "latest"} onClick={() => setSortType("latest")}>
+        <CreateButton onClick={() => navigate("/postPet")}>
+          게시물 작성
+        </CreateButton>
+        <SortButton
+          active={sortType === "latest"}
+          onClick={() => setSortType("latest")}
+        >
           최신순
         </SortButton>
-        <SortButton active={sortType === "views"} onClick={() => setSortType("views")}>
+        <SortButton
+          active={sortType === "views"}
+          onClick={() => setSortType("views")}
+        >
           조회순
         </SortButton>
       </SortButtons>
-
       <PostGrid>
-        {petPosts.slice(0, 12).map((post) => (
+        {displayedPosts.map((post) => (
           <PostCard key={post.id} onClick={() => goToDetail(post.id)}>
             <PostImage
               src={imageMap[post.id] || DEFAULT_IMAGE}
@@ -442,24 +449,24 @@ const PetShowcasePage = () => {
           </PostCard>
         ))}
       </PostGrid>
-            {/* 페이지네이션 */}
-            <PaginationWrapper>
-          <PaginationButton
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(currentPage - 1)}
-          >
-            이전
-          </PaginationButton>
-          <PageNumber>
-            {currentPage} / {totalPages}
-          </PageNumber>
-          <PaginationButton
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(currentPage + 1)}
-          >
-            다음
-          </PaginationButton>
-        </PaginationWrapper>
+      {/* 페이지네이션 */}
+      <PaginationWrapper>
+        <PaginationButton
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+        >
+          이전
+        </PaginationButton>
+        <PageNumber>
+          {currentPage} / {totalPages}
+        </PageNumber>
+        <PaginationButton
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+        >
+          다음
+        </PaginationButton>
+      </PaginationWrapper>
     </Container>
   );
 };
