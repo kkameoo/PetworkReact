@@ -313,7 +313,7 @@ const HireDetailPage = () => {
                   {newPost.regionSi} {newPost.regionGu}
                 </Location>
               </div>
-              <Report postId={postId} userId={user.userId} />
+              <Report postId={postId} />
             </SellerLeft>
           </SellerInfo>
         </ProductLeft>

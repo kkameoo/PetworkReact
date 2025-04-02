@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Report from "../report/Report";
@@ -177,9 +177,31 @@ const ButtonWrapper = styled.div`
   top: 20px; /* 위쪽 여백 */
   right: -116px; /* 오른쪽 여백. */
 `;
+const MapBox = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  flex-wrap: wrap;
+`;
+
+const MapContainer = styled.div`
+  width: 600px;
+  height: 400px;
+  border: 2px solid grey;
+`;
+
+const MapTitle = styled.div`
+  width: 600px;
+  height: 50px;
+  background: white;
+  border: 2px solid grey;
+  border-radius: 5px 5px 0 0;
+`;
 
 const TradeDetailPage = () => {
   const { postId } = useParams();
+  const mapContainer = useRef(null);
+  const mapInstance = useRef(null);
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
@@ -210,6 +232,55 @@ const TradeDetailPage = () => {
 
   useEffect(() => {
     checkLoginStatus();
+    const loadKakaoMapScript = () => {
+      return new Promise((resolve, reject) => {
+        if (window.kakao && window.kakao.maps) {
+          resolve();
+          return;
+        }
+        const script = document.createElement("script");
+        script.src =
+          "//dapi.kakao.com/v2/maps/sdk.js?appkey=144d2d61e948e38e61879a857c778d34&autoload=false";
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error("카카오 맵 API 로드 실패"));
+        document.head.appendChild(script);
+      });
+    };
+
+    const initMap = () => {
+      const options = {
+        center: new window.kakao.maps.LatLng(37.5665, 126.978),
+        level: 3,
+      };
+
+      mapInstance.current = new window.kakao.maps.Map(
+        mapContainer.current,
+        options
+      );
+
+      const marker = new window.kakao.maps.Marker({
+        position: new window.kakao.maps.LatLng(37.5665, 126.978),
+        text: " 약속 장소 ",
+      });
+
+      marker.setMap(mapInstance.current);
+      mapInstance.current.setDraggable(false);
+      mapInstance.current.setZoomable(false);
+    };
+
+    loadKakaoMapScript()
+      .then(() => window.kakao.maps.load(initMap))
+      .catch((error) => console.error("Kakao Map error:", error));
+
+    return () => {
+      const scripts = document.head.getElementsByTagName("script");
+      for (let script of scripts) {
+        if (script.src.includes("sdk.js")) {
+          document.head.removeChild(script);
+        }
+      }
+    };
   }, []);
 
   const fetchPostDetail = async () => {
@@ -323,7 +394,7 @@ const TradeDetailPage = () => {
                   {newPost.regionSi} {newPost.regionGu}
                 </Location>
               </div>
-              <Report postId={postId} userId={user.userId} />
+              <Report postId={postId} />
             </SellerLeft>
           </SellerInfo>
         </ProductLeft>
@@ -333,6 +404,10 @@ const TradeDetailPage = () => {
             {newPost.category} | {newPost.updateTime} {newPost.price}원
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
+          <MapBox>
+            <MapTitle></MapTitle>
+            <MapContainer ref={mapContainer}></MapContainer>
+          </MapBox>
           <ChatButton onClick={() => navigate(`/room/${postId}`)}>
             <ChatIcon>💬</ChatIcon> 채팅 시작
           </ChatButton>

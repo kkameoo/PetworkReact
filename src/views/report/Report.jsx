@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useAuth } from "../../hooks/useAuth";
 
 const ReportButton = styled.button`
   font-size: 13px;
@@ -89,11 +90,11 @@ const Textarea = styled.textarea`
   line-height: 1.6; // 줄 간격을 넓혀 가독성 향상
 `;
 
-function Report({ postId, userId }) {
+function Report({ postId }) {
   const [showReportPopup, setShowReportPopup] = useState(false);
   const [reportReason, setReportReason] = useState(1);
   const [reportComment, setReportComment] = useState();
-
+  const { user } = useAuth();
   // 신고 사유 목록
   const reportReasons = [
     [1, "허위 매물"],
@@ -119,10 +120,14 @@ function Report({ postId, userId }) {
       alert("신고 사유를 선택해주세요.");
       return;
     }
+    if (!user) {
+      alert("로그인을 하셔야 합니다.");
+      return;
+    }
 
     const reportData = {
       boardId: Number(postId),
-      senderId: userId,
+      senderId: user.userId,
       reportType: Number(reportReason),
       reportComment: reportComment,
     };
