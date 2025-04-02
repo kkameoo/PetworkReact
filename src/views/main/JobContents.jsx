@@ -270,7 +270,7 @@ const JobContents = () => {
     }
   };
 
-  const Category = async () => {
+  const getCategory = async () => {
     try {
       const response = await fetch(META_URL);
       if (response.ok) {
@@ -287,7 +287,7 @@ const JobContents = () => {
 
   useEffect(() => {
     checkLoginStatus();
-    Category();
+    getCategory();
   }, []);
 
   useEffect(() => {

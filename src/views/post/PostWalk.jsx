@@ -71,6 +71,8 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
+  const [regionMap, setRegionMap] = useState([]);
+  const META_URL = "/src/data/localCategory.json";
 
   const CATEGORY_ID = [
     [1, "소형"],
@@ -151,34 +153,6 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     ],
   };
 
-  const regionMap = [
-    [1, "서울시"],
-    [2, "수원시"],
-    [3, "성남시"],
-    [4, "안양시"],
-    [5, "부천시"],
-    [6, "광명시"],
-    [7, "평택시"],
-    [8, "시흥시"],
-    [9, "안산시"],
-    [10, "고양시"],
-    [11, "과천시"],
-    [12, "구리시"],
-    [13, "남양주시"],
-    [14, "오산시"],
-    [15, "화성시"],
-    [16, "김포시"],
-    [17, "광주시"],
-    [18, "하남시"],
-    [19, "이천시"],
-    [20, "양평군"],
-    [21, "동두천시"],
-    [22, "연천군"],
-    [23, "가평군"],
-    [24, "포천시"],
-    [25, "인천시"],
-  ];
-
   const guMap = [
     [1, "종로구"],
     [2, "중구"],
@@ -241,36 +215,21 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     [59, "옹진군"],
   ];
 
-  // const siGuMapping = {
-  //   1: [
-  //     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-  //     22, 23, 24,
-  //   ], // 서울시
-  //   2: [25, 26, 27, 28],
-  //   3: [29, 30, 31],
-  //   4: [32, 33],
-  //   5: [34, 35, 36],
-  //   6: [37],
-  //   7: [38],
-  //   8: [39],
-  //   9: [40, 41],
-  //   10: [42, 43, 44],
-  //   11: [45],
-  //   12: [46],
-  //   13: [47],
-  //   14: [48],
-  //   15: [49],
-  //   16: [],
-  //   17: [],
-  //   18: [],
-  //   19: [],
-  //   20: [],
-  //   21: [],
-  //   22: [],
-  //   23: [],
-  //   24: [],
-  //   25: [50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
-  // };
+  const getCategory = async () => {
+    try {
+      const response = await fetch(META_URL);
+      if (response.ok) {
+        const data = await response.json();
+        setRegionMap(data.regions);
+      } else {
+        throw new Error("Failed to Fetch Data");
+      }
+    } catch (error) {
+      console.error("Error fetching JSON:", error);
+      throw error;
+    }
+  };
+
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -304,6 +263,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     };
 
     fetchUserData();
+    getCategory();
   }, []);
   const handleSubmit = async (event) => {
     event.preventDefault();
