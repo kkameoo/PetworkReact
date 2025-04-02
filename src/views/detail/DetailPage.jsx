@@ -296,8 +296,11 @@ const DetailPage = () => {
           <SellerInfo>
             <SellerLeft>
               <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
-              <div>
-                <Nickname>{newPost.seller}</Nickname>
+              <div
+                onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
+                style={{ cursor: "pointer" }}
+              >
+                작성자: {newPost.seller}
                 <Location>
                   {newPost.regionSi} {newPost.regionGu}
                 </Location>

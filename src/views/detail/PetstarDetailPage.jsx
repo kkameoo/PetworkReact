@@ -283,9 +283,10 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
-        updateTime: formattedDateTime,
+        updateTime: new Date(data.update).toLocaleString(),
         seller: data.nickname,
       };
+      console.log("data", data);
       setNewPost(postData);
     } catch (error) {
       console.error("상세 데이터 불러오기 오류:", error);
@@ -379,8 +380,16 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
               src="../src/assets/userimage.jpg"
               alt="판매자 이미지"
             />
+            <div
+              onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
+              style={{ cursor: "pointer" }}
+            >
+              작성자: {newPost.seller}
+              <Location>
+                {newPost.regionSi} {newPost.regionGu}
+              </Location>
+            </div>
             <div>
-              <Nickname>{newPost.seller}</Nickname>
               <ProductCategory>
                 {newPost.category} | {newPost.updateTime}
               </ProductCategory>
