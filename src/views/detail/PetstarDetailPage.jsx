@@ -25,22 +25,6 @@ const DetailWrapper = styled.div`
   flex-direction: column;
 `;
 
-const BackButton = styled.button`
-  align-self: flex-end;
-  width: 80px;
-  height: 60px;
-  margin-top: 10px;
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  &:hover {
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color: #ccc;
-  }
-`;
-
 const ProductBody = styled.div`
   width: 100%;
   text-align: left;
@@ -367,8 +351,6 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
   return (
     <DetailWrapper>
-      <BackButton onClick={onBack}>← 뒤로</BackButton>
-
       <ProductDetailWrapper>
         <ProductBody>
           <ProductTitle>{newPost.title}</ProductTitle>

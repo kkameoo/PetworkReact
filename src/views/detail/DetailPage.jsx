@@ -195,6 +195,27 @@ const DetailPage = () => {
   const [imageBase64, setImageBase64] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
+  const fetchImageBase64 = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:8087/api/photo/board/upload/${postId}`
+      );
+      if (response.ok) {
+        const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
+        const base64String = Array.isArray(base64Data)
+          ? base64Data[0]
+          : base64Data;
+
+        const mimeType = "image/jpeg"; // 필요 시 서버에서 MIME 타입도 함께 받아올 수 있음
+        const fullBase64 = `data:${mimeType};base64,${base64String}`;
+        setImageBase64(fullBase64);
+      } else {
+        console.error("이미지 로드 실패");
+      }
+    } catch (error) {
+      console.error("이미지 로드 에러:", error);
+    }
+  };
   // 로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
@@ -214,6 +235,13 @@ const DetailPage = () => {
       setIsLoggedIn(false);
     }
   };
+
+  useEffect(() => {
+    if (postId) {
+      fetchPostDetail();
+      fetchImageBase64();
+    }
+  }, [postId]);
 
   useEffect(() => {
     checkLoginStatus();
