@@ -33,6 +33,7 @@ const TopTenItem = styled.li`
     border-radius: 30px;
     object-fit: cover;
     border: 2px solid #ffd38b;
+    cursor: pointer;
   }
 `;
 
@@ -92,6 +93,7 @@ const PostImage = styled.img`
   height: 200px;
   object-fit: cover;
   border-radius: 8px;
+  cursor: pointer;
 `;
 
 const PostTitle = styled.h4`
@@ -415,7 +417,11 @@ const PetShowcasePage = () => {
         <TopTenList>
           {topTenPosts.map((post) => (
             <TopTenItem key={post.id}>
-              <img src={imageMap[post.id] || DEFAULT_IMAGE} />
+              <img
+                src={imageMap[post.id] || DEFAULT_IMAGE}
+                key={post.id}
+                onClick={() => goToDetail(post.id)}
+              />
             </TopTenItem>
           ))}
         </TopTenList>
