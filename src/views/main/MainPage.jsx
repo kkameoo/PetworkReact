@@ -246,6 +246,9 @@ function MainPage() {
     };
     fetchAll();
   }, []);
+  const PopularPosts = [...petstarPosts]
+    .sort((a, b) => b.clickCnt - a.clickCnt)
+    .slice(0, 10);
 
   const renderPostCard = (post, image) => {
     if (post.type === 4) {
@@ -334,11 +337,10 @@ function MainPage() {
             )}
           </PostsWrapper>
         </SectionWrapper>
-
         <SectionWrapper>
           <SectionTitle>펫스타그램 인기글</SectionTitle>
           <PostsWrapper>
-            {petstarPosts.map((post) =>
+            {PopularPosts.map((post) =>
               renderPostCard(post, imageMap[post.boardId], "petstar")
             )}
           </PostsWrapper>
