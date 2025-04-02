@@ -343,6 +343,7 @@ const PetShowcasePage = () => {
           type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
+          updateTime: new Date(data.update).toLocaleString(),
           regionDong: `${regionMap[item.localSi] || ""} ${
             guMap[item.localGu] || ""
           }`,
@@ -392,20 +393,23 @@ const PetShowcasePage = () => {
     setFilteredPosts(filtered);
   }, [selectedCategory, selectedRegion, selectedGu, searchTerm, posts]);
 
-  const sortedPosts = [...petPosts].sort((a, b) => {
-    if (sortType === "latest") return b.date - a.date;
-    if (sortType === "views") return b.views - a.views;
+  const sortedFilteredPosts = [...filteredPosts].sort((a, b) => {
+    if (sortType === "latest")
+      return new Date(b.updateTime) - new Date(a.updateTime);
+    if (sortType === "views") return b.clickCnt - a.clickCnt;
     return 0;
   });
-  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
+
+  // 페이지네이션 적용
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const displayedPosts = filteredPosts.slice(
+  const displayedPosts = sortedFilteredPosts.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
+  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
 
   const topTenPosts = [...petPosts]
-    .sort((a, b) => b.views - a.views)
+    .sort((a, b) => b.clickCnt - a.clickCnt)
     .slice(0, 10);
 
   const goToDetail = (postId) => navigate(`/petstarDetail/${postId}`);
