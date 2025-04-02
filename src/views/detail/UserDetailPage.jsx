@@ -320,7 +320,7 @@ const UserDetailPage = () => {
       case 3:
         return `/hire/${id}`;
       case 4:
-        return `/petstagram/${id}`;
+        return `/petstarDetail/${id}`;
       default:
         return `/board/${id}`;
     }

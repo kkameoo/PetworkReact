@@ -97,6 +97,17 @@ const ProductDescription = styled.p`
   font-size: 18px;
   margin-bottom: 20px;
 `;
+
+// 버튼을 오른쪽에 배치하기 위한 Wrapper 추가
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 10px; /* 버튼 간 간격 설정 */
+  margin-top: 20px; /* 버튼을 위로 올리기 */
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  position: absolute;
+  right: 78px; /* 오른쪽 끝으로 배치 */
+`;
+
 const EditButton = styled.button`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #ffd85a;
@@ -107,29 +118,28 @@ const EditButton = styled.button`
   cursor: pointer;
   border-radius: 5px;
   font-size: 16px;
-  /* position: absolute; */
   width: 150px;
-  right: 150px;
 
   &:hover {
     background-color: #005c99;
     color: white;
   }
 `;
+
 const DeleteButton = styled.button`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
-  position: absolute;
-  right: 10px;
   width: 150px;
   background-color: red;
   color: white;
   border: none;
   padding: 10px;
   cursor: pointer;
+
   &:hover {
     background-color: darkred;
   }
 `;
+
 const ChatButton = styled.button`
   width: 150px;
   display: flex;
@@ -161,6 +171,7 @@ const ChatButton = styled.button`
 const ChatIcon = styled.span`
   font-size: 20px;
 `;
+
 const HireDetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
@@ -170,7 +181,7 @@ const HireDetailPage = () => {
   const [imageBase64, setImageBase64] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
-  //   로그인 상태 확인
+  // 로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
       const response = await fetch("http://localhost:8087/api/user/session", {
@@ -224,6 +235,7 @@ const HireDetailPage = () => {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
+
   const fetchImageBase64 = async () => {
     try {
       const response = await fetch(
@@ -241,6 +253,7 @@ const HireDetailPage = () => {
       console.error("이미지 로드 에러:", error);
     }
   };
+
   const deletePost = async () => {
     if (!window.confirm("정말로 삭제하시겠습니까?")) return;
 
@@ -285,15 +298,17 @@ const HireDetailPage = () => {
             src={imageBase64 || DEFAULT_IMAGE}
             alt={newPost.title}
           />
-
           <SellerInfo>
             <SellerLeft>
               <SellerImage
                 src="../src/assets/userimage.jpg"
                 alt="판매자 이미지"
               />
-              <div>
-                <Nickname>{newPost.seller}</Nickname>
+              <div
+                onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
+                style={{ cursor: "pointer" }}
+              >
+                작성자: {newPost.seller}
                 <Location>
                   {newPost.regionSi} {newPost.regionGu}
                 </Location>
@@ -313,13 +328,15 @@ const HireDetailPage = () => {
           </ChatButton>
         </ProductRight>
       </ProductBody>
+
+      {/* .로그인 상태이면서 게시글 작성자가 맞을 경우 수정/삭제 버튼 표시 */}
       {isLoggedIn && user?.userId === newPost.sellerUid && (
-        <>
+        <ButtonWrapper>
           <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
             게시물 수정
           </EditButton>
           <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>
-        </>
+        </ButtonWrapper>
       )}
     </DetailWrapper>
   );

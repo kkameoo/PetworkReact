@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
+/* 전체 컨테이너 */
 const ListContainer = styled.div`
   max-width: 1600px;
   margin: 20px auto;
@@ -10,11 +11,13 @@ const ListContainer = styled.div`
   background-color: #f9fcff;
 `;
 
+/* 메인 콘텐츠 영역 */
 const ContentWrapper = styled.div`
   display: flex;
   gap: 20px;
 `;
 
+/* 카테고리 필터 사이드바 */
 const Sidebar = styled.div`
   width: 200px;
   padding: 10px;
@@ -23,16 +26,19 @@ const Sidebar = styled.div`
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 `;
 
+// 지역 선택 부분을 감싸는 div에 스타일 추가
 const RegionSection = styled.div`
-  max-height: 300px; /* 원하는 최대 높이 */
-  overflow-y: auto; /* 세로 스크롤 추가 */
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
 `;
-
 const CategorySection = styled.div`
   margin-top: 20px;
 `;
 const SidebarTitle = styled.h3`
-  font-family: "Ownglyph_meetme-Rg", sans-serif;
   margin-left: 25px;
   text-align: left;
   margin-bottom: 10px;
@@ -40,28 +46,82 @@ const SidebarTitle = styled.h3`
 `;
 
 const SidebarLabel = styled.label`
-  font-family: "Ownglyph_meetme-Rg", sans-serif;
-  margin-left: 30px;
-  text-align: left;
-  display: block;
-  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 20px;
+  font-size: 14px;
   color: #727d73;
+  transition: all 0.2s ease-in-out;
+  border: 0.5px solid #6dbe92;
+
+  ${({ selected }) =>
+    selected
+      ? `
+    background-color: #6dbe92;
+    color: white;
+    border-color: #6dbe92;
+  `
+      : `
+    background-color : #a2e4b8;
+    &:hover {
+      background-color: #6dbe92;
+    }
+  `}
 `;
 
 const SidebarInput = styled.input`
-  font-family: "Ownglyph_meetme-Rg", sans-serif;
   margin-right: 5px;
+  display: none;
+`;
+// 구선택 드롭다운
+const SelectBox = styled.select`
+  width: 150px;
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid #93c572;
+  border-radius: 8px;
+  background-color: #fff;
+  appearance: none; /* 기본 화살표 제거 */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='gray'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
+  margin-bottom: 20px;
+
+  &:hover {
+    background-color: #ffeadb;
+  }
+
+  &:focus {
+    border-color: #93c572;
+    box-shadow: 0 0 5px rgba(255, 140, 0, 0.5);
+    outline: none;
+  }
+`;
+const Option = styled.option`
+  font-size: 16px;
+  padding: 10px;
+  background-color: #fff;
+  color: #333;
+
+  &:hover {
+    background-color: #93c572;
+    color: white;
+  }
 `;
 
+/* 상품 리스트 */
 const ProductList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
   flex-grow: 1;
 `;
-
 const ProductCard = styled.div`
-  font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: white;
   border-radius: 10px;
   padding: 10px;
@@ -102,6 +162,7 @@ const ReportCount = styled.div`
   margin-top: 5px;
 `;
 
+/* 제목, 가격, 판매자 */
 const ProductTitle = styled.h4`
   font-size: 16px;
   margin: 10px 0;
@@ -134,7 +195,7 @@ const PaginationButton = styled.button`
   font-size: 16px;
 
   &:disabled {
-    background-color: #a2e4b8;
+    background-color: #ccefff;
     color: #aaa;
     cursor: not-allowed;
   }
@@ -156,9 +217,8 @@ const PageNumber = styled.span`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 18px;
   font-weight: bold;
-  color: #a2e4b8;
+  color: #727d73;
 `;
-
 // 지역 및 카테고리 매핑
 const CATEGORY_ID = {
   0: "전체",

@@ -113,10 +113,24 @@ const ProductDescription = styled.p`
   font-size: 18px;
   margin-bottom: 20px;
 `;
-const EditButton = styled.button`
-  font-family: "Ownglyph_meetme-Rg", sans-serif;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 10px; /* 버튼 간 간격 설정. */
+  margin-top: 20px; /* 버튼을 위로 올리기 */
+  justify-content: flex-end; /* 오른쪽 정렬 */
   position: absolute;
-  right: 150px;
+  right: 78px; /* 오른쪽 끝으로 배치 */
+`;
+
+const EditButton = styled.button`
+  background-color: #ffd85a;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
   width: 150px;
 
   &:hover {
@@ -124,20 +138,21 @@ const EditButton = styled.button`
     color: white;
   }
 `;
+
 const DeleteButton = styled.button`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
-  position: absolute;
-  right: 10px;
   width: 150px;
   background-color: red;
   color: white;
   border: none;
   padding: 10px;
   cursor: pointer;
+
   &:hover {
     background-color: darkred;
   }
 `;
+
 const ChatButton = styled.button`
   width: 150px;
   display: flex;
@@ -169,17 +184,16 @@ const ChatButton = styled.button`
 const ChatIcon = styled.span`
   font-size: 20px;
 `;
+
 const DetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
   const [category, setCategory] = useState(null);
   const [imageBase64, setImageBase64] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
-  // const base64String = Array.isArray(base64Data) ? base64Data[0] : base64Data;
 
   const fetchImageBase64 = async () => {
     try {
@@ -187,7 +201,7 @@ const DetailPage = () => {
         `http://localhost:8087/api/photo/board/upload/${postId}`
       );
       if (response.ok) {
-        const base64Data = await response.json(); // ⚠ 서버가 JSON으로 배열 반환하는 경우
+        const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
         const base64String = Array.isArray(base64Data)
           ? base64Data[0]
           : base64Data;
@@ -202,15 +216,7 @@ const DetailPage = () => {
       console.error("이미지 로드 에러:", error);
     }
   };
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
-  //   }, 5000);
-  //   return () => clearInterval(interval);
-  // }, []);
-
-  //   로그인 상태 확인
+  // 로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
       const response = await fetch("http://localhost:8087/api/user/session", {
@@ -221,7 +227,6 @@ const DetailPage = () => {
         const data = await response.json();
         setIsLoggedIn(true);
         setUser(data);
-        console.log(data + "세션정보");
       } else {
         setIsLoggedIn(false);
       }
@@ -231,26 +236,15 @@ const DetailPage = () => {
     }
   };
 
-  // const getCategory = async () => {
-  //   try {
-  //     const response = await fetch("src/data/category.json");
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setCategory(data.walkCategory);
-  //     } else {
-  //       console.error("로그인 상태 확인 실패:");
-  //     }
-  //   } catch (error) {
-  //     console.error("로그인 상태 확인 실패:", error);
-  //   }
-  // };
+  useEffect(() => {
+    if (postId) {
+      fetchPostDetail();
+      fetchImageBase64();
+    }
+  }, [postId]);
 
   useEffect(() => {
     checkLoginStatus();
-    // fetch("src/data/category.json")
-    //   .then((response) => response.json())
-    //   .then((jsonData) => setCategory(jsonData.walkCategory))
-    //   .catch((error) => console.error("Error fetching data:", error));
     getCategory()
       .then(setCategory)
       .catch((error) => console.error("Fetching error:", error));
@@ -277,12 +271,17 @@ const DetailPage = () => {
         updateTime: new Date(data.update).toLocaleString(),
         seller: data.nickname,
       };
-      console.log("Data", data);
       setNewPost(postData);
     } catch (error) {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
+
+  useEffect(() => {
+    if (postId) {
+      fetchPostDetail();
+    }
+  }, [postId]);
 
   const deletePost = async () => {
     if (!window.confirm("정말로 삭제하시겠습니까?")) return;
@@ -312,13 +311,6 @@ const DetailPage = () => {
     }
   };
 
-  useEffect(() => {
-    if (postId) {
-      fetchPostDetail();
-      fetchImageBase64();
-    }
-  }, [postId]);
-
   if (!newPost || !category) return <div>로딩 중...</div>;
 
   return (
@@ -332,8 +324,11 @@ const DetailPage = () => {
           <SellerInfo>
             <SellerLeft>
               <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
-              <div>
-                <Nickname>{newPost.seller}</Nickname>
+              <div
+                onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
+                style={{ cursor: "pointer" }}
+              >
+                작성자: {newPost.seller}
                 <Location>
                   {newPost.regionSi} {newPost.regionGu}
                 </Location>
@@ -353,13 +348,14 @@ const DetailPage = () => {
           </ChatButton>
         </ProductRight>
       </ProductBody>
+
       {isLoggedIn && user?.userId === newPost.sellerUid && (
-        <>
+        <ButtonWrapper>
           <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
             게시물 수정
           </EditButton>
           <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>
-        </>
+        </ButtonWrapper>
       )}
     </DetailWrapper>
   );

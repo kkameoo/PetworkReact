@@ -21,6 +21,7 @@ import EditHirePage from "./views/edit/EditHirePage";
 import EditTradePage from "./views/edit/EditTradePage";
 import Room from "./pages/Room";
 import UserDetailPage from "./views/detail/UserDetailPage";
+import UserProfile from "./pages/UserProfile";
 
 import { useState } from "react";
 import { useEffect } from "react";
@@ -148,6 +149,7 @@ function App() {
         <Route path="/postUserPet" element={<PostUserPet />} />
         <Route path="/postpet" element={<PostUserPet />} />
         <Route path="/viewmap/:lat/:lng" element={<ViewMap />} />
+        <Route path="/profile/:userId" element={<UserProfile />} />
       </Routes>
       <Footer />
     </AuthContext.Provider>
