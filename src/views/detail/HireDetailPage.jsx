@@ -121,7 +121,7 @@ const EditButton = styled.button`
   width: 150px;
 
   &:hover {
-    background-color: #005c99;
+    background-color: #f0ba09;
     color: white;
   }
 `;

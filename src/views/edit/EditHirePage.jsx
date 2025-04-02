@@ -1,8 +1,8 @@
-// PostEditWalk.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; // 스타일을 임포트
 
 const FormContainer = styled.div`
   width: 1600px;
@@ -59,8 +59,39 @@ const SubmitButton = styled.button`
   }
 `;
 
+// DatePicker 스타일
+const StyledDatePicker = styled(DatePicker)`
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  
+  // DatePicker pop-up 스타일
+  .react-datepicker__triangle {
+    display: none;
+  }
+
+  .react-datepicker__header {
+    background-color: #007acc;
+    color: white;
+    border-radius: 10px 10px 0 0;
+  }
+
+  .react-datepicker__day--selected,
+  .react-datepicker__day:hover {
+    background-color: #00bfff;
+    color: white;
+  }
+
+  .react-datepicker__day--outside-month {
+    color: #ccc;
+  }
+`;
+
 const EditHirePage = () => {
-  const { postId } = useParams(); // 게시물 ID
+  const { postId } = useParams();
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
@@ -317,7 +348,7 @@ const EditHirePage = () => {
         </FormRow>
         <FormRow>
           <label>희망 날짜</label>
-          <DatePicker
+          <StyledDatePicker
             selected={hireDate}
             onChange={(date) => setHireDate(date)}
             dateFormat="yyyy-MM-dd"
