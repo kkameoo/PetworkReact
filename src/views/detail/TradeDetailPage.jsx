@@ -409,7 +409,7 @@ const TradeDetailPage = () => {
       </ProductBody>
       {isLoggedIn && user?.userId === newPost.sellerUid && (
         <ButtonWrapper>
-          <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
+          <EditButton onClick={() => navigate(`/editTrade/${postId}`)}>
             게시물 수정
           </EditButton>
           <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>

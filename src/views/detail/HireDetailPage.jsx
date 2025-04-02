@@ -342,7 +342,7 @@ const HireDetailPage = () => {
       {/* .로그인 상태이면서 게시글 작성자가 맞을 경우 수정/삭제 버튼 표시 */}
       {isLoggedIn && user?.userId === newPost.sellerUid && (
         <ButtonWrapper>
-          <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
+          <EditButton onClick={() => navigate(`/editHire/${postId}`)}>
             게시물 수정
           </EditButton>
           <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>
