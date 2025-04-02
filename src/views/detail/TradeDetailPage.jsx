@@ -180,6 +180,9 @@ const MapTitle = styled.div`
   background: white;
   border: 2px solid grey;
   border-radius: 5px 5px 0 0;
+  display: flex;
+  align-items: center;
+  font-size: 25px;
 `;
 
 const TradeDetailPage = () => {
@@ -215,7 +218,6 @@ const TradeDetailPage = () => {
   };
 
   useEffect(() => {
-    checkLoginStatus();
     const loadKakaoMapScript = () => {
       return new Promise((resolve, reject) => {
         if (window.kakao && window.kakao.maps) {
@@ -233,6 +235,7 @@ const TradeDetailPage = () => {
     };
 
     const initMap = () => {
+      if (!mapContainer.current) return;
       const options = {
         center: new window.kakao.maps.LatLng(37.5665, 126.978),
         level: 3,
@@ -265,7 +268,7 @@ const TradeDetailPage = () => {
         }
       }
     };
-  }, []);
+  }, [mapContainer.current]);
 
   const fetchPostDetail = async () => {
     try {
@@ -389,7 +392,7 @@ const TradeDetailPage = () => {
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
           <MapBox>
-            <MapTitle></MapTitle>
+            <MapTitle>지정 장소</MapTitle>
             <MapContainer ref={mapContainer}></MapContainer>
           </MapBox>
           <ChatButton onClick={() => navigate(`/room/${postId}`)}>

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import SideFilter from "../../components/SideFilter";
 
 /* 전체 컨테이너 */
 const ListContainer = styled.div`
@@ -227,151 +228,6 @@ const CATEGORY_ID = {
   3: "대형견",
 };
 
-const regionMap = {
-  1: "서울시",
-  2: "수원시",
-  3: "성남시",
-  4: "안양시",
-  5: "부천시",
-  6: "광명시",
-  7: "평택시",
-  8: "시흥시",
-  9: "안산시",
-  10: "고양시",
-  11: "과천시",
-  12: "구리시",
-  13: "남양주시",
-  14: "오산시",
-  15: "화성시",
-  16: "김포시",
-  17: "광주시",
-  18: "하남시",
-  19: "이천시",
-  20: "양평군",
-  21: "동두천시",
-  22: "연천군",
-  23: "가평군",
-  24: "포천시",
-  25: "인천시",
-};
-
-const guMap = {
-  1: "종로구",
-  2: "중구",
-  3: "용산구",
-  4: "성동구",
-  5: "광진구",
-  6: "동대문구",
-  7: "중랑구",
-  8: "강북구",
-  9: "도봉구",
-  10: "노원구",
-  11: "은평구",
-  12: "서대문구",
-  13: "마포구",
-  14: "양천구",
-  15: "강서구",
-  16: "구로구",
-  17: "금천구",
-  18: "영등포구",
-  19: "동작구",
-  20: "관악구",
-  21: "서초구",
-  22: "강남구",
-  23: "송파구",
-  24: "강동구",
-  25: "장안구",
-  26: "권선구",
-  27: "팔달구",
-  28: "영통구",
-  29: "수정구",
-  30: "중원구",
-  31: "분당구",
-  32: "만안구",
-  33: "동안구",
-  34: "원미구",
-  35: "소사구",
-  36: "오정구",
-  37: "광명구",
-  38: "평택구",
-  39: "시흥구",
-  40: "단원구",
-  41: "상록구",
-  42: "덕양구",
-  43: "일산동구",
-  44: "일산서구",
-  45: "과천구",
-  46: "구리구",
-  47: "남양주구",
-  48: "오산구",
-  49: "화성구",
-  50: "중구(인천)",
-  51: "동구(인천)",
-  52: "미추홀구",
-  53: "연수구",
-  54: "남동구",
-  55: "부평구",
-  56: "계양구",
-  57: "서구(인천)",
-  58: "강화군",
-  59: "옹진군",
-};
-
-const regionGuMap = {
-  서울시: [
-    "종로구",
-    "중구",
-    "용산구",
-    "성동구",
-    "광진구",
-    "동대문구",
-    "중랑구",
-    "강북구",
-    "도봉구",
-    "노원구",
-    "은평구",
-    "서대문구",
-    "마포구",
-    "양천구",
-    "강서구",
-    "구로구",
-    "금천구",
-    "영등포구",
-    "동작구",
-    "관악구",
-    "서초구",
-    "강남구",
-    "송파구",
-    "강동구",
-  ],
-  수원시: ["장안구", "권선구", "팔달구", "영통구"],
-  성남시: ["수정구", "중원구", "분당구"],
-  안양시: ["만안구", "동안구"],
-  부천시: ["원미구", "소사구", "오정구"],
-  광명시: ["광명구"],
-  평택시: ["평택구"],
-  시흥시: ["시흥구"],
-  안산시: ["단원구", "상록구"],
-  고양시: ["덕양구", "일산동구", "일산서구"],
-  과천시: ["과천구"],
-  구리시: ["구리구"],
-  남양주시: ["남양주구"],
-  오산시: ["오산구"],
-  화성시: ["화성구"],
-  인천시: [
-    "중구(인천)",
-    "동구(인천)",
-    "미추홀구",
-    "연수구",
-    "남동구",
-    "부평구",
-    "계양구",
-    "서구(인천)",
-    "강화군",
-    "옹진군",
-  ],
-};
-
 const ITEMS_PER_PAGE = 12;
 
 const WalkContents = () => {
@@ -390,6 +246,8 @@ const WalkContents = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const [regionMap, setRegionMap] = useState([]);
+  const META_URL = "/src/data/localCategory.json";
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -412,19 +270,37 @@ const WalkContents = () => {
     }
   };
 
+  const Category = async () => {
+    try {
+      const response = await fetch(META_URL);
+      if (response.ok) {
+        const data = await response.json();
+        setRegionMap(data.regions);
+      } else {
+        throw new Error("Failed to Fetch Data");
+      }
+    } catch (error) {
+      console.error("Error fetching JSON:", error);
+      throw error;
+    }
+  };
+
   useEffect(() => {
     checkLoginStatus();
+    Category();
   }, []);
 
   useEffect(() => {
+    // 게시글 불러오기
     fetch(API_POST_URL)
       .then((res) => res.json())
       .then((data) => {
         const postData = Object.values(data).map((item) => ({
           id: item.boardId,
           sellerUid: item.userId,
-          regionSi: regionMap[item.localSi] || "알 수 없음",
-          regionGu: guMap[item.localGu] || "알 수 없음",
+          regionSi: regionMap[item.localSi].name || "알 수 없음",
+          regionGu:
+            regionMap[item.localSi].gu[item.localGu].name || "알 수 없음",
           title: item.title,
           content: item.content,
           category: item.walkCategory,
@@ -432,8 +308,8 @@ const WalkContents = () => {
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
           nickname: item.nickname,
-          regionDong: `${regionMap[item.localSi] || ""} ${
-            guMap[item.localGu] || ""
+          regionDong: `${regionMap[item.localSi].name || ""} ${
+            regionMap[item.localSi].gu[item.localGu].name || ""
           }`,
           image: item.image || "/no-image.png",
         }));
@@ -443,8 +319,10 @@ const WalkContents = () => {
         postData.forEach((post) => fetchImage(post.id));
       })
       .catch((err) => console.error("게시글 불러오기 오류:", err));
-  }, []);
+  }, [regionMap]);
+
   const fetchImage = async (postId) => {
+    // 이미지 불러오기
     try {
       const res = await fetch(`${API_IMAGE_URL}/${postId}`);
       if (res.ok) {
@@ -492,67 +370,14 @@ const WalkContents = () => {
       <ListContainer>
         <ContentWrapper>
           {/* 사이드바 */}
-          <Sidebar>
-            <RegionSection>
-              <SidebarTitle>지역 선택</SidebarTitle>
-              {Object.values(regionMap).map((region) => (
-                <SidebarLabel key={region}>
-                  <SidebarInput
-                    type="radio"
-                    name="region"
-                    value={region}
-                    checked={selectedRegion === region}
-                    onChange={() => {
-                      setSelectedRegion(region);
-                      setSelectedGu("전체");
-                    }}
-                  />
-                  {region}
-                </SidebarLabel>
-              ))}
-            </RegionSection>
-
-            {selectedRegion !== "전체" && (
-              <select
-                value={selectedGu}
-                onChange={(e) => setSelectedGu(e.target.value)}
-                style={{
-                  marginLeft: "25px",
-                  marginBottom: "20px",
-                  padding: "5px",
-                }}
-              >
-                <option value="전체">-- 구 선택 --</option>
-                {regionGuMap[selectedRegion]?.map((gu) => (
-                  <option key={gu} value={gu}>
-                    {gu}
-                  </option>
-                ))}
-              </select>
-            )}
-
-            <CategorySection>
-              <SidebarTitle>카테고리</SidebarTitle>
-              {Object.entries(CATEGORY_ID).map(([key, category]) => (
-                <SidebarLabel key={key}>
-                  <SidebarInput
-                    type="radio"
-                    name="category"
-                    value={key}
-                    checked={selectedCategory === Number(key)}
-                    onChange={() => {
-                      setSelectedCategory(Number(key));
-                      setCurrentPage(1);
-                    }}
-                  />
-                  {category}
-                </SidebarLabel>
-              ))}
-            </CategorySection>
-          </Sidebar>
+          <SideFilter
+            selectedRegion={selectedRegion}
+            setSelectedRegion={setSelectedRegion}
+            selectedGu={selectedGu}
+            setSelectedGu={setSelectedGu}
+          />
 
           {/* 게시글 리스트 */}
-
           <ProductList>
             {displayedPosts.map((post) => {
               console.log(post);

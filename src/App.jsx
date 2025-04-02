@@ -35,6 +35,7 @@ import PetstarDetailPage from "./views/detail/PetstarDetailPage";
 import PostUserPet from "./views/post/PostUserPet";
 import ViewMap from "./views/map/ViewMap";
 import { connectSocket } from "./hooks/socket";
+import SideFilter from "./components/SideFilter";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -150,6 +151,7 @@ function App() {
         <Route path="/postpet" element={<PostUserPet />} />
         <Route path="/viewmap/:lat/:lng" element={<ViewMap />} />
         <Route path="/profile/:userId" element={<UserProfile />} />
+        <Route path="/test" element={<SideFilter />} />
       </Routes>
       <Footer />
     </AuthContext.Provider>
