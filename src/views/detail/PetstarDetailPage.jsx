@@ -282,7 +282,6 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
-
   const fetchComment = async () => {
     try {
       const response = await fetch(
@@ -304,7 +303,15 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
       setNewComment([]);
     }
   };
-
+  const increaseViewCount = async () => {
+    try {
+      await fetch(`http://localhost:8087/api/board/count/${postId}`, {
+        method: "PUT",
+      });
+    } catch (error) {
+      console.error("조회수 증가 실패:", error);
+    }
+  };
   const handleCommentSubmit = async (event) => {
     event.preventDefault();
     if (!user) {
@@ -342,14 +349,13 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
     }
   };
 
-  const onBack = () => navigate("/");
-
   useEffect(() => {
     if (postId) {
       checkLoginStatus();
       fetchPostDetail();
       fetchImageBase64();
       fetchComment();
+      increaseViewCount();
     }
   }, [postId]);
 

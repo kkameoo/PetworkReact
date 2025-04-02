@@ -267,6 +267,15 @@ const TradeDetailPage = () => {
     };
   }, []);
 
+  const increaseViewCount = async () => {
+    try {
+      await fetch(`http://localhost:8087/api/board/count/${postId}`, {
+        method: "PUT",
+      });
+    } catch (error) {
+      console.error("조회수 증가 실패:", error);
+    }
+  };
   const fetchPostDetail = async () => {
     try {
       const response = await fetch(
@@ -350,6 +359,7 @@ const TradeDetailPage = () => {
     if (postId) {
       fetchPostDetail();
       fetchImageBase64();
+      increaseViewCount();
     }
   }, [postId]);
 

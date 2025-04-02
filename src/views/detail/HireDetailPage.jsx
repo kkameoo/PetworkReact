@@ -235,6 +235,15 @@ const HireDetailPage = () => {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
+  const increaseViewCount = async () => {
+    try {
+      await fetch(`http://localhost:8087/api/board/count/${postId}`, {
+        method: "PUT",
+      });
+    } catch (error) {
+      console.error("조회수 증가 실패:", error);
+    }
+  };
 
   const fetchImageBase64 = async () => {
     try {
@@ -286,6 +295,7 @@ const HireDetailPage = () => {
     checkLoginStatus();
     fetchPostDetail();
     fetchImageBase64();
+    increaseViewCount();
   }, [postId]);
 
   if (!newPost) return <div>로딩 중...</div>;
