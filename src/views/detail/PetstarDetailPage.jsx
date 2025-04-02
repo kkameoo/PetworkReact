@@ -379,17 +379,11 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
               style={{ cursor: "pointer" }}
             >
               작성자: {newPost.seller}
-              <Location>
-                {newPost.regionSi} {newPost.regionGu}
-              </Location>
             </div>
             <div>
               <ProductCategory>
                 {newPost.category} | {newPost.updateTime}
               </ProductCategory>
-              <Location>
-                {newPost.regionSi} {newPost.regionGu}
-              </Location>
             </div>
           </SellerLeft>
         </SellerInfo>
