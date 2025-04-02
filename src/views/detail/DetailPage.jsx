@@ -116,7 +116,7 @@ const ProductDescription = styled.p`
 
 const ButtonWrapper = styled.div`
   display: flex;
-  gap: 10px; /* 버튼 간 간격 설정 */
+  gap: 10px; /* 버튼 간 간격 설정. */
   margin-top: 20px; /* 버튼을 위로 올리기 */
   justify-content: flex-end; /* 오른쪽 정렬 */
   position: absolute;

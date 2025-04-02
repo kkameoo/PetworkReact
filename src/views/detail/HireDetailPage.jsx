@@ -326,7 +326,7 @@ const HireDetailPage = () => {
         </ProductRight>
       </ProductBody>
 
-      {/* 로그인 상태이면서 게시글 작성자가 맞을 경우 수정/삭제 버튼 표시 */}
+      {/* .로그인 상태이면서 게시글 작성자가 맞을 경우 수정/삭제 버튼 표시 */}
       {isLoggedIn && user?.userId === newPost.sellerUid && (
         <ButtonWrapper>
           <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>

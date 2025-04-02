@@ -175,7 +175,7 @@ const ButtonWrapper = styled.div`
   gap: 10px;
   position: absolute; /* 화면의 오른쪽 상단에 위치하도록 절대 위치 설정 */
   top: 20px; /* 위쪽 여백 */
-  right: -116px; /* 오른쪽 여백 */
+  right: -116px; /* 오른쪽 여백. */
 `;
 
 const TradeDetailPage = () => {
