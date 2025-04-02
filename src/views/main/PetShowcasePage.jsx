@@ -45,7 +45,7 @@ const SortButtons = styled.div`
 `;
 
 const SortButton = styled.button`
-  background-color: ${(props) => (props.active ? "#00BFFF" : "#e0e0e0")};
+  background-color: ${(props) => (props.active ? "#a2e4b8" : "#a2e4b8")};
   color: ${(props) => (props.active ? "white" : "#333")};
   border: none;
   border-radius: 8px;
@@ -53,23 +53,23 @@ const SortButton = styled.button`
   font-size: 15px;
   cursor: pointer;
   &:hover {
-    background-color: #00bfff;
+    background-color: #6dbe92;
     color: white;
   }
 `;
 
 const CreateButton = styled.button`
-  background-color: #00bfff;
+  background-color: #a2e4b8;
   color: white;
   border: none;
   padding: 8px 15px;
   cursor: pointer;
   border-radius: 5px;
   font-size: 16px;
-  background-color: #007acc;
+  background-color: #a2e4b8;
 
   &:hover {
-    background-color: #005c99;
+    background-color: #6dbe92;
     color: white;
   }
 `;
@@ -99,7 +99,7 @@ const PostImage = styled.img`
 const PostTitle = styled.h4`
   margin: 10px 0 5px;
   font-size: 18px;
-  color: #007acc;
+  color: #a2e4b8;
 `;
 
 const PostViews = styled.p`
