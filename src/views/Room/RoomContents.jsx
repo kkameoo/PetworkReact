@@ -12,7 +12,7 @@ const ChatContainer = styled.div`
   width: 1000px;
   margin: auto;
   padding: 1rem;
-  background-color: #bae3f3;
+  background-color: #a2e4b8;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -20,7 +20,7 @@ const ChatContainer = styled.div`
 
 const UserContainer = styled.div`
   width: 200px;
-  background-color: #d3e8f0;
+  background-color: white;
   padding: 1rem;
   border-radius: 10px;
   display: flex;
@@ -28,9 +28,22 @@ const UserContainer = styled.div`
   gap: 10px;
 `;
 
-const MessageList = styled.div`
+const ChatBox = styled.div`
+  width: 900px;
+  height: 500px;
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+`;
+const Title = styled.h2`
+  padding-left: 10px;
+  width: 300px;
+  height: 30px;
+`;
+
+const MessageList = styled.div`
+  width: 600px;
+  display: flex;
+  flex-direction: column-reverse;
   gap: 10px;
   max-height: 400px;
   overflow-y: auto;
@@ -45,10 +58,11 @@ const Message = styled.div`
 `;
 
 const UserName = styled.div`
-  font-size: 12px;
-  font-weight: bold;
-  margin-bottom: 3px;
-  color: #555;
+  width: 140px;
+  border: 3px solid #a2e4b8;
+  border-radius: 3px;
+  padding: 5px;
+  margin-bottom: 5px;
 `;
 
 const Bubble = styled.div`
@@ -75,9 +89,9 @@ const InputContainer = styled.div`
   margin-top: 10px;
   position: absolute;
   bottom: 10px;
-  left: 50%;
+  left: 25%;
   transform: translate(0, -50%);
-  width: calc(70% - 220px);
+  width: calc(95% - 220px);
 `;
 
 const Input = styled.input`
@@ -89,15 +103,44 @@ const Input = styled.input`
 `;
 
 const SendButton = styled.button`
-  background-color: #007aff;
-  color: white;
+  background-color: white;
+  color: black;
   border: none;
   padding: 10px 15px;
   border-radius: 20px;
   cursor: pointer;
   font-size: 14px;
   &:hover {
-    background-color: #005ecb;
+    background-color: #afafaf;
+  }
+`;
+
+const ChatRoomList = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 8px;
+  max-height: 300px; /* 최대 높이 설정 (조절 가능) */
+  overflow-y: auto; /* 채팅방이 많으면 스크롤 생성 */
+  padding-right: 5px; /* 스크롤바와 간격 */
+`;
+
+const ChatRoomButton = styled.button`
+  margin-bottom: 5px;
+  background-color: #ffffff;
+  color: black;
+  border: 3px solid #a2e4b8;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  width: 150px;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s, color 0.2s;
+
+  &:hover {
+    background-color: #66d69e;
+    color: white;
   }
 `;
 
@@ -114,26 +157,11 @@ const RoomContents = () => {
   const chatroomRef = useRef(null);
   const userRef = useRef(null);
   const stompClientRef = useRef(null);
+  const messageListRef = useRef(null);
   const { postId } = useParams();
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // console.log(user);
-
-  // const checkLoginStatus = async () => {
-  //   try {
-  //     const response = await fetch("http://localhost:8087/api/user/session", {
-  //       method: "GET",
-  //       credentials: "include",
-  //     });
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       setCurrentUser(data.userId);
-  //     }
-  //   } catch (error) {
-  //     console.error("로그인 상태 확인 실패:", error);
-  //   }
-  // };
   const handleConnectUser = () => {
     const list = roomUserlist.map((user) => {
       connectedUser.map((cUser) => {
@@ -165,7 +193,7 @@ const RoomContents = () => {
           };
           return data;
         });
-        jsonData.reverse();
+        // jsonData.reverse();
         setMessages(jsonData);
       }
     } catch (error) {
@@ -288,7 +316,7 @@ const RoomContents = () => {
             messageType: postData.messageType,
             regDate: new Date(postData.regDate).toLocaleString(),
           };
-          setMessages((prev) => [...prev, data]);
+          setMessages((prev) => [data, ...prev]);
         });
         // 채팅 접속중인 유저 리스트 구독
         stompClient.subscribe("/topic/userlist", (msg) => {
@@ -405,7 +433,7 @@ const RoomContents = () => {
       </MessageList>
       */}
       <UserContainer>
-        <h4>유저</h4>
+        <h2>유저</h2>
         <div>
           ------------ (Redis 저장소)
           {connectedUser.length === 0 ? (
@@ -425,51 +453,63 @@ const RoomContents = () => {
           ) : (
             <div>
               {roomUserlist.map((user, idx) => (
-                <div key={idx}>
+                <UserName key={idx}>
                   {user.userName}
                   {user.connected && (
                     <span style={{ color: "green" }}> ● </span>
                   )}
-                </div>
+                </UserName>
               ))}
             </div>
           )}
         </div>
 
-        <h4>채팅 방</h4>
-        <div>
+        <h2>채팅 방</h2>
+        <ChatRoomList>
           {chatrooms.length === 0 ? (
             <p>나의 채팅방들을 불러오는 중...</p>
           ) : (
             <div>
               {chatrooms.map((room, idx) => (
-                <button key={idx} onClick={() => goToDetail(room.boardId)}>
+                <ChatRoomButton
+                  key={idx}
+                  onClick={() => goToDetail(room.boardId)}
+                >
                   {room.chatroomName}
-                </button>
+                </ChatRoomButton>
               ))}
             </div>
           )}
-        </div>
+        </ChatRoomList>
       </UserContainer>
-      <h2>{chatroom.chatroomName}</h2>
-      {messages.length === 0 ? (
-        <p>메시지...</p>
-      ) : (
-        <MessageList>
-          {messages.map((msg, idx) => (
-            <Message key={idx}>
-              <b>{msg.sender}: </b> {msg.content}
-              <Timestamp>{msg.regDate}</Timestamp>
-            </Message>
-          ))}
-        </MessageList>
-      )}
+      <ChatBox>
+        <Title>{chatroom.chatroomName}</Title>
+        {messages.length === 0 ? (
+          <p>메시지...</p>
+        ) : (
+          <MessageList>
+            {messages.map((msg, idx) => (
+              <Message key={idx}>
+                <b>{msg.sender}: </b> {msg.content}
+                <Timestamp>{msg.regDate}</Timestamp>
+              </Message>
+            ))}
+            <div ref={messageListRef}></div>
+          </MessageList>
+        )}
+      </ChatBox>
       <InputContainer>
         <Input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           placeholder="메시지를 입력하세요..."
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault(); // 기본 동작(줄 바꿈) 방지
+              sendMessage();
+            }
+          }}
         />
         <SendButton onClick={sendMessage}>전송</SendButton>
       </InputContainer>

@@ -308,7 +308,7 @@ const HireDetailPage = () => {
             {newPost.category} | {newPost.updateTime} {newPost.price}원
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
-          <ChatButton>
+          <ChatButton onClick={() => navigate(`/room/${postId}`)}>
             <ChatIcon>💬</ChatIcon> 채팅 시작
           </ChatButton>
         </ProductRight>
