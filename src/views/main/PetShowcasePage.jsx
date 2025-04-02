@@ -33,6 +33,7 @@ const TopTenItem = styled.li`
     border-radius: 30px;
     object-fit: cover;
     border: 2px solid #ffd38b;
+    cursor: pointer;
   }
 `;
 
@@ -44,7 +45,7 @@ const SortButtons = styled.div`
 `;
 
 const SortButton = styled.button`
-  background-color: ${(props) => (props.active ? "#00BFFF" : "#e0e0e0")};
+  background-color: ${(props) => (props.active ? "#a2e4b8" : "#a2e4b8")};
   color: ${(props) => (props.active ? "white" : "#333")};
   border: none;
   border-radius: 8px;
@@ -52,23 +53,23 @@ const SortButton = styled.button`
   font-size: 15px;
   cursor: pointer;
   &:hover {
-    background-color: #00bfff;
+    background-color: #6dbe92;
     color: white;
   }
 `;
 
 const CreateButton = styled.button`
-  background-color: #00bfff;
+  background-color: #a2e4b8;
   color: white;
   border: none;
   padding: 8px 15px;
   cursor: pointer;
   border-radius: 5px;
   font-size: 16px;
-  background-color: #007acc;
+  background-color: #a2e4b8;
 
   &:hover {
-    background-color: #005c99;
+    background-color: #6dbe92;
     color: white;
   }
 `;
@@ -92,12 +93,13 @@ const PostImage = styled.img`
   height: 200px;
   object-fit: cover;
   border-radius: 8px;
+  cursor: pointer;
 `;
 
 const PostTitle = styled.h4`
   margin: 10px 0 5px;
   font-size: 18px;
-  color: #007acc;
+  color: #a2e4b8;
 `;
 
 const PostViews = styled.p`
@@ -341,6 +343,7 @@ const PetShowcasePage = () => {
           type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
+          updateTime: new Date(data.update).toLocaleString(),
           regionDong: `${regionMap[item.localSi] || ""} ${
             guMap[item.localGu] || ""
           }`,
@@ -390,20 +393,23 @@ const PetShowcasePage = () => {
     setFilteredPosts(filtered);
   }, [selectedCategory, selectedRegion, selectedGu, searchTerm, posts]);
 
-  const sortedPosts = [...petPosts].sort((a, b) => {
-    if (sortType === "latest") return b.date - a.date;
-    if (sortType === "views") return b.views - a.views;
+  const sortedFilteredPosts = [...filteredPosts].sort((a, b) => {
+    if (sortType === "latest")
+      return new Date(b.updateTime) - new Date(a.updateTime);
+    if (sortType === "views") return b.clickCnt - a.clickCnt;
     return 0;
   });
-  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
+
+  // 페이지네이션 적용
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const displayedPosts = filteredPosts.slice(
+  const displayedPosts = sortedFilteredPosts.slice(
     startIndex,
     startIndex + ITEMS_PER_PAGE
   );
+  const totalPages = Math.ceil(filteredPosts.length / ITEMS_PER_PAGE);
 
   const topTenPosts = [...petPosts]
-    .sort((a, b) => b.views - a.views)
+    .sort((a, b) => b.clickCnt - a.clickCnt)
     .slice(0, 10);
 
   const goToDetail = (postId) => navigate(`/petstarDetail/${postId}`);
@@ -415,7 +421,11 @@ const PetShowcasePage = () => {
         <TopTenList>
           {topTenPosts.map((post) => (
             <TopTenItem key={post.id}>
-              <img src={imageMap[post.id] || DEFAULT_IMAGE} />
+              <img
+                src={imageMap[post.id] || DEFAULT_IMAGE}
+                key={post.id}
+                onClick={() => goToDetail(post.id)}
+              />
             </TopTenItem>
           ))}
         </TopTenList>

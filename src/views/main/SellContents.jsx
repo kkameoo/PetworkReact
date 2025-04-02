@@ -195,7 +195,7 @@ const PaginationButton = styled.button`
   font-size: 16px;
 
   &:disabled {
-    background-color: #ccefff;
+    background-color: #a2e4b8;
     color: #aaa;
     cursor: not-allowed;
   }

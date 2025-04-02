@@ -10,7 +10,7 @@ const FormContainer = styled.div`
   padding: 20px;
   /* border: 2px solid #00bfff; */
   /* border-radius: 20px; */
-  background-color: #e6f7ff;
+  background-color: #a2e4b8;
   /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); */
 `;
 
@@ -22,7 +22,7 @@ const FormRow = styled.div`
   label {
     margin-bottom: 5px;
     font-weight: bold;
-    color: #007acc;
+    color: #727d73;
   }
 
   input,
@@ -49,7 +49,7 @@ const PreviewImage = styled.img`
 const SubmitButton = styled.button`
   width: 100%;
   padding: 12px;
-  background-color: #00bfff;
+  background-color: #6dbe92;
   border: none;
   border-radius: 12px;
   color: white;
@@ -58,7 +58,7 @@ const SubmitButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #007acc;
+    background-color: #14af5a;
   }
 `;
 

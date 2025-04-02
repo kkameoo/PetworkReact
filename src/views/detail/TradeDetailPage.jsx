@@ -270,6 +270,15 @@ const TradeDetailPage = () => {
     };
   }, [mapContainer.current]);
 
+  const increaseViewCount = async () => {
+    try {
+      await fetch(`http://localhost:8087/api/board/count/${postId}`, {
+        method: "PUT",
+      });
+    } catch (error) {
+      console.error("조회수 증가 실패:", error);
+    }
+  };
   const fetchPostDetail = async () => {
     try {
       const response = await fetch(
@@ -353,6 +362,7 @@ const TradeDetailPage = () => {
     if (postId) {
       fetchPostDetail();
       fetchImageBase64();
+      increaseViewCount();
     }
   }, [postId]);
 
@@ -402,7 +412,7 @@ const TradeDetailPage = () => {
       </ProductBody>
       {isLoggedIn && user?.userId === newPost.sellerUid && (
         <ButtonWrapper>
-          <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
+          <EditButton onClick={() => navigate(`/editTrade/${postId}`)}>
             게시물 수정
           </EditButton>
           <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>

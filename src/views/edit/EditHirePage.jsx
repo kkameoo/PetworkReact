@@ -5,10 +5,14 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // 스타일을 임포트
 
 const FormContainer = styled.div`
+  /* max-width: 600px; */
   width: 1600px;
   margin: 40px auto;
   padding: 20px;
-  background-color: #e6f7ff;
+  /* border: 2px solid #00bfff; */
+  /* border-radius: 20px; */
+  background-color: #a2e4b8;
+  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); */
 `;
 
 const FormRow = styled.div`
@@ -19,7 +23,7 @@ const FormRow = styled.div`
   label {
     margin-bottom: 5px;
     font-weight: bold;
-    color: #007acc;
+    color: #727d73;
   }
 
   input,
@@ -39,14 +43,14 @@ const FormRow = styled.div`
 
 const PreviewImage = styled.img`
   margin-top: 10px;
-  max-width: 100%;
+  max-width: 400px;
   border-radius: 12px;
 `;
 
 const SubmitButton = styled.button`
   width: 100%;
   padding: 12px;
-  background-color: #00bfff;
+  background-color: #6dbe92;
   border: none;
   border-radius: 12px;
   color: white;
@@ -55,38 +59,7 @@ const SubmitButton = styled.button`
   cursor: pointer;
 
   &:hover {
-    background-color: #007acc;
-  }
-`;
-
-// DatePicker 스타일
-const StyledDatePicker = styled(DatePicker)`
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 16px;
-  width: 100%;
-  box-sizing: border-box;
-  
-  // DatePicker pop-up 스타일
-  .react-datepicker__triangle {
-    display: none;
-  }
-
-  .react-datepicker__header {
-    background-color: #007acc;
-    color: white;
-    border-radius: 10px 10px 0 0;
-  }
-
-  .react-datepicker__day--selected,
-  .react-datepicker__day:hover {
-    background-color: #00bfff;
-    color: white;
-  }
-
-  .react-datepicker__day--outside-month {
-    color: #ccc;
+    background-color: #14af5a;
   }
 `;
 
@@ -288,7 +261,7 @@ const EditHirePage = () => {
 
   return (
     <FormContainer>
-      <h2>게시물 수정</h2>
+      <h2>게시물 등록</h2>
       <form onSubmit={handleSubmit}>
         <FormRow>
           <label>제목</label>
@@ -348,7 +321,7 @@ const EditHirePage = () => {
         </FormRow>
         <FormRow>
           <label>희망 날짜</label>
-          <StyledDatePicker
+          <DatePicker
             selected={hireDate}
             onChange={(date) => setHireDate(date)}
             dateFormat="yyyy-MM-dd"
@@ -377,7 +350,7 @@ const EditHirePage = () => {
           <input type="file" accept="image/*" onChange={handleImageChange} />
           {preview && <PreviewImage src={preview} alt="preview" />}
         </FormRow>
-        <SubmitButton type="submit">수정하기</SubmitButton>
+        <SubmitButton type="submit">등록</SubmitButton>
       </form>
     </FormContainer>
   );

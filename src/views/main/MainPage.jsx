@@ -246,6 +246,9 @@ function MainPage() {
     };
     fetchAll();
   }, []);
+  const PopularPosts = [...petstarPosts]
+    .sort((a, b) => b.clickCnt - a.clickCnt)
+    .slice(0, 10);
 
   const renderPostCard = (post, image) => {
     if (post.type === 4) {
@@ -309,7 +312,7 @@ function MainPage() {
     <PageLayout>
       <ContentArea>
         <SectionWrapper>
-          <SectionTitle>산책 게시판 인기글</SectionTitle>
+          <SectionTitle>산책 게시판 인기글 🐾</SectionTitle>
           <PostsWrapper>
             {homePosts.map((post) =>
               renderPostCard(post, imageMap[post.boardId], "walk")
@@ -318,7 +321,7 @@ function MainPage() {
         </SectionWrapper>
 
         <SectionWrapper>
-          <SectionTitle>나눔 게시판 인기글</SectionTitle>
+          <SectionTitle>나눔 게시판 인기글 🎁</SectionTitle>
           <PostsWrapper>
             {tradePosts.map((post) =>
               renderPostCard(post, imageMap[post.boardId], "trade")
@@ -327,18 +330,17 @@ function MainPage() {
         </SectionWrapper>
 
         <SectionWrapper>
-          <SectionTitle>알바 게시판 인기글</SectionTitle>
+          <SectionTitle>알바 게시판 인기글 🤝</SectionTitle>
           <PostsWrapper>
             {jobPosts.map((post) =>
               renderPostCard(post, imageMap[post.boardId], "hire")
             )}
           </PostsWrapper>
         </SectionWrapper>
-
         <SectionWrapper>
-          <SectionTitle>펫스타그램 인기글</SectionTitle>
+          <SectionTitle>펫스타그램 인기글 📸</SectionTitle>
           <PostsWrapper>
-            {petstarPosts.map((post) =>
+            {PopularPosts.map((post) =>
               renderPostCard(post, imageMap[post.boardId], "petstar")
             )}
           </PostsWrapper>
