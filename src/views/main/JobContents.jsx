@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
-/* 전체 컨테이너 */
 const ListContainer = styled.div`
   max-width: 1600px;
   margin: 20px auto;
@@ -22,7 +21,7 @@ const Sidebar = styled.div`
   width: 200px;
   padding: 10px;
   border-radius: 10px;
-  background-color: #e0f7ff;
+  background-color: #a2e4b8;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 `;
 
@@ -42,7 +41,7 @@ const SidebarTitle = styled.h3`
   margin-left: 25px;
   text-align: left;
   margin-bottom: 10px;
-  color: #007acc;
+  color: #727d73;
 `;
 
 const SidebarLabel = styled.label`
@@ -52,21 +51,21 @@ const SidebarLabel = styled.label`
   padding: 8px 12px;
   border-radius: 20px;
   font-size: 14px;
-  color: #007acc;
+  color: #727d73;
   transition: all 0.2s ease-in-out;
-  border: 2px solid transparent;
+  border: 0.5px solid #6dbe92;
 
   ${({ selected }) =>
     selected
       ? `
-    background-color: #007acc;
+    background-color: #6dbe92;
     color: white;
-    border-color: #005c99;
+    border-color: #6dbe92;
   `
       : `
-    background-color: #e0f7ff;
+    background-color : #a2e4b8;
     &:hover {
-      background-color: #bde4f6;
+      background-color: #6dbe92;
     }
   `}
 `;
@@ -185,7 +184,7 @@ const PaginationWrapper = styled.div`
 
 const PaginationButton = styled.button`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
-  background-color: #00bfff;
+  background-color: #a2e4b8;
   color: white;
   border: none;
   padding: 8px 15px;
@@ -205,10 +204,10 @@ const CreateButton = styled(PaginationButton)`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   position: absolute;
   right: 0;
-  background-color: #007acc;
+  background-color: #a2e4b8;
 
   &:hover {
-    background-color: #005c99;
+    background-color: #6dbe92;
     color: white;
   }
 `;
@@ -217,7 +216,7 @@ const PageNumber = styled.span`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 18px;
   font-weight: bold;
-  color: #007acc;
+  color: #727d73;
 `;
 
 // 지역 및 카테고리 매핑
