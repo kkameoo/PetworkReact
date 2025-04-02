@@ -9,23 +9,6 @@ const DetailWrapper = styled.div`
   margin-top: 30px;
   display: flex;
   flex-direction: column;
-  position: relative; /* 부모 div에 상대 위치 설정 */
-`;
-
-const BackButton = styled.button`
-  align-self: flex-end;
-  width: 80px;
-  height: 60px;
-  margin-top: 10px;
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  &:hover {
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color: #ccc;
-  }
 `;
 
 const ProductBody = styled.div`
@@ -172,12 +155,12 @@ const ChatIcon = styled.span`
 
 const ButtonWrapper = styled.div`
   display: flex;
-  gap: 10px;
-  position: absolute; /* 화면의 오른쪽 상단에 위치하도록 절대 위치 설정 */
-  top: 20px; /* 위쪽 여백 */
-  right: -116px; /* 오른쪽 여백. */
+  gap: 10px; /* 버튼 간 간격 설정. */
+  margin-top: 20px; /* 버튼을 위로 올리기 */
+  justify-content: flex-end; /* 오른쪽 정렬 */
+  position: absolute;
+  right: 78px; /* 오른쪽 끝으로 배치 */
 `;
-
 const TradeDetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
