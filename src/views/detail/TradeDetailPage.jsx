@@ -9,6 +9,7 @@ const DetailWrapper = styled.div`
   margin-top: 30px;
   display: flex;
   flex-direction: column;
+  position: relative; /* 부모 div에 상대 위치 설정 */
 `;
 
 const BackButton = styled.button`
@@ -107,28 +108,25 @@ const ProductDescription = styled.p`
   font-size: 18px;
   margin-bottom: 20px;
 `;
+
 const EditButton = styled.button`
   background-color: #ffd85a;
   color: white;
   border: none;
   padding: 8px 15px;
-  margin: 0 5px;
   cursor: pointer;
   border-radius: 5px;
   font-size: 16px;
-  /* position: absolute; */
   width: 150px;
-  right: 150px;
 
   &:hover {
     background-color: #005c99;
     color: white;
   }
 `;
+
 const DeleteButton = styled.button`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
-  position: absolute;
-  right: 10px;
   width: 150px;
   background-color: red;
   color: white;
@@ -139,12 +137,13 @@ const DeleteButton = styled.button`
     background-color: darkred;
   }
 `;
+
 const ChatButton = styled.button`
   width: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px; /* 아이콘과 텍스트 간격 */
+  gap: 8px;
   background-color: #007acc;
   color: white;
   font-size: 16px;
@@ -171,6 +170,14 @@ const ChatIcon = styled.span`
   font-size: 20px;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 10px;
+  position: absolute; /* 화면의 오른쪽 상단에 위치하도록 절대 위치 설정 */
+  top: 20px; /* 위쪽 여백 */
+  right: -116px; /* 오른쪽 여백 */
+`;
+
 const TradeDetailPage = () => {
   const { postId } = useParams();
   const navigate = useNavigate();
@@ -180,7 +187,7 @@ const TradeDetailPage = () => {
   const [imageBase64, setImageBase64] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
 
-  //   로그인 상태 확인
+  // 로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
       const response = await fetch("http://localhost:8087/api/user/session", {
@@ -233,6 +240,7 @@ const TradeDetailPage = () => {
       console.error("상세 데이터 불러오기 오류:", error);
     }
   };
+
   const fetchImageBase64 = async () => {
     try {
       const response = await fetch(
@@ -254,6 +262,7 @@ const TradeDetailPage = () => {
       console.error("이미지 로드 에러:", error);
     }
   };
+
   const deletePost = async () => {
     if (!window.confirm("정말로 삭제하시겠습니까?")) return;
 
@@ -327,12 +336,12 @@ const TradeDetailPage = () => {
         </ProductRight>
       </ProductBody>
       {isLoggedIn && user?.userId === newPost.sellerUid && (
-        <>
+        <ButtonWrapper>
           <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
             게시물 수정
           </EditButton>
           <DeleteButton onClick={deletePost}>게시물 삭제</DeleteButton>
-        </>
+        </ButtonWrapper>
       )}
     </DetailWrapper>
   );
