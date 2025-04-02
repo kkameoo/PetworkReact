@@ -103,14 +103,20 @@ const ProductDescription = styled.p`
 const EditButton = styled.button`
   position: absolute;
   right: 150px;
-  background-color: #007acc;
+  background-color: #ffd85a;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 150px;
 
   &:hover {
-    background-color: #005c99;
+    background-color: #f0ba09;
     color: white;
   }
 `;
-
 const CommentWrapper = styled.div`
   background-color: #f9f9f9;
   padding: 20px;

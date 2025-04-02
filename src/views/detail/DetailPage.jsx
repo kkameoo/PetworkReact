@@ -12,22 +12,6 @@ const DetailWrapper = styled.div`
   flex-direction: column;
 `;
 
-const BackButton = styled.button`
-  align-self: flex-end;
-  width: 80px;
-  height: 60px;
-  margin-top: 10px;
-  background-color: transparent;
-  border: none;
-  font-size: 18px;
-  cursor: pointer;
-  &:hover {
-    border: 1px solid black;
-    border-radius: 10px;
-    background-color: #ccc;
-  }
-`;
-
 const ProductBody = styled.div`
   display: flex;
   justify-content: space-between;
@@ -134,7 +118,7 @@ const EditButton = styled.button`
   width: 150px;
 
   &:hover {
-    background-color: #005c99;
+    background-color: #f0ba09;
     color: white;
   }
 `;
