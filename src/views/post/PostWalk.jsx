@@ -65,8 +65,8 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState(1);
-  const [regionSi, setRegionSi] = useState("서울특별시");
-  const [regionGu, setRegionGu] = useState("강남구");
+  const [selectedSi, setSelectedSi] = useState("서울특별시");
+  const [selectedGu, setSelectedGu] = useState("종로구");
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
@@ -78,7 +78,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     [3, "대형"],
   ];
 
-  const regions = [
+  const localSi = [
     "서울시",
     "수원시",
     "성남시",
@@ -96,7 +96,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     "화성시",
     "인천시",
   ];
-  const allSis = {
+  const localGu = {
     서울시: [
       "종로구",
       "중구",
@@ -151,6 +151,126 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     ],
   };
 
+  const regionMap = [
+    [1, "서울시"],
+    [2, "수원시"],
+    [3, "성남시"],
+    [4, "안양시"],
+    [5, "부천시"],
+    [6, "광명시"],
+    [7, "평택시"],
+    [8, "시흥시"],
+    [9, "안산시"],
+    [10, "고양시"],
+    [11, "과천시"],
+    [12, "구리시"],
+    [13, "남양주시"],
+    [14, "오산시"],
+    [15, "화성시"],
+    [16, "김포시"],
+    [17, "광주시"],
+    [18, "하남시"],
+    [19, "이천시"],
+    [20, "양평군"],
+    [21, "동두천시"],
+    [22, "연천군"],
+    [23, "가평군"],
+    [24, "포천시"],
+    [25, "인천시"],
+  ];
+
+  const guMap = [
+    [1, "종로구"],
+    [2, "중구"],
+    [3, "용산구"],
+    [4, "성동구"],
+    [5, "광진구"],
+    [6, "동대문구"],
+    [7, "중랑구"],
+    [8, "강북구"],
+    [9, "도봉구"],
+    [10, "노원구"],
+    [11, "은평구"],
+    [12, "서대문구"],
+    [13, "마포구"],
+    [14, "양천구"],
+    [15, "강서구"],
+    [16, "구로구"],
+    [17, "금천구"],
+    [18, "영등포구"],
+    [19, "동작구"],
+    [20, "관악구"],
+    [21, "서초구"],
+    [22, "강남구"],
+    [23, "송파구"],
+    [24, "강동구"],
+    [25, "장안구"],
+    [26, "권선구"],
+    [27, "팔달구"],
+    [28, "영통구"],
+    [29, "수정구"],
+    [30, "중원구"],
+    [31, "분당구"],
+    [32, "만안구"],
+    [33, "동안구"],
+    [34, "원미구"],
+    [35, "소사구"],
+    [36, "오정구"],
+    [37, "광명구"],
+    [38, "평택구"],
+    [39, "시흥구"],
+    [40, "단원구"],
+    [41, "상록구"],
+    [42, "덕양구"],
+    [43, "일산동구"],
+    [44, "일산서구"],
+    [45, "과천구"],
+    [46, "구리구"],
+    [47, "남양주구"],
+    [48, "오산구"],
+    [49, "화성구"],
+    [50, "중구(인천)"],
+    [51, "동구(인천)"],
+    [52, "미추홀구"],
+    [53, "연수구"],
+    [54, "남동구"],
+    [55, "부평구"],
+    [56, "계양구"],
+    [57, "서구(인천)"],
+    [58, "강화군"],
+    [59, "옹진군"],
+  ];
+
+  // const siGuMapping = {
+  //   1: [
+  //     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+  //     22, 23, 24,
+  //   ], // 서울시
+  //   2: [25, 26, 27, 28],
+  //   3: [29, 30, 31],
+  //   4: [32, 33],
+  //   5: [34, 35, 36],
+  //   6: [37],
+  //   7: [38],
+  //   8: [39],
+  //   9: [40, 41],
+  //   10: [42, 43, 44],
+  //   11: [45],
+  //   12: [46],
+  //   13: [47],
+  //   14: [48],
+  //   15: [49],
+  //   16: [],
+  //   17: [],
+  //   18: [],
+  //   19: [],
+  //   20: [],
+  //   21: [],
+  //   22: [],
+  //   23: [],
+  //   24: [],
+  //   25: [50, 51, 52, 53, 54, 55, 56, 57, 58, 59],
+  // };
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -158,76 +278,68 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     setImageFile(file);
     setPreview(URL.createObjectURL(file));
   };
-
+  const handleSiChange = (event) => {
+    const newSi = event.target.value;
+    setSelectedSi(newSi);
+    setSelectedGu(localGu[newSi]?.[0] || ""); // 첫 번째 구 자동 선택
+  };
+  const handleGuChange = (event) => {
+    setSelectedGu(event.target.value);
+  };
   useEffect(() => {
     const fetchUserData = async () => {
       try {
         const response = await fetch("http://localhost:8087/api/user/session", {
           method: "GET",
-          credentials: "include", // ← withCredentials 대응
+          credentials: "include",
         });
 
-        if (!response.ok) {
-          throw new Error("응답 오류");
-        }
+        if (!response.ok) throw new Error("서버 응답 오류");
 
         const data = await response.json();
-
-        if (data.userId) {
-          setUser(data);
-        } else {
-          console.error("🚨 로그인된 사용자가 없습니다.");
-        }
-      } catch (error) {
-        console.error("🔴 사용자 정보를 불러오는 중 오류 발생:", error);
+        if (data.userId) setUser(data);
+      } catch (err) {
+        console.error("사용자 정보 불러오기 실패", err);
       }
     };
 
     fetchUserData();
   }, []);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!user) {
-      alert("로그인이 필요합니다.");
-      return;
-    }
-
+    if (!user) return alert("로그인이 필요합니다.");
+    const localSiIndex = localSi.indexOf(selectedSi) + 1;
+    const localGuValue =
+      guMap.find(([_, name]) => name === selectedGu)?.[0] || 0;
     const postData = {
       userId: user.userId,
-      title: title,
+      title,
       content: description,
       reportCount: 0,
       boardType: 1,
-      localSi: regions.indexOf(regionSi) + 1,
-      localGu: allSis[regionSi].indexOf(regionGu) + 1,
+      localSi: localSiIndex,
+      localGu: localGuValue,
       walkCategory: Number(category),
       update: new Date().toISOString(),
     };
     const formData = new FormData();
-    console.log(postData);
-    const postData2 = JSON.stringify(postData);
-    console.log(postData2);
     formData.append("file", imageFile);
-    formData.append("requestJson", postData2);
-    console.log(postData, "데이터");
+    formData.append("requestJson", JSON.stringify(postData));
     try {
       const response = await fetch("http://localhost:8087/api/board/walk", {
         method: "POST",
-        body: formData,
         credentials: "include",
+        body: formData,
       });
-
       if (response.ok) {
-        alert("게시물이 성공적으로 등록되었습니다!");
+        alert("게시물이 등록되었습니다");
         onSubmitSuccess();
         navigate("/");
       } else {
-        alert("게시물 등록 실패. 다시 시도해주세요.");
+        alert("등록 실패");
       }
-    } catch (error) {
-      console.error("게시물 등록 중 오류 발생:", error);
-      alert("오류가 발생했습니다.");
+    } catch (err) {
+      console.error("등록 중 오류:", err);
     }
   };
 
@@ -257,26 +369,21 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
           </select>
         </FormRow>
         <FormRow>
-          <label>시</label>
-          <select
-            value={regionSi}
-            onChange={(e) => setRegionSi(e.target.value)}
-          >
-            {regions.map((reg) => (
-              <option key={reg} value={reg}>
-                {reg}
+          <label>시 선택:</label>
+          <select value={selectedSi} onChange={handleSiChange} required>
+            {localSi.map((si, index) => (
+              <option key={index} value={si}>
+                {si}
               </option>
             ))}
           </select>
         </FormRow>
+
         <FormRow>
-          <label>구</label>
-          <select
-            value={regionGu}
-            onChange={(e) => setRegionGu(e.target.value)}
-          >
-            {allSis[regionSi]?.map((gu) => (
-              <option key={gu} value={gu}>
+          <label>구 선택:</label>
+          <select value={selectedGu} onChange={handleGuChange} required>
+            {localGu[selectedSi]?.map((gu, index) => (
+              <option key={index} value={gu}>
                 {gu}
               </option>
             ))}
