@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
-import defaultProfile from "../../assets/basic.jpg";
+import defaultProfile from "../../assets/userimage.jpg";
 import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
@@ -193,12 +193,16 @@ const UserDetailPage = () => {
   const [selectedPet, setSelectedPet] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
   const [editForm, setEditForm] = useState({
     petId: "",
     petName: "",
     petType: "",
     petCategory: "",
     petIntroduce: "",
+  });
+  const [selectedPetId, setSelectedPetId] = useState(() => {
+    return localStorage.getItem("selectedPetId") || null;
   });
 
   const CATEGORY_ID = [
@@ -215,9 +219,10 @@ const UserDetailPage = () => {
   const [newPhotoFile, setNewPhotoFile] = useState(null);
   const navigate = useNavigate();
 
-  const API_POST_URL = `http://localhost:8087/api/board/user/${user.userId}`;
-
   useEffect(() => {
+    if (!user) return;
+
+    const API_POST_URL = `http://localhost:8087/api/board/user/${user.userId}`;
     fetch(API_POST_URL)
       .then((res) => res.json())
       .then((data) => {
@@ -255,6 +260,19 @@ const UserDetailPage = () => {
     }
   };
 
+  const getSelectedPetImage = () => {
+    if (!selectedPetId) return defaultProfile;
+    return `http://localhost:8087/api/photo/pet/upload/${selectedPetId}`;
+  };
+
+  const applySelectedProfileImage = () => {
+    if (selectedPetId) {
+      localStorage.setItem("selectedPetId", selectedPetId);
+    } else {
+      localStorage.removeItem("selectedPetId");
+    }
+    setIsProfileModalOpen(false);
+  };
   useEffect(() => {
     fetchPets();
   }, []);
@@ -331,7 +349,7 @@ const UserDetailPage = () => {
       {user ? (
         <ContentWrapper>
           <ProfileSection>
-            <img src={user.profileImage || defaultProfile} alt="프로필" />
+            <img src={getSelectedPetImage()} alt="프로필" />
             <h2>{user.nickname || "익명"}</h2>
             <p>{user.email}</p>
             <ButtonSection>
@@ -339,12 +357,40 @@ const UserDetailPage = () => {
               <ActionButton onClick={() => navigate("/postUserPet")}>
                 나의 펫 등록
               </ActionButton>
-              <ActionButton>버튼 3</ActionButton>
+              <ActionButton onClick={() => setIsProfileModalOpen(true)}>
+                프로필 이미지 선택
+              </ActionButton>
             </ButtonSection>
           </ProfileSection>
         </ContentWrapper>
       ) : (
         <p>로그인이 필요합니다.</p>
+      )}
+      {isProfileModalOpen && (
+        <ModalOverlay onClick={() => setIsProfileModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <h3>프로필로 사용할 펫 선택</h3>
+            <select
+              value={selectedPetId || ""}
+              onChange={(e) => setSelectedPetId(e.target.value)}
+            >
+              <option value="">기본 이미지</option>
+              {pets.map((pet) => (
+                <option key={pet.petId} value={pet.petId}>
+                  {pet.petName}
+                </option>
+              ))}
+            </select>
+            <div>
+              <ModalButton onClick={applySelectedProfileImage}>
+                바꾸기
+              </ModalButton>
+              <ModalButton onClick={() => setIsProfileModalOpen(false)}>
+                닫기
+              </ModalButton>
+            </div>
+          </ModalContent>
+        </ModalOverlay>
       )}
 
       <BoardNav>
