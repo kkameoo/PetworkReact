@@ -22,6 +22,7 @@ import EditTradePage from "./views/edit/EditTradePage";
 import Room from "./pages/Room";
 import UserDetailPage from "./views/detail/UserDetailPage";
 import UserProfile from "./pages/UserProfile";
+import ChatListPage from "./views/detail/ChatListPage";
 
 import { useState } from "react";
 import { useEffect } from "react";
@@ -158,6 +159,7 @@ function App() {
         <Route path="/viewmap/:lat/:lng" element={<ViewMap />} />
         <Route path="/profile/:userId" element={<UserProfile />} />
         <Route path="/test" element={<SideFilter />} />
+        <Route path="/chatlist" element={<ChatListPage />} />
       </Routes>
       <Footer />
     </AuthContext.Provider>
