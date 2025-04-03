@@ -183,6 +183,13 @@ const HireDetailPage = () => {
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [category, setCategory] = useState([]);
+  const [isRegionLoaded, setIsRegionLoaded] = useState(false);
+
+  useEffect(() => {
+    if (regionMap && Object.keys(regionMap).length > 0) {
+      setIsRegionLoaded(true);
+    }
+  }, [regionMap]);
 
   // 로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -308,6 +315,7 @@ const HireDetailPage = () => {
   }, [postId]);
 
   if (
+    !isRegionLoaded ||
     !newPost ||
     !regionMap ||
     Object.keys(regionMap).length === 0 ||

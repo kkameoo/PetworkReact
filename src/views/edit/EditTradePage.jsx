@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
+import { getLocalCategory, getTradeCategory } from "../../services/dataService";
 
 const FormContainer = styled.div`
   /* max-width: 600px; */
@@ -75,86 +76,17 @@ const EditTradePage = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [preview, setPreview] = useState(null);
   const [price, setPrice] = useState("");
+  const [regionMap, setRegionMap] = useState([]);
+  const [tradeCategory, setTradeCategory] = useState([]);
 
-  const CATEGORY_ID = [
-    [1, "미용"],
-    [2, "사료"],
-    [3, "장난감"],
-  ];
-
-  const regions = [
-    "서울시",
-    "수원시",
-    "성남시",
-    "안양시",
-    "부천시",
-    "광명시",
-    "펑택시",
-    "시흥시",
-    "안산시",
-    "고양시",
-    "과천시",
-    "구리시",
-    "남양주시",
-    "오산시",
-    "화성시",
-    "인천시",
-  ];
-
-  const allSis = {
-    서울시: [
-      "종로구",
-      "중구",
-      "용산구",
-      "성동구",
-      "광진구",
-      "동대문구",
-      "중랑구",
-      "강북구",
-      "도봉구",
-      "노원구",
-      "은평구",
-      "서대문구",
-      "마포구",
-      "양천구",
-      "강서구",
-      "구로구",
-      "금천구",
-      "영등포구",
-      "동작구",
-      "관악구",
-      "서초구",
-      "강남구",
-      "송파구",
-      "강동구",
-    ],
-    수원시: ["장안구", "권선구", "팔달구", "영통구"],
-    성남시: ["수정구", "중원구", "분당구"],
-    안양시: ["만안구", "동안구"],
-    부천시: ["원미구", "소사구", "오정구"],
-    광명시: ["광명구"],
-    평택시: ["평택구"],
-    시흥시: ["시흥구"],
-    안산시: ["단원구", "상록구"],
-    고양시: ["덕양구", "일산동구", "일산서구"],
-    과천시: ["과천구"],
-    구리시: ["구리구"],
-    남양주시: ["남양주구"],
-    오산시: ["오산구"],
-    화성시: ["화성구"],
-    인천시: [
-      "중구(인천)",
-      "동구(인천)",
-      "미추홀구",
-      "연수구",
-      "남동구",
-      "부평구",
-      "계양구",
-      "서구(인천)",
-      "강화군",
-      "옹진군",
-    ],
-  };
+  useEffect(() => {
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
+    getTradeCategory()
+      .then(setTradeCategory)
+      .catch((error) => console.error("Fetching error:", error));
+  }, []);
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -175,8 +107,8 @@ const EditTradePage = () => {
 
         setTitle(post.title);
         setCategory(post.tradeCategory);
-        setRegionSi(regions[post.localSi - 1]);
-        setRegionGu(allSis[regions[post.localSi - 1]][post.localGu - 1]);
+        setRegionSi(post.localSi);
+        setRegionGu(post.localGu);
         setDescription(post.content);
         setImageUrl(post.imageUrl);
         setPreview(post.imageUrl);
@@ -223,8 +155,8 @@ const EditTradePage = () => {
       userId: user.userId,
       title,
       content: description,
-      localSi: regions.indexOf(regionSi) + 1,
-      localGu: allSis[regionSi].indexOf(regionGu) + 1,
+      localSi: regionSi,
+      localGu: regionGu,
       tradeCategory: Number(category),
       post_photo: imageUrl,
       tradePrice: Number(price),
@@ -252,6 +184,13 @@ const EditTradePage = () => {
       console.error("수정 오류:", error);
     }
   };
+  if (
+    !regionMap ||
+    regionMap.length === 0 ||
+    !tradeCategory ||
+    Object.keys(tradeCategory).length === 0
+  )
+    return <div>...로딩중</div>;
 
   return (
     <FormContainer>
@@ -280,9 +219,9 @@ const EditTradePage = () => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            {CATEGORY_ID.map(([id, name]) => (
-              <option key={id} value={id}>
-                {name}
+            {tradeCategory.map((data) => (
+              <option key={data.id} value={data.id}>
+                {data.name}
               </option>
             ))}
           </select>
@@ -293,9 +232,9 @@ const EditTradePage = () => {
             value={regionSi}
             onChange={(e) => setRegionSi(e.target.value)}
           >
-            {regions.map((reg) => (
-              <option key={reg} value={reg}>
-                {reg}
+            {regionMap.map((reg) => (
+              <option key={reg.id} value={reg.id}>
+                {reg.name}
               </option>
             ))}
           </select>
@@ -306,9 +245,9 @@ const EditTradePage = () => {
             value={regionGu}
             onChange={(e) => setRegionGu(e.target.value)}
           >
-            {allSis[regionSi]?.map((gu) => (
-              <option key={gu} value={gu}>
-                {gu}
+            {regionMap[regionSi]?.gu.map((guData) => (
+              <option key={guData.id} value={guData.id}>
+                {guData.name}
               </option>
             ))}
           </select>

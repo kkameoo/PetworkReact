@@ -220,6 +220,7 @@ const TradeDetailPage = () => {
     }
   };
   useEffect(() => {
+    checkLoginStatus();
     getLocalCategory()
       .then(setRegionMap)
       .catch((error) => console.error("Fetching error:", error));
