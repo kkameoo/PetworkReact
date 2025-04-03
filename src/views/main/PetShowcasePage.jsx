@@ -99,7 +99,7 @@ const PostImage = styled.img`
 const PostTitle = styled.h4`
   margin: 10px 0 5px;
   font-size: 18px;
-  color: #a2e4b8;
+  color: #727d73;
 `;
 
 const PostViews = styled.p`
