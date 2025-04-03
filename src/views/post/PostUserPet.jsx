@@ -191,7 +191,7 @@ function PostUserPet({ onSubmitSuccess }) {
         if (typeof onSubmitSuccess === "function") {
           onSubmitSuccess();
         }
-        navigate("/");
+        navigate("/my");
       } else {
         alert("게시물 등록 실패. 다시 시도해주세요.");
       }
