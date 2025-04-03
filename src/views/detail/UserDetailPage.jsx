@@ -353,7 +353,9 @@ const UserDetailPage = () => {
             <h2>{user.nickname || "익명"}</h2>
             <p>{user.email}</p>
             <ButtonSection>
-              <ActionButton>버튼 1</ActionButton>
+              <ActionButton onClick={() => navigate("/chatlist")}>
+                채팅방 목록
+              </ActionButton>
               <ActionButton onClick={() => navigate("/postUserPet")}>
                 나의 펫 등록
               </ActionButton>
