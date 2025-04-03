@@ -117,6 +117,8 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
       localGu: selectedGu,
       walkCategory: Number(category),
       update: new Date().toISOString(),
+      latitude: regionMap[selectedSi].latitude,
+      longitude: regionMap[selectedSi].longitude,
     };
     const formData = new FormData();
     formData.append("file", imageFile);

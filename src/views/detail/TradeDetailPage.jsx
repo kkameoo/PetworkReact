@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Report from "../report/Report";
 import { getLocalCategory, getTradeCategory } from "../../services/dataService";
+import OnlyViewMap from "../map/OnlyViewMap";
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -162,34 +163,9 @@ const ButtonWrapper = styled.div`
   position: absolute;
   right: 78px; /* 오른쪽 끝으로 배치 */
 `;
-const MapBox = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  flex-wrap: wrap;
-`;
-
-const MapContainer = styled.div`
-  width: 600px;
-  height: 400px;
-  border: 2px solid grey;
-`;
-
-const MapTitle = styled.div`
-  width: 600px;
-  height: 50px;
-  background: white;
-  border: 2px solid grey;
-  border-radius: 5px 5px 0 0;
-  display: flex;
-  align-items: center;
-  font-size: 25px;
-`;
 
 const TradeDetailPage = () => {
   const { postId } = useParams();
-  const mapContainer = useRef(null);
-  const mapInstance = useRef(null);
   const navigate = useNavigate();
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
@@ -198,6 +174,7 @@ const TradeDetailPage = () => {
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [category, setCategory] = useState([]);
+  const [mapInfo, setMapInfo] = useState(null);
 
   // 로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -219,6 +196,27 @@ const TradeDetailPage = () => {
       setIsLoggedIn(false);
     }
   };
+
+  const getMapInfo = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/map/${postId}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setMapInfo(data);
+      } else {
+        console.error("응답 오류");
+      }
+    } catch (error) {
+      console.error("데이터 받아오기 오류", error);
+    }
+  };
+
   useEffect(() => {
     checkLoginStatus();
     getLocalCategory()
@@ -228,59 +226,6 @@ const TradeDetailPage = () => {
       .then(setCategory)
       .catch((error) => console.error("Fetching error:", error));
   }, []);
-
-  useEffect(() => {
-    const loadKakaoMapScript = () => {
-      return new Promise((resolve, reject) => {
-        if (window.kakao && window.kakao.maps) {
-          resolve();
-          return;
-        }
-        const script = document.createElement("script");
-        script.src =
-          "//dapi.kakao.com/v2/maps/sdk.js?appkey=144d2d61e948e38e61879a857c778d34&autoload=false";
-        script.async = true;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error("카카오 맵 API 로드 실패"));
-        document.head.appendChild(script);
-      });
-    };
-
-    const initMap = () => {
-      if (!mapContainer.current) return;
-      const options = {
-        center: new window.kakao.maps.LatLng(37.5665, 126.978),
-        level: 3,
-      };
-
-      mapInstance.current = new window.kakao.maps.Map(
-        mapContainer.current,
-        options
-      );
-
-      const marker = new window.kakao.maps.Marker({
-        position: new window.kakao.maps.LatLng(37.5665, 126.978),
-        text: " 약속 장소 ",
-      });
-
-      marker.setMap(mapInstance.current);
-      mapInstance.current.setDraggable(false);
-      mapInstance.current.setZoomable(false);
-    };
-
-    loadKakaoMapScript()
-      .then(() => window.kakao.maps.load(initMap))
-      .catch((error) => console.error("Kakao Map error:", error));
-
-    return () => {
-      const scripts = document.head.getElementsByTagName("script");
-      for (let script of scripts) {
-        if (script.src.includes("sdk.js")) {
-          document.head.removeChild(script);
-        }
-      }
-    };
-  }, [mapContainer.current]);
 
   const increaseViewCount = async () => {
     try {
@@ -375,6 +320,7 @@ const TradeDetailPage = () => {
       fetchPostDetail();
       fetchImageBase64();
       increaseViewCount();
+      getMapInfo();
     }
   }, [postId]);
 
@@ -422,10 +368,16 @@ const TradeDetailPage = () => {
             {newPost.price}원
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
-          <MapBox>
-            <MapTitle>지정 장소</MapTitle>
-            <MapContainer ref={mapContainer}></MapContainer>
-          </MapBox>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate(
+                `/viewmap/${postId}/${mapInfo.latitude}/${mapInfo.longitude}`
+              )
+            }
+          >
+            <OnlyViewMap mapInfo={mapInfo} setMapInfo={setMapInfo} />
+          </div>
           <ChatButton onClick={() => navigate(`/room/${postId}`)}>
             <ChatIcon>💬</ChatIcon> 채팅 시작
           </ChatButton>

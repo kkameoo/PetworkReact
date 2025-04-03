@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { getCityCategory } from "../../services/dataService";
+import { getLocalCategory } from "../../services/dataService";
 import styled from "styled-components";
 
 // Styled Components 정의
@@ -75,7 +75,7 @@ const LatLngMessage = styled.div`
 `;
 
 const ViewMap = () => {
-  const { lat, lng } = useParams();
+  const { postId, lat, lng } = useParams();
   const mapContainer = useRef(null);
   const mapInstance = useRef(null);
   const [markerLatitude, setMarkerLatitude] = useState(lat);
@@ -87,7 +87,7 @@ const ViewMap = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    getCityCategory()
+    getLocalCategory()
       .then(setRegion)
       .catch((error) => console.error("Fetching error:", error));
 

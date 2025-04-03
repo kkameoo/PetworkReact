@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
 import Report from "../report/Report";
+import OnlyViewMap from "../map/OnlyViewMap";
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -179,6 +180,7 @@ const DetailPage = () => {
   const [imageBase64, setImageBase64] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
+  const [mapInfo, setMapInfo] = useState(null);
 
   const fetchImageBase64 = async () => {
     try {
@@ -221,10 +223,31 @@ const DetailPage = () => {
     }
   };
 
+  const getMapInfo = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/map/${postId}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setMapInfo(data);
+      } else {
+        console.error("응답 오류");
+      }
+    } catch (error) {
+      console.error("데이터 받아오기 오류", error);
+    }
+  };
+
   useEffect(() => {
     if (postId) {
       fetchPostDetail();
       fetchImageBase64();
+      getMapInfo();
     }
   }, [postId]);
 
@@ -349,6 +372,16 @@ const DetailPage = () => {
             {category[newPost.category].name} | {newPost.updateTime}
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate(
+                `/viewmap/${postId}/${mapInfo.latitude}/${mapInfo.longitude}`
+              )
+            }
+          >
+            <OnlyViewMap mapInfo={mapInfo} setMapInfo={setMapInfo} />
+          </div>
           <ChatButton onClick={() => navigate(`/room/${postId}`)}>
             <ChatIcon>💬</ChatIcon> 채팅 시작
           </ChatButton>

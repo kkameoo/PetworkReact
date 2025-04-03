@@ -122,6 +122,8 @@ const PostTrade = ({ onSubmitSuccess = () => {} }) => {
       localGu: selectedGu,
       tradeCategory: Number(category),
       tradePrice: Number(price),
+      latitude: regionMap[selectedSi].latitude,
+      longitude: regionMap[selectedSi].longitude,
       update: new Date().toISOString(),
     };
     const formData = new FormData();

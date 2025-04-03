@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Report from "../report/Report";
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
+import OnlyViewMap from "../map/OnlyViewMap";
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -184,6 +185,7 @@ const HireDetailPage = () => {
   const [regionMap, setRegionMap] = useState([]);
   const [category, setCategory] = useState([]);
   const [isRegionLoaded, setIsRegionLoaded] = useState(false);
+  const [mapInfo, setMapInfo] = useState(null);
 
   useEffect(() => {
     if (regionMap && Object.keys(regionMap).length > 0) {
@@ -209,6 +211,26 @@ const HireDetailPage = () => {
     } catch (error) {
       console.error("로그인 상태 확인 실패:", error);
       setIsLoggedIn(false);
+    }
+  };
+
+  const getMapInfo = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/map/${postId}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setMapInfo(data);
+      } else {
+        console.error("응답 오류");
+      }
+    } catch (error) {
+      console.error("데이터 받아오기 오류", error);
     }
   };
 
@@ -312,6 +334,7 @@ const HireDetailPage = () => {
     fetchPostDetail();
     fetchImageBase64();
     increaseViewCount();
+    getMapInfo();
   }, [postId]);
 
   if (
@@ -359,6 +382,16 @@ const HireDetailPage = () => {
             {newPost.price}원
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+              navigate(
+                `/viewmap/${postId}/${mapInfo.latitude}/${mapInfo.longitude}`
+              )
+            }
+          >
+            <OnlyViewMap mapInfo={mapInfo} setMapInfo={setMapInfo} />
+          </div>
           <ChatButton onClick={() => navigate(`/room/${postId}`)}>
             <ChatIcon>💬</ChatIcon> 채팅 시작
           </ChatButton>

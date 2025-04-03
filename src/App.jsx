@@ -156,9 +156,8 @@ function App() {
         <Route path="/petstarDetail/:postId" element={<PetstarDetailPage />} />
         <Route path="/postUserPet" element={<PostUserPet />} />
         <Route path="/postpet" element={<PostUserPet />} />
-        <Route path="/viewmap/:lat/:lng" element={<ViewMap />} />
+        <Route path="/viewmap/:postId/:lat/:lng" element={<ViewMap />} />
         <Route path="/profile/:userId" element={<UserProfile />} />
-        <Route path="/test" element={<SideFilter />} />
         <Route path="/chatlist" element={<ChatListPage />} />
       </Routes>
       <Footer />

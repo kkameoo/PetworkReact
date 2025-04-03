@@ -126,6 +126,8 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
       hireCondition: condition,
       hireCategory: Number(category),
       hirePrice: Number(price),
+      latitude: regionMap[selectedSi].latitude,
+      longitude: regionMap[selectedSi].longitude,
       hireDate: hireDate.toISOString(),
       update: new Date().toISOString(),
     };
