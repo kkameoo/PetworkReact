@@ -29,7 +29,7 @@ const FooterSection = styled.div`
     margin-left: 30px;
     font-size: 16px;
     margin-bottom: 10px;
-    color: #007acc;
+    color: #ac6f37;
   }
 `;
 

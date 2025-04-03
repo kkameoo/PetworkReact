@@ -27,6 +27,12 @@ const DefaultPostCard = styled.div`
     background-color: #f9f9f9;
   }
 `;
+const Adver = styled.div`
+  margin-left: 50px;
+  img {
+    width: 1200px;
+  }
+`;
 const HirePostCard = styled.div`
   width: 200px;
   border: 2px dashed #a2e4b8;
@@ -339,7 +345,6 @@ function MainPage() {
             )}
           </PostsWrapper>
         </SectionWrapper>
-
         <SectionWrapper>
           <SectionTitle>알바 게시판 인기글 🤝</SectionTitle>
           <PostsWrapper>
@@ -348,6 +353,19 @@ function MainPage() {
             )}
           </PostsWrapper>
         </SectionWrapper>
+        <Adver>
+          <a
+            href="https://smartstore.naver.com/dogrnd/products/10207565907"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src="src/assets/advertisement.jpg"
+              alt="광고 이미지"
+              className="ad-image"
+            />
+          </a>
+        </Adver>
         <SectionWrapper>
           <SectionTitle>펫스타그램 인기글 📸</SectionTitle>
           <PostsWrapper>
