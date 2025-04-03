@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SideFilter from "../../components/SideFilter";
+import { getLocalCategory, getWalkCategory } from "../../services/dataService";
+import SizeFilter from "../../components/SizeFilter";
+import { useAuth } from "../../hooks/useAuth";
 
 const ListContainer = styled.div`
   max-width: 1600px;
@@ -24,56 +27,6 @@ const Sidebar = styled.div`
   border-radius: 10px;
   background-color: #a2e4b8;
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-`;
-
-// 지역 선택 부분을 감싸는 div에 스타일 추가
-const RegionSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-  max-height: 300px;
-  overflow-y: auto;
-`;
-const CategorySection = styled.div`
-  margin-top: 20px;
-`;
-const SidebarTitle = styled.h3`
-  margin-left: 25px;
-  text-align: left;
-  margin-bottom: 10px;
-  color: #727d73;
-`;
-
-const SidebarLabel = styled.label`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #727d73;
-  transition: all 0.2s ease-in-out;
-  border: 0.5px solid #6dbe92;
-
-  ${({ selected }) =>
-    selected
-      ? `
-    background-color: #6dbe92;
-    color: white;
-    border-color: #6dbe92;
-  `
-      : `
-    background-color : #a2e4b8;
-    &:hover {
-      background-color: #6dbe92;
-    }
-  `}
-`;
-
-const SidebarInput = styled.input`
-  margin-right: 5px;
-  display: none;
 `;
 // 구선택 드롭다운
 const SelectBox = styled.select`
@@ -220,14 +173,6 @@ const PageNumber = styled.span`
   color: #727d73;
 `;
 
-// 지역 및 카테고리 매핑
-const CATEGORY_ID = {
-  0: "전체",
-  1: "소형견",
-  2: "중형견",
-  3: "대형견",
-};
-
 const ITEMS_PER_PAGE = 12;
 
 const JobContents = () => {
@@ -242,55 +187,24 @@ const JobContents = () => {
   const [selectedRegion, setSelectedRegion] = useState("전체");
   const [selectedGu, setSelectedGu] = useState("전체");
   const [searchTerm, setSearchTerm] = useState("");
-  const [user, setUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { user } = useAuth();
   const [imageMap, setImageMap] = useState({});
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
-  const META_URL = "/src/data/localCategory.json";
-
-  //   로그인 상태 확인
-  const checkLoginStatus = async () => {
-    try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
-      if (response.ok) {
-        const data = await response.json();
-        setIsLoggedIn(true);
-        setUser(data);
-        console.log(data + "세션정보");
-      } else {
-        setIsLoggedIn(false);
-      }
-    } catch (error) {
-      console.error("로그인 상태 확인 실패:", error);
-      setIsLoggedIn(false);
-    }
-  };
-
-  const getCategory = async () => {
-    try {
-      const response = await fetch(META_URL);
-      if (response.ok) {
-        const data = await response.json();
-        setRegionMap(data.regions);
-      } else {
-        throw new Error("Failed to Fetch Data");
-      }
-    } catch (error) {
-      console.error("Error fetching JSON:", error);
-      throw error;
-    }
-  };
+  const [walkCategory, setWalkCategory] = useState([]);
 
   useEffect(() => {
-    checkLoginStatus();
-    getCategory();
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
+    getWalkCategory()
+      .then(setWalkCategory)
+      .catch((error) => console.error("Fetching error:", error));
   }, []);
 
   useEffect(() => {
+    console.log("발생");
+    if (!regionMap || Object.keys(regionMap).length === 0) return;
     fetch(API_POST_URL)
       .then((res) => res.json())
       .then((data) => {
@@ -363,19 +277,26 @@ const JobContents = () => {
   );
 
   const goToDetail = (postId) => navigate(`/hire/${postId}`);
+  if (!walkCategory) return <div>... 로딩중</div>;
 
   return (
     <>
       <ListContainer>
         <ContentWrapper>
           {/* 사이드바 */}
-          <SideFilter
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
-            selectedGu={selectedGu}
-            setSelectedGu={setSelectedGu}
-          />
-
+          <Sidebar>
+            <SideFilter
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              selectedGu={selectedGu}
+              setSelectedGu={setSelectedGu}
+            />
+            <SizeFilter
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              setCurrentPage={setCurrentPage}
+            />
+          </Sidebar>
           {/* 게시글 리스트 */}
 
           <ProductList>
@@ -400,7 +321,7 @@ const JobContents = () => {
                   <ProductTitle>{post.title}</ProductTitle>
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
-                  <Seller>{CATEGORY_ID[post.category]}</Seller>
+                  <Seller>{walkCategory[post.category]?.name}</Seller>
                   {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SideFilter from "../../components/SideFilter";
+import SizeFilter from "../../components/SizeFilter";
+import { getLocalCategory, getWalkCategory } from "../../services/dataService";
 
 /* 전체 컨테이너 */
 const ListContainer = styled.div`
@@ -27,55 +29,6 @@ const Sidebar = styled.div`
   box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
 `;
 
-// 지역 선택 부분을 감싸는 div에 스타일 추가
-const RegionSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 10px;
-  max-height: 300px;
-  overflow-y: auto;
-`;
-const CategorySection = styled.div`
-  margin-top: 20px;
-`;
-const SidebarTitle = styled.h3`
-  margin-left: 25px;
-  text-align: left;
-  margin-bottom: 10px;
-  color: #727d73;
-`;
-
-const SidebarLabel = styled.label`
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 20px;
-  font-size: 14px;
-  color: #727d73;
-  transition: all 0.2s ease-in-out;
-  border: 0.5px solid #6dbe92;
-
-  ${({ selected }) =>
-    selected
-      ? `
-    background-color: #6dbe92;
-    color: white;
-    border-color: #6dbe92;
-  `
-      : `
-    background-color : #a2e4b8;
-    &:hover {
-      background-color: #6dbe92;
-    }
-  `}
-`;
-
-const SidebarInput = styled.input`
-  margin-right: 5px;
-  display: none;
-`;
 // 구선택 드롭다운
 const SelectBox = styled.select`
   width: 150px;
@@ -220,13 +173,6 @@ const PageNumber = styled.span`
   font-weight: bold;
   color: #727d73;
 `;
-// 지역 및 카테고리 매핑
-const CATEGORY_ID = {
-  0: "전체",
-  1: "소형견",
-  2: "중형견",
-  3: "대형견",
-};
 
 const ITEMS_PER_PAGE = 12;
 
@@ -247,7 +193,7 @@ const WalkContents = () => {
   const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
-  const META_URL = "/src/data/localCategory.json";
+  const [walkCategory, setWalkCategory] = useState([]);
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -270,24 +216,14 @@ const WalkContents = () => {
     }
   };
 
-  const Category = async () => {
-    try {
-      const response = await fetch(META_URL);
-      if (response.ok) {
-        const data = await response.json();
-        setRegionMap(data.regions);
-      } else {
-        throw new Error("Failed to Fetch Data");
-      }
-    } catch (error) {
-      console.error("Error fetching JSON:", error);
-      throw error;
-    }
-  };
-
   useEffect(() => {
     checkLoginStatus();
-    Category();
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
+    getWalkCategory()
+      .then(setWalkCategory)
+      .catch((error) => console.error("Fetching error:", error));
   }, []);
 
   useEffect(() => {
@@ -370,13 +306,19 @@ const WalkContents = () => {
       <ListContainer>
         <ContentWrapper>
           {/* 사이드바 */}
-          <SideFilter
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
-            selectedGu={selectedGu}
-            setSelectedGu={setSelectedGu}
-          />
-
+          <Sidebar>
+            <SideFilter
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              selectedGu={selectedGu}
+              setSelectedGu={setSelectedGu}
+            />
+            <SizeFilter
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              setCurrentPage={setCurrentPage}
+            />
+          </Sidebar>
           {/* 게시글 리스트 */}
           <ProductList>
             {displayedPosts.map((post) => {
@@ -400,7 +342,7 @@ const WalkContents = () => {
                   <ProductTitle>{post.title}</ProductTitle>
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
-                  <Seller>{CATEGORY_ID[post.category]}</Seller>
+                  <Seller>{walkCategory[post.category].name}</Seller>
                   {user?.iadmin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}

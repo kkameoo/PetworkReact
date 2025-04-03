@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-
-/* 카테고리 필터 사이드바 */
-const Sidebar = styled.div`
-  width: 200px;
-  padding: 10px;
-  border-radius: 10px;
-  background-color: #a2e4b8;
-  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
-`;
+import { getLocalCategory } from "../services/dataService";
 
 // 지역 선택 부분을 감싸는 div에 스타일 추가
 const RegionSection = styled.div`
@@ -66,35 +58,19 @@ function SideFilter({
   selectedGu,
   setSelectedGu,
 }) {
-  const META_URL = "/src/data/localCategory.json";
   const [regionMap, setRegionMap] = useState([]);
-  // const [selectedRegion, setSelectedRegion] = useState(null);
-  // const [selectedGu, setSelectedGu] = useState(null);
   const [selectedRegionId, setSelectedRegionId] = useState(null);
 
   useEffect(() => {
-    Category();
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
   }, []);
 
-  const Category = async () => {
-    try {
-      const response = await fetch(META_URL);
-      if (response.ok) {
-        const data = await response.json();
-        setRegionMap(data.regions);
-      } else {
-        throw new Error("Failed to Fetch Data");
-      }
-    } catch (error) {
-      console.error("Error fetching JSON:", error);
-      throw error;
-    }
-  };
-
-  if (!regionMap) return <div>... 로딩중</div>;
+  if (!regionMap) return <div>...로딩중</div>;
 
   return (
-    <Sidebar>
+    <>
       <RegionSection>
         <SidebarTitle>지역 선택</SidebarTitle>
         {regionMap.map((region) => (
@@ -133,26 +109,7 @@ function SideFilter({
           ))}
         </select>
       )}
-
-      <CategorySection>
-        <SidebarTitle>카테고리</SidebarTitle>
-        {/* {Object.entries(CATEGORY_ID).map(([key, category]) => (
-          <SidebarLabel key={key}>
-            <SidebarInput
-              type="radio"
-              name="category"
-              value={key}
-              checked={selectedCategory === Number(key)}
-              onChange={() => {
-                setSelectedCategory(Number(key));
-                setCurrentPage(1);
-              }}
-            />
-            {category}
-          </SidebarLabel>
-        ))} */}
-      </CategorySection>
-    </Sidebar>
+    </>
   );
 }
 

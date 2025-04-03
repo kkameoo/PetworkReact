@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import SideFilter from "../../components/SideFilter";
+import TradeFilter from "../../components/TradeFilter";
+import { getLocalCategory, getTradeCategory } from "../../services/dataService";
 
 const ListContainer = styled.div`
   max-width: 1600px;
@@ -220,21 +222,12 @@ const PageNumber = styled.span`
   color: #727d73;
 `;
 
-const CATEGORY_ID = {
-  0: "전체",
-  1: "미용",
-  2: "사료",
-  3: "장난감",
-};
-
 const ITEMS_PER_PAGE = 12;
 
 const SellContents = () => {
   const API_POST_URL = "http://localhost:8087/api/board/trade";
   const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
   const navigate = useNavigate();
-  // const { vale } = useAuth();
-  // console.log("aaaa" + vale);
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -247,7 +240,7 @@ const SellContents = () => {
   const [imageMap, setImageMap] = useState({});
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
-  const META_URL = "/src/data/localCategory.json";
+  const [tradeCategory, setTradeCategory] = useState([]);
 
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -270,24 +263,14 @@ const SellContents = () => {
     }
   };
 
-  const Category = async () => {
-    try {
-      const response = await fetch(META_URL);
-      if (response.ok) {
-        const data = await response.json();
-        setRegionMap(data.regions);
-      } else {
-        throw new Error("Failed to Fetch Data");
-      }
-    } catch (error) {
-      console.error("Error fetching JSON:", error);
-      throw error;
-    }
-  };
-
   useEffect(() => {
     checkLoginStatus();
-    Category();
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
+    getTradeCategory()
+      .then(setTradeCategory)
+      .catch((error) => console.error("Fetching error:", error));
   }, []);
 
   useEffect(() => {
@@ -367,13 +350,19 @@ const SellContents = () => {
       <ListContainer>
         <ContentWrapper>
           {/* 사이드바 */}
-          <SideFilter
-            selectedRegion={selectedRegion}
-            setSelectedRegion={setSelectedRegion}
-            selectedGu={selectedGu}
-            setSelectedGu={setSelectedGu}
-          />
-
+          <Sidebar>
+            <SideFilter
+              selectedRegion={selectedRegion}
+              setSelectedRegion={setSelectedRegion}
+              selectedGu={selectedGu}
+              setSelectedGu={setSelectedGu}
+            />
+            <TradeFilter
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+              setCurrentPage={setCurrentPage}
+            />
+          </Sidebar>
           {/* 게시글 리스트 */}
 
           <ProductList>
@@ -398,7 +387,7 @@ const SellContents = () => {
                   <ProductTitle>{post.title}</ProductTitle>
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
-                  <Seller>{CATEGORY_ID[post.category]}</Seller>
+                  <Seller>{tradeCategory[post.category].name}</Seller>
                   {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}

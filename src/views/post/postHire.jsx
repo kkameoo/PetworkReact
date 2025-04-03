@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
+import { useAuth } from "../../hooks/useAuth";
+import { getLocalCategory, getWalkCategory } from "../../services/dataService";
 
 const FormContainer = styled.div`
   /* max-width: 600px; */
@@ -63,97 +65,21 @@ const SubmitButton = styled.button`
 `;
 
 const PostHire = ({ onSubmitSuccess = () => {} }) => {
-  const [user, setUser] = useState(null);
+  const { user } = useAuth();
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
-  const [category, setCategory] = useState(1);
-  const [regionSi, setRegionSi] = useState("서울특별시");
-  const [regionGu, setRegionGu] = useState("강남구");
+  const [category, setCategory] = useState("0");
+  const [selectedSi, setSelectedSi] = useState("0");
+  const [selectedGu, setSelectedGu] = useState("0");
   const [description, setDescription] = useState("");
   const [condition, setCondition] = useState("");
   const [hireDate, setHireDate] = useState(new Date());
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
-
-  const CATEGORY_ID = [
-    [1, "소형견"],
-    [2, "중형견"],
-    [3, "대형견"],
-  ];
-
-  const regions = [
-    "서울시",
-    "수원시",
-    "성남시",
-    "안양시",
-    "부천시",
-    "광명시",
-    "펑택시",
-    "시흥시",
-    "안산시",
-    "고양시",
-    "과천시",
-    "구리시",
-    "남양주시",
-    "오산시",
-    "화성시",
-    "인천시",
-  ];
-  const allSis = {
-    서울시: [
-      "종로구",
-      "중구",
-      "용산구",
-      "성동구",
-      "광진구",
-      "동대문구",
-      "중랑구",
-      "강북구",
-      "도봉구",
-      "노원구",
-      "은평구",
-      "서대문구",
-      "마포구",
-      "양천구",
-      "강서구",
-      "구로구",
-      "금천구",
-      "영등포구",
-      "동작구",
-      "관악구",
-      "서초구",
-      "강남구",
-      "송파구",
-      "강동구",
-    ],
-    수원시: ["장안구", "권선구", "팔달구", "영통구"],
-    성남시: ["수정구", "중원구", "분당구"],
-    안양시: ["만안구", "동안구"],
-    부천시: ["원미구", "소사구", "오정구"],
-    광명시: ["광명구"],
-    평택시: ["평택구"],
-    시흥시: ["시흥구"],
-    안산시: ["단원구", "상록구"],
-    고양시: ["덕양구", "일산동구", "일산서구"],
-    과천시: ["과천구"],
-    구리시: ["구리구"],
-    남양주시: ["남양주구"],
-    오산시: ["오산구"],
-    화성시: ["화성구"],
-    인천시: [
-      "중구(인천)",
-      "동구(인천)",
-      "미추홀구",
-      "연수구",
-      "남동구",
-      "부평구",
-      "계양구",
-      "서구(인천)",
-      "강화군",
-      "옹진군",
-    ],
-  };
+  const [regionMap, setRegionMap] = useState([]);
+  const [walkCategory, setWalkCategory] = useState([]);
+  const API_URL = "http://localhost:8087/";
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];
@@ -163,31 +89,23 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
     setPreview(URL.createObjectURL(file));
   };
 
+  const handleSiChange = (event) => {
+    const newSi = event.target.value;
+    setSelectedSi(newSi);
+    setSelectedGu(regionMap[newSi]?.gu[0].id || "0"); // 첫 번째 구 자동 선택
+  };
+
+  const handleGuChange = (event) => {
+    setSelectedGu(event.target.value);
+  };
+
   useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch("http://localhost:8087/api/user/session", {
-          method: "GET",
-          credentials: "include", // ← withCredentials 대응
-        });
-
-        if (!response.ok) {
-          throw new Error("응답 오류");
-        }
-
-        const data = await response.json();
-
-        if (data.userId) {
-          setUser(data);
-        } else {
-          console.error("🚨 로그인된 사용자가 없습니다.");
-        }
-      } catch (error) {
-        console.error("🔴 사용자 정보를 불러오는 중 오류 발생:", error);
-      }
-    };
-
-    fetchUserData();
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
+    getWalkCategory()
+      .then(setWalkCategory)
+      .catch((error) => console.error("Fetching error:", error));
   }, []);
 
   const handleSubmit = async (event) => {
@@ -203,8 +121,8 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
       content: description,
       reportCount: 0,
       boardType: 3,
-      localSi: regions.indexOf(regionSi) + 1,
-      localGu: allSis[regionSi].indexOf(regionGu) + 1,
+      localSi: selectedSi,
+      localGu: selectedGu,
       hireCondition: condition,
       hireCategory: Number(category),
       hirePrice: Number(price),
@@ -212,14 +130,14 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
       update: new Date().toISOString(),
     };
     const formData = new FormData();
-    console.log(postData);
+    // console.log(postData);
     const postData2 = JSON.stringify(postData);
-    console.log(postData2);
+    // console.log(postData2);
     formData.append("file", imageFile);
     formData.append("requestJson", postData2);
-    console.log(postData, "데이터");
+    // console.log(postData, "데이터");
     try {
-      const response = await fetch("http://localhost:8087/api/board/hire", {
+      const response = await fetch(API_URL + "api/board/hire", {
         method: "POST",
         body: formData,
         credentials: "include",
@@ -265,35 +183,29 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
-            {CATEGORY_ID.map(([id, name]) => (
-              <option key={id} value={id}>
-                {name}
+            {walkCategory.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
               </option>
             ))}
           </select>
         </FormRow>
         <FormRow>
-          <label>시</label>
-          <select
-            value={regionSi}
-            onChange={(e) => setRegionSi(e.target.value)}
-          >
-            {regions.map((reg) => (
-              <option key={reg} value={reg}>
-                {reg}
+          <label>시 선택:</label>
+          <select value={selectedSi} onChange={handleSiChange} required>
+            {regionMap.map((si, index) => (
+              <option key={index} value={si.id}>
+                {si.name}
               </option>
             ))}
           </select>
         </FormRow>
         <FormRow>
-          <label>구</label>
-          <select
-            value={regionGu}
-            onChange={(e) => setRegionGu(e.target.value)}
-          >
-            {allSis[regionSi]?.map((gu) => (
-              <option key={gu} value={gu}>
-                {gu}
+          <label>구 선택:</label>
+          <select value={selectedGu} onChange={handleGuChange} required>
+            {regionMap[selectedSi]?.gu.map((gu, index) => (
+              <option key={index} value={gu.id}>
+                {gu.name}
               </option>
             ))}
           </select>

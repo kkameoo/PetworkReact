@@ -1,29 +1,29 @@
 {
     "walkCategory" : [
         {
-            "id" : 1,
+            "id" : 0,
             "name" : "소형"
         },
         {
-            "id" : 2,
+            "id" : 1,
             "name" : "중형"
         },
         {
-            "id" : 3,
+            "id" : 2,
             "name" : "대형"
         }
     ],
     "tradeCategory" : [
         {
-            "id" : 1,
+            "id" : 0,
             "name" : "사료"
         },
         {
-            "id" : 2,
+            "id" : 1,
             "name" : "간식"
         },
         {
-            "id" : 3,
+            "id" : 2,
             "name" : "장난감"
         }
     ]

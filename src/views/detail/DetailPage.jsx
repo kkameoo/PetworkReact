@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, data } from "react-router-dom";
 import styled from "styled-components";
-import { getCategory } from "../../services/dataService";
+import { getWalkCategory } from "../../services/dataService";
 import Report from "../report/Report";
 
 const DetailWrapper = styled.div`
@@ -229,7 +229,7 @@ const DetailPage = () => {
 
   useEffect(() => {
     checkLoginStatus();
-    getCategory()
+    getWalkCategory()
       .then(setCategory)
       .catch((error) => console.error("Fetching error:", error));
   }, []);
