@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getLocalCategory } from "../services/dataService";
 
-// 지역 선택 부분을 감싸는 div에 스타일 추가
 const RegionSection = styled.div`
   display: flex;
   flex-direction: column;
@@ -11,9 +10,7 @@ const RegionSection = styled.div`
   max-height: 300px;
   overflow-y: auto;
 `;
-const CategorySection = styled.div`
-  margin-top: 20px;
-`;
+
 const SidebarTitle = styled.h3`
   margin-left: 25px;
   text-align: left;
@@ -40,7 +37,7 @@ const SidebarLabel = styled.label`
     border-color: #6dbe92;
   `
       : `
-    background-color : #a2e4b8;
+    background-color: #a2e4b8;
     &:hover {
       background-color: #6dbe92;
     }
@@ -73,8 +70,28 @@ function SideFilter({
     <>
       <RegionSection>
         <SidebarTitle>지역 선택</SidebarTitle>
+
+        {/* 전체 선택 추가 */}
+        <SidebarLabel selected={selectedRegion === "전체"}>
+          <SidebarInput
+            type="radio"
+            name="region"
+            value="전체"
+            checked={selectedRegion === "전체"}
+            onChange={() => {
+              setSelectedRegion("전체");
+              setSelectedRegionId(null);
+              setSelectedGu("전체"); // 모든 구 포함
+            }}
+          />
+          전체
+        </SidebarLabel>
+
         {regionMap.map((region) => (
-          <SidebarLabel key={region.id}>
+          <SidebarLabel
+            key={region.id}
+            selected={selectedRegion === region.name}
+          >
             <SidebarInput
               type="radio"
               name="region"
@@ -91,7 +108,8 @@ function SideFilter({
         ))}
       </RegionSection>
 
-      {selectedRegion !== "전체" && (
+      {/* "전체" 선택 시 구 선택 드롭다운 숨김 */}
+      {selectedRegion !== "전체" && selectedRegionId !== null && (
         <select
           value={selectedGu}
           onChange={(e) => setSelectedGu(e.target.value)}
