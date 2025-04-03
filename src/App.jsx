@@ -46,10 +46,13 @@ function App() {
 
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const data = await response.json();
@@ -72,10 +75,13 @@ function App() {
 
   const invalidSession = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/user/logout", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/logout`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         console.log("로그아웃 성공");
@@ -92,7 +98,7 @@ function App() {
 
   const getAlarms = async () => {
     // 로그인 후 저장된 알람 불러오기
-    fetch(`http://localhost:8087/alarm/list/byuser/` + user.userId)
+    fetch(`${import.meta.env.VITE_API_URL}/alarm/list/byuser/` + user.userId)
       .then((res) => res.json())
       // .then((data) => setNotifications(data))
       .then((data) => {

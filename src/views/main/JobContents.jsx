@@ -216,7 +216,7 @@ const JobContents = () => {
             regionMap[item.localSi].gu[item.localGu].name || "알 수 없음",
           title: item.title,
           content: item.content,
-          category: item.category,
+          category: item.hireCategory,
           type: item.boardType,
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,

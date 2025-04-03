@@ -137,11 +137,14 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
     formData.append("requestJson", postData2);
     // console.log(postData, "데이터");
     try {
-      const response = await fetch(API_URL + "api/board/hire", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/board/hire`,
+        {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         alert("게시물이 성공적으로 등록되었습니다!");

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Report from "../report/Report";
+import { getLocalCategory, getWalkCategory } from "../../services/dataService";
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -180,6 +181,8 @@ const HireDetailPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [imageBase64, setImageBase64] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const [regionMap, setRegionMap] = useState([]);
+  const [category, setCategory] = useState([]);
 
   // 로그인 상태 확인
   const checkLoginStatus = async () => {
@@ -204,6 +207,12 @@ const HireDetailPage = () => {
 
   useEffect(() => {
     checkLoginStatus();
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
+    getWalkCategory()
+      .then(setCategory)
+      .catch((error) => console.error("Fetching error:", error));
   }, []);
 
   const fetchPostDetail = async () => {
@@ -219,7 +228,7 @@ const HireDetailPage = () => {
         regionGu: data.localGu,
         title: data.title,
         content: data.content,
-        category: data.tradeCategory,
+        category: data.hireCategory,
         type: data.boardType,
         clickCnt: data.clickCount,
         reportCnt: data.reportCount,
@@ -298,7 +307,14 @@ const HireDetailPage = () => {
     increaseViewCount();
   }, [postId]);
 
-  if (!newPost) return <div>로딩 중...</div>;
+  if (
+    !newPost ||
+    !regionMap ||
+    Object.keys(regionMap).length === 0 ||
+    !category ||
+    Object.keys(category).length === 0
+  )
+    return <div>로딩 중...</div>;
 
   return (
     <DetailWrapper>
@@ -320,7 +336,8 @@ const HireDetailPage = () => {
               >
                 작성자: {newPost.seller}
                 <Location>
-                  {newPost.regionSi} {newPost.regionGu}
+                  {regionMap[newPost.regionSi].name}{" "}
+                  {regionMap[newPost.regionSi].gu[newPost.regionGu].name}
                 </Location>
               </div>
               <Report postId={postId} />
@@ -330,7 +347,8 @@ const HireDetailPage = () => {
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>
           <ProductCategory>
-            {newPost.category} | {newPost.updateTime} {newPost.price}원
+            {category[newPost.category].name}| {newPost.updateTime}{" "}
+            {newPost.price}원
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
           <ChatButton onClick={() => navigate(`/room/${postId}`)}>

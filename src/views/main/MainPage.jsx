@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { getLocalCategory } from "../../services/dataService";
 
 const SectionWrapper = styled.div`
   margin: 50px;
@@ -137,6 +138,7 @@ function MainPage() {
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [user, setUser] = useState(null);
   const [isLoggedin, setIsLoggedIn] = useState();
+  const [regionMap, setRegionMap] = useState([]);
 
   const checkLoginStatus = async () => {
     try {
@@ -245,6 +247,9 @@ function MainPage() {
       );
     };
     fetchAll();
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
   }, []);
   const PopularPosts = [...petstarPosts]
     .sort((a, b) => b.clickCnt - a.clickCnt)
@@ -268,9 +273,10 @@ function MainPage() {
           onClick={() => navigate(`/hire/${post.boardId}`)}
         >
           <Title>{post.title}</Title>
-          <Info>{post.nickname}</Info>
+          <Info>작성자 : {post.nickname}</Info>
           <Info>
-            {post.localSi} {post.localGu}
+            {regionMap[post.localSi].name}{" "}
+            {regionMap[post.localSi].gu[post.localGu].name}
           </Info>
         </HirePostCard>
       );
@@ -286,9 +292,10 @@ function MainPage() {
             alt={post.title}
           />
           <Title>{post.title}</Title>
-          <Info>{post.nickname}</Info>
+          <Info>작성자 : {post.nickname}</Info>
           <Info>
-            {post.localSi} {post.localGu}
+            {regionMap[post.localSi].name}{" "}
+            {regionMap[post.localSi].gu[post.localGu].name}
           </Info>
         </DefaultPostCard>
       );
@@ -300,13 +307,17 @@ function MainPage() {
       >
         <Thumbnail src={imageMap[post.id] || DEFAULT_IMAGE} alt={post.title} />
         <Title>{post.title}</Title>
-        <Info>{post.nickname}</Info>
+        <Info>작성자 : {post.nickname}</Info>
         <Info>
-          {post.localSi} {post.localGu}
+          {regionMap[post.localSi].name}{" "}
+          {regionMap[post.localSi].gu[post.localGu].name}
         </Info>
       </DefaultPostCard>
     );
   };
+
+  if (!regionMap || Object.keys(regionMap).length === 0)
+    return <div>로딩 중...</div>;
 
   return (
     <PageLayout>

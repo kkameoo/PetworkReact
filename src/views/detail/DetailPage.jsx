@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, data } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { getWalkCategory } from "../../services/dataService";
+import { getLocalCategory, getWalkCategory } from "../../services/dataService";
 import Report from "../report/Report";
 
 const DetailWrapper = styled.div`
@@ -175,9 +175,10 @@ const DetailPage = () => {
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [category, setCategory] = useState(null);
+  const [category, setCategory] = useState([]);
   const [imageBase64, setImageBase64] = useState("");
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const [regionMap, setRegionMap] = useState([]);
 
   const fetchImageBase64 = async () => {
     try {
@@ -229,6 +230,9 @@ const DetailPage = () => {
 
   useEffect(() => {
     checkLoginStatus();
+    getLocalCategory()
+      .then(setRegionMap)
+      .catch((error) => console.error("Fetching error:", error));
     getWalkCategory()
       .then(setCategory)
       .catch((error) => console.error("Fetching error:", error));
@@ -305,7 +309,14 @@ const DetailPage = () => {
     }
   };
 
-  if (!newPost || !category) return <div>로딩 중...</div>;
+  if (
+    !newPost ||
+    !regionMap ||
+    Object.keys(regionMap).length === 0 ||
+    !category ||
+    Object.keys(category).length === 0
+  )
+    return <div>로딩 중...</div>;
 
   return (
     <DetailWrapper>
@@ -324,7 +335,8 @@ const DetailPage = () => {
               >
                 작성자: {newPost.seller}
                 <Location>
-                  {newPost.regionSi} {newPost.regionGu}
+                  {regionMap[newPost.regionSi].name}{" "}
+                  {regionMap[newPost.regionSi].gu[newPost.regionGu].name}
                 </Location>
               </div>
               <Report postId={postId} />
