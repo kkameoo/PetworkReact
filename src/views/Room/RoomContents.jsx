@@ -403,6 +403,7 @@ const RoomContents = () => {
         content: message,
         messageType: 3,
         regDate: new Date().toISOString(),
+        chatroomName: chatroom.chatroomName,
       }),
     });
     console.log(user.nickname);
