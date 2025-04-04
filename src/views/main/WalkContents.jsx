@@ -22,7 +22,11 @@ const ContentWrapper = styled.div`
 
 /* 카테고리 필터 사이드바 */
 const Sidebar = styled.div`
-  width: 200px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  height: 1000px;
+  width: 150px;
   padding: 10px;
   border-radius: 10px;
   background-color: #a2e4b8;
@@ -77,6 +81,7 @@ const ProductList = styled.div`
 `;
 const ProductCard = styled.div`
   background-color: white;
+  height: 310px;
   border-radius: 10px;
   padding: 10px;
   text-align: center;

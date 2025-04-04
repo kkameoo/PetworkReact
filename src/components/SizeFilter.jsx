@@ -3,18 +3,21 @@ import styled from "styled-components";
 import { getWalkCategory } from "../services/dataService";
 
 const CategorySection = styled.div`
-  margin-top: 20px;
+  width: 130px;
+  margin-top: 400px;
 `;
 
 const SidebarTitle = styled.h3`
-  margin-left: 25px;
-  text-align: left;
+  /* margin-left: 25px; */
+  text-align: center;
   margin-bottom: 10px;
   color: #727d73;
 `;
 
 const SidebarLabel = styled.label`
+  margin-bottom: 8px;
   display: flex;
+  justify-content: center;
   align-items: center;
   cursor: pointer;
   padding: 8px 12px;

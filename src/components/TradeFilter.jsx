@@ -3,17 +3,20 @@ import styled from "styled-components";
 import { getTradeCategory } from "../services/dataService";
 
 const CategorySection = styled.div`
-  margin-top: 20px;
+  width: 130px;
+  margin-top: 400px;
 `;
 
 const SidebarTitle = styled.h3`
-  margin-left: 25px;
-  text-align: left;
+  /* margin-left: 25px; */
+  text-align: center;
   margin-bottom: 10px;
   color: #727d73;
 `;
 
 const SidebarLabel = styled.label`
+  justify-content: center;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   cursor: pointer;
