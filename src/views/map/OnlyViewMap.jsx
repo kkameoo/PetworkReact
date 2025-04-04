@@ -9,13 +9,13 @@ const MapBox = styled.div`
 `;
 
 const MapContainer = styled.div`
-  width: 600px;
+  width: 800px;
   height: 400px;
   border: 2px solid grey;
 `;
 
 const MapTitle = styled.div`
-  width: 600px;
+  width: 800px;
   height: 50px;
   background: white;
   border: 2px solid grey;
@@ -90,7 +90,7 @@ function OnlyViewMap({ mapInfo, setMapInfo }) {
   }, [mapContainer.current, mapInfo]);
   return (
     <MapBox>
-      <MapTitle>지정 장소</MapTitle>
+      <MapTitle>&nbsp;&nbsp;&nbsp;&nbsp;지정 장소</MapTitle>
       <MapContainer ref={mapContainer}></MapContainer>
     </MapBox>
   );

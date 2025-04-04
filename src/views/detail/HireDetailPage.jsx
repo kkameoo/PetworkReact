@@ -99,6 +99,8 @@ const ProductDescription = styled.p`
   min-height: 240px;
   font-size: 18px;
   margin-bottom: 20px;
+  background-color: #f3f3f3;
+  border-radius: 10px;
 `;
 
 // 버튼을 오른쪽에 배치하기 위한 Wrapper 추가
@@ -108,7 +110,7 @@ const ButtonWrapper = styled.div`
   margin-top: 20px; /* 버튼을 위로 올리기 */
   justify-content: flex-end; /* 오른쪽 정렬 */
   position: absolute;
-  right: 300px;
+  right: 200px;
 `;
 
 const EditButton = styled.button`
@@ -130,7 +132,6 @@ const EditButton = styled.button`
 `;
 
 const DeleteButton = styled.button`
-  font-family: "Ownglyph_meetme-Rg", sans-serif;
   width: 150px;
   background-color: red;
   color: white;
@@ -145,7 +146,7 @@ const DeleteButton = styled.button`
 
 const ChatButton = styled.button`
   position: absolute;
-  right: 70px;
+  right: 0;
   top: 20px;
   width: 150px;
   display: flex;
