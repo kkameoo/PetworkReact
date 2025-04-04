@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { getLocalCategory } from "../services/dataService";
 const AllContainer = styled.div`
   width: 150px;
+  position: relative;
 `;
 
 const RegionSection = styled.div`
@@ -50,6 +51,18 @@ const SidebarLabel = styled.label`
 const SidebarInput = styled.input`
   margin-right: 5px;
   display: none;
+`;
+const SelectBox = styled.select`
+  margin: 20px 5px;
+  display: block;
+  padding: 8px;
+  width: 140px;
+  border-radius: 8px;
+  border: 1px solid #6dbe92;
+  background-color: #f9fff9;
+  color: #333;
+  position: absolute;
+  bottom: -485px;
 `;
 
 function SideFilter({
@@ -113,14 +126,9 @@ function SideFilter({
 
       {/* "전체" 선택 시 구 선택 드롭다운 숨김 */}
       {selectedRegion !== "전체" && selectedRegionId !== null && (
-        <select
+        <SelectBox
           value={selectedGu}
           onChange={(e) => setSelectedGu(e.target.value)}
-          style={{
-            marginLeft: "25px",
-            marginBottom: "20px",
-            padding: "5px",
-          }}
         >
           <option value="전체">-- 구 선택 --</option>
           {regionMap[selectedRegionId]?.gu.map((gu) => (
@@ -128,7 +136,7 @@ function SideFilter({
               {gu.name}
             </option>
           ))}
-        </select>
+        </SelectBox>
       )}
     </AllContainer>
   );
