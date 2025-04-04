@@ -70,6 +70,7 @@ const Location = styled.p`
 `;
 
 const ProductRight = styled.div`
+  position: relative;
   text-align: left;
   width: 50%;
   display: flex;
@@ -124,6 +125,9 @@ const DeleteButton = styled.button`
 `;
 
 const ChatButton = styled.button`
+  position: absolute;
+  right: 70px;
+  top: 20px;
   width: 150px;
   display: flex;
   align-items: center;
@@ -161,7 +165,7 @@ const ButtonWrapper = styled.div`
   margin-top: 20px; /* 버튼을 위로 올리기 */
   justify-content: flex-end; /* 오른쪽 정렬 */
   position: absolute;
-  right: 78px; /* 오른쪽 끝으로 배치 */
+  right: 300px;
 `;
 
 const TradeDetailPage = () => {
@@ -381,9 +385,11 @@ const TradeDetailPage = () => {
           >
             <OnlyViewMap mapInfo={mapInfo} setMapInfo={setMapInfo} />
           </div>
-          <ChatButton onClick={() => navigate(`/room/${postId}`)}>
-            <ChatIcon>💬</ChatIcon> 채팅 시작
-          </ChatButton>
+          {isLoggedIn && user?.userId !== newPost.sellerUid && (
+            <ChatButton onClick={() => navigate(`/room/${postId}`)}>
+              <ChatIcon>💬</ChatIcon> 채팅 시작
+            </ChatButton>
+          )}
         </ProductRight>
       </ProductBody>
       {isLoggedIn && user?.userId === newPost.sellerUid && (

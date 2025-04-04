@@ -76,6 +76,7 @@ const ProductRight = styled.div`
   width: 50%;
   display: flex;
   flex-direction: column;
+  position: relative;
 `;
 
 const ProductTitle = styled.h2`
@@ -105,7 +106,7 @@ const ButtonWrapper = styled.div`
   margin-top: 20px; /* 버튼을 위로 올리기 */
   justify-content: flex-end; /* 오른쪽 정렬 */
   position: absolute;
-  right: 78px; /* 오른쪽 끝으로 배치 */
+  right: 300px; /* 오른쪽 끝으로 배치 */
 `;
 
 const EditButton = styled.button`
@@ -139,6 +140,9 @@ const DeleteButton = styled.button`
 `;
 
 const ChatButton = styled.button`
+  position: absolute;
+  right: 70px;
+  top: 20px;
   width: 150px;
   display: flex;
   align-items: center;
@@ -385,9 +389,11 @@ const DetailPage = () => {
           >
             <OnlyViewMap mapInfo={mapInfo} setMapInfo={setMapInfo} />
           </div>
-          <ChatButton onClick={() => navigate(`/room/${postId}`)}>
-            <ChatIcon>💬</ChatIcon> 채팅 시작
-          </ChatButton>
+          {isLoggedIn && user?.userId !== newPost.sellerUid && (
+            <ChatButton onClick={() => navigate(`/room/${postId}`)}>
+              <ChatIcon>💬</ChatIcon> 채팅 시작
+            </ChatButton>
+          )}
         </ProductRight>
       </ProductBody>
 
