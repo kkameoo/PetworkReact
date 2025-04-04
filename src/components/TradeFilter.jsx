@@ -4,7 +4,7 @@ import { getTradeCategory } from "../services/dataService";
 
 const CategorySection = styled.div`
   width: 130px;
-  margin-top: 400px;
+  margin-top: 470px;
 `;
 
 const SidebarTitle = styled.h3`
