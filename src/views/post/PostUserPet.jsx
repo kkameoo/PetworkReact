@@ -142,9 +142,9 @@ const FormRow = styled.div`
 `;
 
 const CATEGORY_ID = [
-  [1, "소형"],
-  [2, "중형"],
-  [3, "대형"],
+  [0, "소형"],
+  [1, "중형"],
+  [2, "대형"],
 ];
 
 function PostUserPet({ onSubmitSuccess }) {

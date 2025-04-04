@@ -130,6 +130,7 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
       longitude: regionMap[selectedSi].longitude,
       hireDate: hireDate.toISOString(),
       update: new Date().toISOString(),
+      nickname: user.nickname,
     };
     const formData = new FormData();
     // console.log(postData);

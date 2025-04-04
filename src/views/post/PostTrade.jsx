@@ -125,6 +125,7 @@ const PostTrade = ({ onSubmitSuccess = () => {} }) => {
       latitude: regionMap[selectedSi].latitude,
       longitude: regionMap[selectedSi].longitude,
       update: new Date().toISOString(),
+      nickname: user.nickname,
     };
     const formData = new FormData();
     // console.log(postData);

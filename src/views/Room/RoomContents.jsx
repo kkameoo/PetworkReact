@@ -152,6 +152,7 @@ const RoomContents = () => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
   const [roomUserlist, setRoomUserList] = useState([]);
+  const [displayUserList, setDisplayUserList] = useState([]);
   const [connectedUser, setConnectedUser] = useState("");
 
   const chatroomRef = useRef(null);
@@ -163,15 +164,19 @@ const RoomContents = () => {
   const navigate = useNavigate();
 
   const handleConnectUser = () => {
-    const list = roomUserlist.map((user) => {
+    // console.log("발생");
+    const list = roomUserlist.map((lUser) => {
+      lUser.connected = false;
       connectedUser.map((cUser) => {
-        if (cUser.userId === user.userId) {
-          user.connected = true;
+        console.log(cUser);
+        console.log(lUser);
+        if (cUser.userId === lUser.userId) {
+          lUser.connected = true;
         }
       });
-      return user;
+      return lUser;
     });
-    setRoomUserList(list);
+    setDisplayUserList(list);
   };
 
   const getChatHistory = async () => {
@@ -307,23 +312,30 @@ const RoomContents = () => {
       onConnect: () => {
         console.log("WebSocket Connected");
         // 채팅방 구독
-        stompClient.subscribe("/topic/messages", (msg) => {
-          const postData = JSON.parse(msg.body);
-          const data = {
-            chatroomId: postData.chatroomId,
-            sender: postData.sender,
-            content: postData.content,
-            messageType: postData.messageType,
-            regDate: new Date(postData.regDate).toLocaleString(),
-          };
-          setMessages((prev) => [data, ...prev]);
-        });
+        stompClient.subscribe(
+          `/topic/messages/${chatroom.chatroomId}`,
+          (msg) => {
+            const postData = JSON.parse(msg.body);
+            const data = {
+              chatroomId: postData.chatroomId,
+              sender: postData.sender,
+              content: postData.content,
+              messageType: postData.messageType,
+              regDate: new Date(postData.regDate).toLocaleString(),
+            };
+            setMessages((prev) => [data, ...prev]);
+          }
+        );
         // 채팅 접속중인 유저 리스트 구독
-        stompClient.subscribe("/topic/userlist", (msg) => {
-          setConnectedUser(
-            JSON.parse(msg.body).map((data) => JSON.parse(data))
-          );
-        });
+        stompClient.subscribe(
+          `/topic/userlist/${chatroom.chatroomId}`,
+          (msg) => {
+            getChatroomUserList();
+            setConnectedUser(
+              JSON.parse(msg.body).map((data) => JSON.parse(data))
+            );
+          }
+        );
         if (chatroom.chatroomId && user.userId) {
           stompClient.publish({
             destination: "/app/chat/join",
@@ -379,7 +391,7 @@ const RoomContents = () => {
   useEffect(() => {
     if (!roomUserlist || !connectedUser) return;
     handleConnectUser();
-  }, [connectedUser]);
+  }, [connectedUser, roomUserlist]);
 
   const sendMessage = () => {
     if (!message.trim()) return;
@@ -448,11 +460,11 @@ const RoomContents = () => {
           ------------
         </div>
         <div>
-          {roomUserlist.length === 0 ? (
+          {displayUserList.length === 0 ? (
             <p>유저 없음</p>
           ) : (
             <div>
-              {roomUserlist.map((user, idx) => (
+              {displayUserList.map((user, idx) => (
                 <UserName key={idx}>
                   {user.userName}
                   {user.connected && (
