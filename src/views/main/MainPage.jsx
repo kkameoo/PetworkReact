@@ -3,57 +3,71 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { getLocalCategory } from "../../services/dataService";
 
+const PostsWrapper = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+`;
 const SectionWrapper = styled.div`
-  margin: 50px;
+  margin: 50px 0;
+  padding: 20px;
+  background-color: ${(props) =>
+    props.variant === "walk" // 색구분 게시판별로 가능하게 해뒀으니 바꾸고싶으면 variant prop값 주면 됩니당~~
+      ? "#e6f9ec"
+      : props.variant === "trade"
+      ? "#fff8e1"
+      : props.variant === "hire"
+      ? "#e0f0ff"
+      : "#fdfdfd"};
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 `;
 
 const SectionTitle = styled.h2`
   font-size: 24px;
   font-weight: bold;
   margin-bottom: 20px;
+  color: #3b2e1a;
+  border-left: 6px solid #a2e4b8;
+  padding-left: 12px;
 `;
-const PostsWrapper = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-`;
+
 const DefaultPostCard = styled.div`
-  width: 157px;
+  width: 160px;
   border: 1px solid #ccc;
   padding: 10px;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
+  background-color: #ffffff;
+  transition: transform 0.2s ease;
   &:hover {
-    background-color: #f9f9f9;
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   }
 `;
+
+const HirePostCard = styled(DefaultPostCard)`
+  background-color: #e0f0ff;
+  border: 2px dashed #82c6ff;
+`;
+
+const PetstarPostCard = styled.div`
+  width: 120px;
+  padding: 6px;
+  border-radius: 12px;
+  background-color: #fff;
+  &:hover {
+    transform: scale(1.1);
+  }
+`;
+
 const Adver = styled.div`
   margin-left: 50px;
   img {
     width: 1200px;
   }
 `;
-const HirePostCard = styled.div`
-  width: 200px;
-  border: 2px dashed #a2e4b8;
-  padding: 12px;
-  border-radius: 10px;
-  background-color: #a2e4b8;
-  cursor: pointer;
-  &:hover {
-    background-color: #a2e4b8;
-  }
-`;
-const PetstarPostCard = styled.div`
-  width: 120px;
-  padding: 6px;
-  border-radius: 12px;
-  background-color: #fff;
-  cursor: pointer;
-  &:hover {
-    transform: scale(1.05);
-  }
-`;
+
 const Thumbnail = styled.img`
   width: 100%;
   height: 150px;
