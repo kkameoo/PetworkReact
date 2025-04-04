@@ -97,20 +97,22 @@ const UserInfoContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   height: 250px;
+  width: 185px;
   margin-top: 115px;
+  margin-right: 35px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 `;
 
 const UserTitle = styled.h3`
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #3b2e1a;
-  margin-bottom: 0.8rem;
+  margin-bottom: 0.4rem;
 `;
 
 const UserInfo = styled.div`
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #4b3d2a;
   margin-bottom: 1rem;
   display: flex;
@@ -124,7 +126,7 @@ const Button = styled.button`
   border: none;
   padding: 6px 14px;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   color: #4b3d2a;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -391,7 +393,11 @@ function MainPage() {
             {/* 관리자 모드 알림 */}
             {user?.admin && (
               <div
-                style={{ marginLeft: "20px", color: "red", fontWeight: "bold" }}
+                style={{
+                  marginLeft: "20px",
+                  color: "red",
+                  fontWeight: "bold",
+                }}
               >
                 관리자 모드 활성화됨 ✅
               </div>
