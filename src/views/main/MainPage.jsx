@@ -18,7 +18,7 @@ const PostsWrapper = styled.div`
   gap: 20px;
 `;
 const DefaultPostCard = styled.div`
-  width: 200px;
+  width: 157px;
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 8px;

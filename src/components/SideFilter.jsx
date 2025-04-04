@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { getLocalCategory } from "../services/dataService";
+const AllContainer = styled.div`
+  width: 150px;
+`;
 
 const RegionSection = styled.div`
   display: flex;
@@ -8,17 +11,17 @@ const RegionSection = styled.div`
   gap: 8px;
   padding: 10px;
   max-height: 300px;
-  overflow-y: auto;
 `;
 
 const SidebarTitle = styled.h3`
-  margin-left: 25px;
-  text-align: left;
+  /* margin-left: 25px; */
+  text-align: center;
   margin-bottom: 10px;
   color: #727d73;
 `;
 
 const SidebarLabel = styled.label`
+  justify-content: center;
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -67,7 +70,7 @@ function SideFilter({
   if (!regionMap) return <div>...로딩중</div>;
 
   return (
-    <>
+    <AllContainer>
       <RegionSection>
         <SidebarTitle>지역 선택</SidebarTitle>
 
@@ -127,7 +130,7 @@ function SideFilter({
           ))}
         </select>
       )}
-    </>
+    </AllContainer>
   );
 }
 
