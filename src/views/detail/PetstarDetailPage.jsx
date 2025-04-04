@@ -427,10 +427,6 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
           required
         />
       </CommentInputWrapper>
-
-      <EditButton onClick={() => navigate(`/editWalk/${postId}`)}>
-        게시물 수정
-      </EditButton>
     </DetailWrapper>
   );
 }
