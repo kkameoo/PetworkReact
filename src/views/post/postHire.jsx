@@ -79,7 +79,6 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
   const navigate = useNavigate();
   const [regionMap, setRegionMap] = useState([]);
   const [walkCategory, setWalkCategory] = useState([]);
-  const API_URL = "http://localhost:8087/";
 
   const handleImageChange = async (event) => {
     const file = event.target.files[0];

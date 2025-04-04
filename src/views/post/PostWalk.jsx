@@ -124,11 +124,14 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     formData.append("file", imageFile);
     formData.append("requestJson", JSON.stringify(postData));
     try {
-      const response = await fetch("http://localhost:8087/api/board/walk", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/board/walk`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        }
+      );
       if (response.ok) {
         alert("게시물이 등록되었습니다");
         onSubmitSuccess();

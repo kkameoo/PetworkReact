@@ -135,13 +135,16 @@ function Report({ postId }) {
     console.log("신고 데이터:", reportData);
 
     try {
-      const response = await fetch("http://localhost:8087/api/report", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reportData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/report`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(reportData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("신고 요청 실패");

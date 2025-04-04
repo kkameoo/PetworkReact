@@ -185,7 +185,7 @@ const DetailPage = () => {
   const fetchImageBase64 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8087/api/photo/board/upload/${postId}`
+        `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${postId}`
       );
       if (response.ok) {
         const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
@@ -206,10 +206,13 @@ const DetailPage = () => {
   // 로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
@@ -264,7 +267,7 @@ const DetailPage = () => {
   const fetchPostDetail = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8087/api/board/walk/${postId}`
+        `${import.meta.env.VITE_API_URL}/api/board/walk/${postId}`
       );
       const data = await response.json();
 
@@ -290,7 +293,7 @@ const DetailPage = () => {
 
   const increaseViewCount = async () => {
     try {
-      await fetch(`http://localhost:8087/api/board/count/${postId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/board/count/${postId}`, {
         method: "PUT",
       });
     } catch (error) {
@@ -309,7 +312,7 @@ const DetailPage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8087/api/board/${postId}`,
+        `${import.meta.env.VITE_API_URL}/api/board/${postId}`,
         {
           method: "DELETE",
           headers: {

@@ -181,8 +181,10 @@ const PageNumber = styled.span`
 const ITEMS_PER_PAGE = 12;
 
 const JobContents = () => {
-  const API_POST_URL = "http://localhost:8087/api/board/hire";
-  const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
+  const API_POST_URL = `${import.meta.env.VITE_API_URL}/api/board/hire`;
+  const API_IMAGE_URL = `${
+    import.meta.env.VITE_API_URL
+  }/api/photo/board/upload`;
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);

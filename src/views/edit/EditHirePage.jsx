@@ -6,14 +6,10 @@ import "react-datepicker/dist/react-datepicker.css"; // 스타일을 임포트
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
 
 const FormContainer = styled.div`
-  /* max-width: 600px; */
   width: 1600px;
   margin: 40px auto;
   padding: 20px;
-  /* border: 2px solid #00bfff; */
-  /* border-radius: 20px; */
   background-color: #a2e4b8;
-  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); */
 `;
 
 const FormRow = styled.div`
@@ -94,10 +90,13 @@ const EditHirePage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (data.userId) setUser(data);
     };
@@ -105,7 +104,7 @@ const EditHirePage = () => {
     const fetchPostData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8087/api/board/hire/${postId}`
+          `${import.meta.env.VITE_API_URL}/api/board/hire/${postId}`
         );
         const post = await res.json();
 
@@ -135,10 +134,13 @@ const EditHirePage = () => {
     formData.append("file", file);
 
     try {
-      const uploadRes = await fetch("http://localhost:8087/api/board/hire", {
-        method: "POST",
-        body: formData,
-      });
+      const uploadRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/board/hire`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       if (uploadRes.ok) {
         const result = await uploadRes.json();
         setImageUrl(result.url);
@@ -172,7 +174,7 @@ const EditHirePage = () => {
     console.log("update", updatedData);
     try {
       const res = await fetch(
-        `http://localhost:8087/api/board/hire/${postId}`,
+        `${import.meta.env.VITE_API_URL}/api/board/hire/${postId}`,
         {
           method: "PUT",
           credentials: "include",

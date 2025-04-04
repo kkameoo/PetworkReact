@@ -182,8 +182,10 @@ const PageNumber = styled.span`
 const ITEMS_PER_PAGE = 12;
 
 const WalkContents = () => {
-  const API_POST_URL = "http://localhost:8087/api/board/walk";
-  const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
+  const API_POST_URL = `${import.meta.env.VITE_API_URL}/api/board/walk`;
+  const API_IMAGE_URL = `${
+    import.meta.env.VITE_API_URL
+  }/api/photo/board/upload`;
   const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
@@ -203,10 +205,13 @@ const WalkContents = () => {
   //   로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);

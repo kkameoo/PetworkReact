@@ -80,14 +80,14 @@ const Info = styled.p`
 const PageLayout = styled.div`
   display: flex;
   justify-content: space-between;
-  min-height: 100vh; /* 페이지 높이를 100%로 설정 */
+  min-height: 100vh;
   padding: 2rem;
   background-color: #fffefc;
   margin-left: 120px;
 `;
 
 const ContentArea = styled.div`
-  width: 75%; /* 게시판 섹션을 왼쪽에 75% */
+  width: 75%;
   padding-right: 2rem;
 `;
 
@@ -97,34 +97,34 @@ const UserInfoContainer = styled.div`
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   height: 250px;
-  margin-top: 115px; /* 위로 띄우기 */
+  margin-top: 115px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between; // 버튼을 아래로 정렬
+  justify-content: space-between;
 `;
 
 const UserTitle = styled.h3`
-  font-size: 1.2rem; /* 제목 크기 줄이기 */
+  font-size: 1.2rem;
   color: #3b2e1a;
-  margin-bottom: 0.8rem; /* 제목과 내용 사이 간격 */
+  margin-bottom: 0.8rem;
 `;
 
 const UserInfo = styled.div`
-  font-size: 0.9rem; /* 내용 글자 크기 줄이기 */
+  font-size: 0.9rem;
   color: #4b3d2a;
   margin-bottom: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 10px; /* 내용들 간의 간격을 약간 늘려줌 */
+  gap: 10px;
 `;
 
 const Button = styled.button`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   background-color: #fdfdfd;
   border: none;
-  padding: 6px 14px; /* 버튼 크기 줄이기 */
+  padding: 6px 14px;
   border-radius: 8px;
-  font-size: 0.9rem; /* 버튼 크기 줄이기 */
+  font-size: 0.9rem;
   color: #4b3d2a;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -148,10 +148,13 @@ function MainPage() {
 
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         console.log("유저", data);
@@ -170,7 +173,7 @@ function MainPage() {
   const fetchImageBase64 = async (boardId) => {
     try {
       const response = await fetch(
-        `http://localhost:8087/api/photo/board/upload/${boardId}`
+        `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${boardId}`
       );
       // const responseText = await response.text();
       // console.log(responseText);
@@ -235,19 +238,19 @@ function MainPage() {
     checkLoginStatus();
     const fetchAll = async () => {
       await fetchPostsWithImages(
-        "http://localhost:8087/api/board/walk/popular",
+        `${import.meta.env.VITE_API_URL}/api/board/walk/popular`,
         setHomePosts
       );
       await fetchPostsWithImages(
-        "http://localhost:8087/api/board/trade/popular",
+        `${import.meta.env.VITE_API_URL}/api/board/trade/popular`,
         setTradePosts
       );
       await fetchPostsWithImages(
-        "http://localhost:8087/api/board/hire/popular",
+        `${import.meta.env.VITE_API_URL}/api/board/hire/popular`,
         setJobPosts
       );
       await fetchPostsWithImages(
-        "http://localhost:8087/api/board",
+        `${import.meta.env.VITE_API_URL}/api/board`,
         setPetstarPosts,
         4
       );

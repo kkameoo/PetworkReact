@@ -214,7 +214,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
   const fetchImageBase64 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8087/api/photo/board/upload/${postId}`
+        `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${postId}`
       );
       if (response.ok) {
         const base64Data = await response.json();
@@ -234,10 +234,13 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
@@ -254,7 +257,9 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
   const fetchPostDetail = async () => {
     try {
-      const response = await fetch(`http://localhost:8087/api/board/${postId}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/board/${postId}`
+      );
       const data = await response.json();
       const formattedDateTime = data.upd_date
         ? new Date(data.upd_date)
@@ -285,7 +290,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
   const fetchComment = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8087/api/board/${postId}/comment`
+        `${import.meta.env.VITE_API_URL}/api/board/${postId}/comment`
       );
       const data = await response.json();
       if (Array.isArray(data)) {
@@ -305,7 +310,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
   };
   const increaseViewCount = async () => {
     try {
-      await fetch(`http://localhost:8087/api/board/count/${postId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/board/count/${postId}`, {
         method: "PUT",
       });
     } catch (error) {
@@ -327,7 +332,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
     try {
       const response = await fetch(
-        `http://localhost:8087/api/board/${postId}/comment`,
+        `${import.meta.env.VITE_API_URL}/api/board/${postId}/comment`,
         {
           method: "POST",
           headers: {
