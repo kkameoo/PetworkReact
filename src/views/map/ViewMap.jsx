@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getLocalCategory } from "../../services/dataService";
 import styled from "styled-components";
+import { useAuth } from "../../hooks/useAuth";
 
 // Styled Components 정의
 const Container = styled.div`
@@ -16,7 +17,7 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  max-width: 800px;
+  max-width: 1500px;
 `;
 
 const Button = styled.button`
@@ -34,6 +35,7 @@ const Button = styled.button`
 `;
 
 const ModeText = styled.div`
+  font-size: 30px;
   font-weight: bold;
   color: ${(props) => (props.modifyMode ? "red" : "black")};
 `;
@@ -43,12 +45,12 @@ const Content = styled.div`
   justify-content: center;
   gap: 20px;
   width: 100%;
-  max-width: 800px;
+  max-width: 1500px;
 `;
 
 const MapContainer = styled.div`
-  width: 500px;
-  height: 400px;
+  width: 1500px;
+  height: 700px;
   border: 1px solid #ddd;
 `;
 
@@ -68,22 +70,17 @@ const RegionItem = styled.li`
   }
 `;
 
-const LatLngMessage = styled.div`
-  margin-top: 10px;
-  font-size: 14px;
-  color: #333;
-`;
-
 const ViewMap = () => {
+  const { user } = useAuth();
   const { postId, lat, lng } = useParams();
   const mapContainer = useRef(null);
   const mapInstance = useRef(null);
-  const [markerLatitude, setMarkerLatitude] = useState(lat);
-  const [markerLongitude, setMarkerLongitude] = useState(lng);
+  const [markerLatitude, setMarkerLatitude] = useState(Number(lat));
+  const [markerLongitude, setMarkerLongitude] = useState(Number(lng));
   const [modifyMode, setModifyMode] = useState(false);
-  const [latlngMessage, setLatlngMessage] = useState("");
   const [region, setRegion] = useState([]);
   const [selectedRegion, setSelectedRegion] = useState(null);
+  const [newPost, setNewPost] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -129,12 +126,9 @@ const ViewMap = () => {
       const handleMapClick = (mouseEvent) => {
         const latlng = mouseEvent.latLng;
         marker.setPosition(latlng);
-        navigate(`/viewmap/${latlng.getLat()}/${latlng.getLng()}`);
+        // navigate(`/viewmap/${postId}/${latlng.getLat()}/${latlng.getLng()}`);
         setMarkerLatitude(latlng.getLat());
         setMarkerLongitude(latlng.getLng());
-        setLatlngMessage(
-          `클릭한 위치: 위도 ${latlng.getLat()}, 경도 ${latlng.getLng()}`
-        );
       };
 
       if (modifyMode) {
@@ -166,6 +160,57 @@ const ViewMap = () => {
     };
   }, [modifyMode]);
 
+  useEffect(() => {
+    fetchPostDetail();
+  }, [postId]);
+
+  const fetchPostDetail = async () => {
+    try {
+      const response = await fetch(`http://localhost:8087/api/board/${postId}`);
+      const data = await response.json();
+
+      const postData = {
+        id: data.boardId,
+        sellerUid: data.userId,
+        regionSi: data.localSi,
+        regionGu: data.localGu,
+        title: data.title,
+        content: data.content,
+        type: data.boardType,
+        clickCnt: data.clickCount,
+        reportCnt: data.reportCount,
+        updateTime: new Date(data.update).toLocaleString(),
+      };
+      console.log("Data", postData);
+      setNewPost(postData);
+    } catch (error) {
+      console.error("상세 데이터 불러오기 오류:", error);
+    }
+  };
+
+  const updateMap = async () => {
+    const updatedData = {
+      latitude: markerLatitude,
+      longitude: markerLongitude,
+      boardId: postId,
+    };
+    try {
+      const response = await fetch(`http://localhost:8087/api/map/${postId}`, {
+        method: "PUT",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(updatedData),
+      });
+      if (response.ok) {
+        alert("좌표가 수정되었습니다.");
+      } else {
+        alert("수정 실패. 다시 시도해주세요.");
+      }
+    } catch (error) {
+      console.error("수정 오류:", error);
+    }
+  };
+
   const panTo = (data) => {
     setSelectedRegion(data);
     var moveLatLon = new window.kakao.maps.LatLng(
@@ -175,19 +220,84 @@ const ViewMap = () => {
     mapInstance.current.panTo(moveLatLon);
   };
 
-  return (
-    <Container>
+  const saveRegion = () => {
+    updateMap();
+    navigate(`/viewmap/${postId}/${markerLatitude}/${markerLongitude}`);
+  };
+
+  const cancelRegion = () => {
+    setMarkerLatitude(Number(lat));
+    setMarkerLongitude(Number(lng));
+  };
+
+  const handleBack = () => {
+    if (newPost.type == 1) {
+      navigate(`/${postId}`);
+    } else if (newPost.type == 2) {
+      navigate(`/trade/${postId}`);
+    } else if (newPost.type == 3) {
+      navigate(`/hire/${postId}`);
+    }
+  };
+
+  let context = null;
+
+  if (newPost?.sellerUid == user?.userId) {
+    context = (
       <Header>
         <div>
-          <Button active onClick={() => setModifyMode(true)} marginRight>
-            수정 모드 ON
+          {modifyMode ? (
+            <>
+              <Button
+                active
+                onClick={() => {
+                  setModifyMode((prev) => !prev);
+                  saveRegion();
+                }}
+                marginRight
+              >
+                저장하기
+              </Button>
+              <Button
+                active={false}
+                onClick={() => {
+                  setModifyMode((prev) => !prev);
+                  cancelRegion();
+                }}
+                marginRight
+              >
+                취소하기
+              </Button>
+            </>
+          ) : (
+            <Button
+              active
+              onClick={() => setModifyMode((prev) => !prev)}
+              marginRight
+            >
+              수정하기
+            </Button>
+          )}
+          <Button
+            active={false}
+            onClick={() => {
+              handleBack();
+            }}
+            marginRight
+          >
+            뒤로가기
           </Button>
-          <Button onClick={() => setModifyMode(false)}>수정 모드 OFF</Button>
         </div>
         <ModeText modifyMode={modifyMode}>
-          {modifyMode ? "수정 모드 활성화" : "일반 모드"}
+          {modifyMode ? "수정중 ...." : ""}
         </ModeText>
       </Header>
+    );
+  }
+
+  return (
+    <Container>
+      {context}
 
       <Content>
         {/* 지도 영역 */}
@@ -209,8 +319,6 @@ const ViewMap = () => {
           </ul>
         </RegionList>
       </Content>
-
-      <LatLngMessage>{latlngMessage}</LatLngMessage>
     </Container>
   );
 };
