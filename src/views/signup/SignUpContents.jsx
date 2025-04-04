@@ -264,9 +264,13 @@ const SignupContents = () => {
     // upd_date: new Date().toISOString(),
     // verificationCode: "", // ✅ 인증 코드 추가
   });
-  const API_USER_URL = "http://localhost:8087/api/user/register";
-  const API_EMAIL_VERIFICATION_URL = `http://localhost:8087/api/email/send`;
-  const API_EMAIL_VERIFY_URL = `http://localhost:8087/api/email/verify`;
+  const API_USER_URL = `${import.meta.env.VITE_API_URL}/api/user/register`;
+  const API_EMAIL_VERIFICATION_URL = `${
+    import.meta.env.VITE_API_URL
+  }/api/email/send`;
+  const API_EMAIL_VERIFY_URL = `${
+    import.meta.env.VITE_API_URL
+  }/api/email/verify`;
 
   // const [passwordStrength, setPasswordStrength] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);

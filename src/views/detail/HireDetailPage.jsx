@@ -196,10 +196,13 @@ const HireDetailPage = () => {
   // 로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
@@ -247,7 +250,7 @@ const HireDetailPage = () => {
   const fetchPostDetail = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8087/api/board/hire/${postId}`
+        `${import.meta.env.VITE_API_URL}/api/board/hire/${postId}`
       );
       const data = await response.json();
       const postData = {
@@ -275,7 +278,7 @@ const HireDetailPage = () => {
   };
   const increaseViewCount = async () => {
     try {
-      await fetch(`http://localhost:8087/api/board/count/${postId}`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/board/count/${postId}`, {
         method: "PUT",
       });
     } catch (error) {
@@ -286,7 +289,7 @@ const HireDetailPage = () => {
   const fetchImageBase64 = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8087/api/photo/board/upload/${postId}`
+        `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${postId}`
       );
       if (response.ok) {
         const result = await response.json();
@@ -306,7 +309,7 @@ const HireDetailPage = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8087/api/board/${postId}`,
+        `${import.meta.env.VITE_API_URL}/api/board/${postId}`,
         {
           method: "DELETE",
           headers: {

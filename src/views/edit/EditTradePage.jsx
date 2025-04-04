@@ -1,18 +1,13 @@
-// PostEditWalk.jsx
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getLocalCategory, getTradeCategory } from "../../services/dataService";
 
 const FormContainer = styled.div`
-  /* max-width: 600px; */
   width: 1600px;
   margin: 40px auto;
   padding: 20px;
-  /* border: 2px solid #00bfff; */
-  /* border-radius: 20px; */
   background-color: #a2e4b8;
-  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); */
 `;
 
 const FormRow = styled.div`
@@ -64,7 +59,7 @@ const SubmitButton = styled.button`
 `;
 
 const EditTradePage = () => {
-  const { postId } = useParams(); // 게시물 ID
+  const { postId } = useParams();
   const navigate = useNavigate();
 
   const [user, setUser] = useState(null);
@@ -90,10 +85,13 @@ const EditTradePage = () => {
 
   useEffect(() => {
     const fetchUser = async () => {
-      const res = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       const data = await res.json();
       if (data.userId) setUser(data);
     };
@@ -101,7 +99,7 @@ const EditTradePage = () => {
     const fetchPostData = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8087/api/board/trade/${postId}`
+          `${import.meta.env.VITE_API_URL}/api/board/trade/${postId}`
         );
         const post = await res.json();
 
@@ -130,10 +128,13 @@ const EditTradePage = () => {
     formData.append("file", file);
 
     try {
-      const uploadRes = await fetch("http://localhost:8087/api/board/trade", {
-        method: "POST",
-        body: formData,
-      });
+      const uploadRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/board/trade`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
       if (uploadRes.ok) {
         const result = await uploadRes.json();
         setImageUrl(result.url);
@@ -165,7 +166,7 @@ const EditTradePage = () => {
     console.log("update", updatedData);
     try {
       const res = await fetch(
-        `http://localhost:8087/api/board/trade/${postId}`,
+        `${import.meta.env.VITE_API_URL}/api/board/trade/${postId}`,
         {
           method: "PUT",
           credentials: "include",

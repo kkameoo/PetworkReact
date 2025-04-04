@@ -145,8 +145,8 @@ const ChatRoomButton = styled.button`
 `;
 
 const RoomContents = () => {
-  const SOCKET_URL = "http://localhost:8087/ws/chat";
-  const API_URL = "http://localhost:8087/api";
+  const SOCKET_URL = `${import.meta.env.VITE_API_URL}/ws/chat`;
+  const API_URL = `${import.meta.env.VITE_API_URL}/api`;
   const [chatrooms, setChatrooms] = useState([]);
   const [chatroom, setChatroom] = useState(null);
   const [messages, setMessages] = useState([]);

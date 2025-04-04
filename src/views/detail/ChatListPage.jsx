@@ -50,7 +50,7 @@ const ChatListPage = () => {
     const fetchChatrooms = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8087/api/chat/room/byuser/${user.userId}`,
+          `${import.meta.env.VITE_API_URL}/api/chat/room/byuser/${user.userId}`,
           {
             method: "GET",
             credentials: "include",

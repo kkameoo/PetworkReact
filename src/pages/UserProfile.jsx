@@ -108,8 +108,12 @@ const UserProfile = () => {
   const [selectedBoard, setSelectedBoard] = useState("community");
   const [posts, setPosts] = useState([]);
 
-  const API_POST_URL = `http://localhost:8087/api/board/user/${userId}`;
-  const API_USER_URL = `http://localhost:8087/api/user/info/${userId}`;
+  const API_POST_URL = `${
+    import.meta.env.VITE_API_URL
+  }/api/board/user/${userId}`;
+  const API_USER_URL = `${
+    import.meta.env.VITE_API_URL
+  }/api/user/info/${userId}`;
 
   useEffect(() => {
     fetch(API_USER_URL)

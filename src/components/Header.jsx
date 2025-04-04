@@ -163,7 +163,7 @@ function Header({
   const updateIsRead = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8087/alarm/isread/${user.userId}`,
+        `${import.meta.env.VITE_API_URL}/alarm/isread/${user.userId}`,
         {
           method: "PUT",
           credentials: "include",
@@ -185,7 +185,7 @@ function Header({
   const deleteNotification = async (notificationId) => {
     try {
       const response = await fetch(
-        `http://localhost:8087/alarm/${notificationId}`,
+        `${import.meta.env.VITE_API_URL}/alarm/${notificationId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -204,7 +204,7 @@ function Header({
 
   useEffect(() => {
     if (!user) return;
-    const socket = new SockJS("http://localhost:8087/ws/alarm");
+    const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws/alarm`);
     const stompClient = new Client({
       webSocketFactory: () => socket,
       onConnect: () => {

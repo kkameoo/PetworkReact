@@ -85,7 +85,7 @@ const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const API_USER_URL = "http://localhost:8087/api/user";
+  const API_USER_URL = `${import.meta.env.VITE_API_URL}/api/user`;
 
   const handleLogin = async () => {
     try {

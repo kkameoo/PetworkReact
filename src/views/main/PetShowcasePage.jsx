@@ -288,8 +288,10 @@ const ITEMS_PER_PAGE = 12;
 
 const PetShowcasePage = () => {
   const [sortType, setSortType] = useState("latest");
-  const API_POST_URL = "http://localhost:8087/api/board";
-  const API_IMAGE_URL = "http://localhost:8087/api/photo/board/upload";
+  const API_POST_URL = `${import.meta.env.VITE_API_URL}/api/board`;
+  const API_IMAGE_URL = `${
+    import.meta.env.VITE_API_URL
+  }/api/photo/board/upload`;
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [filteredPosts, setFilteredPosts] = useState([]);
@@ -306,10 +308,13 @@ const PetShowcasePage = () => {
 
   const checkLoginStatus = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/user/session", {
-        method: "GET",
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);

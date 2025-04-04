@@ -222,7 +222,9 @@ const UserDetailPage = () => {
   useEffect(() => {
     if (!user) return;
 
-    const API_POST_URL = `http://localhost:8087/api/board/user/${user.userId}`;
+    const API_POST_URL = `${import.meta.env.VITE_API_URL}/api/board/user/${
+      user.userId
+    }`;
     fetch(API_POST_URL)
       .then((res) => res.json())
       .then((data) => {
@@ -250,9 +252,12 @@ const UserDetailPage = () => {
 
   const fetchPets = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/pet/list", {
-        credentials: "include",
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/pet/list`,
+        {
+          credentials: "include",
+        }
+      );
       const data = await response.json();
       setPets(data);
     } catch (error) {
@@ -262,7 +267,9 @@ const UserDetailPage = () => {
 
   const getSelectedPetImage = () => {
     if (!selectedPetId) return defaultProfile;
-    return `http://localhost:8087/api/photo/pet/upload/${selectedPetId}`;
+    return `${
+      import.meta.env.VITE_API_URL
+    }/api/photo/pet/upload/${selectedPetId}`;
   };
 
   const applySelectedProfileImage = () => {
@@ -291,14 +298,17 @@ const UserDetailPage = () => {
 
   const handlePetUpdate = async () => {
     try {
-      const response = await fetch("http://localhost:8087/api/pet/update", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(editForm),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/pet/update`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(editForm),
+        }
+      );
 
       if (!response.ok) throw new Error("정보 수정 실패");
 
@@ -308,7 +318,7 @@ const UserDetailPage = () => {
         formData.append("petId", editForm.petId);
 
         const photoRes = await fetch(
-          "http://localhost:8087/api/pet/photo/update",
+          `${import.meta.env.VITE_API_URL}/api/pet/photo/update`,
           {
             method: "PUT",
             credentials: "include",
