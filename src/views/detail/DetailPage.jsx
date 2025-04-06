@@ -182,7 +182,7 @@ const DetailPage = () => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [category, setCategory] = useState([]);
-  const [imageBase64, setImageBase64] = useState("");
+  const [imageBase64, setImageBase64] = useState([]);
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [mapInfo, setMapInfo] = useState(null);
@@ -194,13 +194,13 @@ const DetailPage = () => {
       );
       if (response.ok) {
         const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
-        const base64String = Array.isArray(base64Data)
-          ? base64Data[0]
-          : base64Data;
-
-        const mimeType = "image/jpeg"; // 필요 시 서버에서 MIME 타입도 함께 받아올 수 있음
-        const fullBase64 = `data:${mimeType};base64,${base64String}`;
-        setImageBase64(fullBase64);
+        if (Array.isArray(base64Data)) {
+          const images = base64Data.map((base64) => `data:image/jpeg;base64,${base64}`);
+          setImageBase64(images);
+        } else {
+          const image = `data:image/jpeg;base64,${base64Data}`;
+          setImageBase64([image]);
+        }
       } else {
         console.error("이미지 로드 실패");
       }
@@ -353,10 +353,6 @@ const DetailPage = () => {
     <DetailWrapper>
       <ProductBody>
         <ProductLeft>
-          <ProductImage
-            src={imageBase64 || DEFAULT_IMAGE}
-            alt={newPost.title}
-          />
           <SellerInfo>
             <SellerLeft>
               <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
@@ -373,6 +369,12 @@ const DetailPage = () => {
               <Report postId={postId} />
             </SellerLeft>
           </SellerInfo>
+          {imageBase64.map((image, index) => 
+          <ProductImage key={index}
+          src={image || DEFAULT_IMAGE}
+          alt={newPost.title}
+        />
+          )}
         </ProductLeft>
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>

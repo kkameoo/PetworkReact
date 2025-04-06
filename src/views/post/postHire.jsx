@@ -74,18 +74,29 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
   const [description, setDescription] = useState("");
   const [condition, setCondition] = useState("");
   const [hireDate, setHireDate] = useState(new Date());
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [imageFile, setImageFile] = useState([]);
+  // const [preview, setPreview] = useState(null);
   const navigate = useNavigate();
   const [regionMap, setRegionMap] = useState([]);
   const [walkCategory, setWalkCategory] = useState([]);
 
   const handleImageChange = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+    const files = Array.from(event.target.files);
+    if (!files) return;
 
-    setImageFile(file);
-    setPreview(URL.createObjectURL(file));
+    const newImages = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }))
+    setImageFile(prev => [...prev, ...newImages]);
+  };
+
+  const handleImageDelete = async (event) => {
+    console.log(event);
+    if (!event) return;
+
+    const newFiles = imageFile.filter((image) => image !== event);
+    setImageFile(newFiles);
   };
 
   const handleSiChange = (event) => {
@@ -132,10 +143,13 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
       nickname: user.nickname,
     };
     const formData = new FormData();
+    
     // console.log(postData);
     const postData2 = JSON.stringify(postData);
     // console.log(postData2);
-    formData.append("file", imageFile);
+    imageFile.forEach((img) => {
+      formData.append("file", img.file);
+    })
     formData.append("requestJson", postData2);
     // console.log(postData, "데이터");
     try {
@@ -243,8 +257,10 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
         </FormRow>
         <FormRow>
           <label>이미지 업로드</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
-          {preview && <PreviewImage src={preview} alt="preview" />}
+          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
+          {imageFile.map((img, index) => img && <PreviewImage key={index} src={img.preview} alt="preview" 
+          onClick={() => handleImageDelete(img)} />)}
+          {/* {preview && <PreviewImage src={preview} alt="preview" />} */}
         </FormRow>
         <SubmitButton type="submit">등록</SubmitButton>
       </form>

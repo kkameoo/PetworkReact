@@ -334,8 +334,8 @@ function MainPage() {
         <Title>{post.title}</Title>
         <Info>작성자 : {post.nickname}</Info>
         <Info>
-          {regionMap[post.localSi].name}{" "}
-          {regionMap[post.localSi].gu[post.localGu].name}
+          {regionMap[post.localSi]?.name}{" "}
+          {regionMap[post.localSi]?.gu[post.localGu]?.name}
         </Info>
       </DefaultPostCard>
     );

@@ -244,9 +244,9 @@ const WalkContents = () => {
         const postData = Object.values(data).map((item) => ({
           id: item.boardId,
           sellerUid: item.userId,
-          regionSi: regionMap[item.localSi].name || "알 수 없음",
+          regionSi: regionMap[item.localSi]?.name || "알 수 없음",
           regionGu:
-            regionMap[item.localSi].gu[item.localGu].name || "알 수 없음",
+            regionMap[item.localSi]?.gu[item.localGu]?.name || "알 수 없음",
           title: item.title,
           content: item.content,
           category: item.walkCategory,
@@ -254,8 +254,8 @@ const WalkContents = () => {
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
           nickname: item.nickname,
-          regionDong: `${regionMap[item.localSi].name || ""} ${
-            regionMap[item.localSi].gu[item.localGu].name || ""
+          regionDong: `${regionMap[item.localSi]?.name || ""} ${
+            regionMap[item.localSi]?.gu[item.localGu]?.name || ""
           }`,
           image: item.image || "/no-image.png",
         }));
@@ -352,7 +352,7 @@ const WalkContents = () => {
                   <ProductTitle>{post.title}</ProductTitle>
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
-                  <Seller>{walkCategory[post.category].name}</Seller>
+                  <Seller>{walkCategory[post.category]?.name}</Seller>
                   {user?.iadmin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}

@@ -185,7 +185,7 @@ const HireDetailPage = () => {
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [imageBase64, setImageBase64] = useState("");
+  const [imageBase64, setImageBase64] = useState([]);
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [category, setCategory] = useState([]);
@@ -297,10 +297,14 @@ const HireDetailPage = () => {
         `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${postId}`
       );
       if (response.ok) {
-        const result = await response.json();
-        const base64String = Array.isArray(result) ? result[0] : result;
-        const fullBase64 = `data:image/jpeg;base64,${base64String}`;
-        setImageBase64(fullBase64);
+        const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
+        if (Array.isArray(base64Data)) {
+          const images = base64Data.map((base64) => `data:image/jpeg;base64,${base64}`);
+          setImageBase64(images);
+        } else {
+          const image = `data:image/jpeg;base64,${base64Data}`;
+          setImageBase64([image]);
+        }
       } else {
         console.error("이미지 로드 실패");
       }
@@ -359,10 +363,6 @@ const HireDetailPage = () => {
     <DetailWrapper>
       <ProductBody>
         <ProductLeft>
-          <ProductImage
-            src={imageBase64 || DEFAULT_IMAGE}
-            alt={newPost.title}
-          />
           <SellerInfo>
             <SellerLeft>
               <SellerImage
@@ -382,6 +382,12 @@ const HireDetailPage = () => {
               <Report postId={postId} />
             </SellerLeft>
           </SellerInfo>
+          {imageBase64.map((image, index) => 
+          <ProductImage key={index}
+          src={image || DEFAULT_IMAGE}
+          alt={newPost.title}
+        />
+          )}
         </ProductLeft>
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>

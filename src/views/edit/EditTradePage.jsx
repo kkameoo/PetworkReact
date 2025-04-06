@@ -64,12 +64,13 @@ const EditTradePage = () => {
 
   const [user, setUser] = useState(null);
   const [title, setTitle] = useState("");
-  const [category, setCategory] = useState(1);
-  const [regionSi, setRegionSi] = useState("서울시");
-  const [regionGu, setRegionGu] = useState("강남구");
+  const [category, setCategory] = useState(0);
+  const [regionSi, setRegionSi] = useState(0);
+  const [regionGu, setRegionGu] = useState(0);
   const [description, setDescription] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
-  const [preview, setPreview] = useState(null);
+  const [newImageFile, setNewImageFile] = useState([]);
+  const [existImageFile, setExistImageFile] = useState([]);
+  const [deletedImageFile, setDeletedImageFile] = useState([]);
   const [price, setPrice] = useState("");
   const [regionMap, setRegionMap] = useState([]);
   const [tradeCategory, setTradeCategory] = useState([]);
@@ -81,7 +82,24 @@ const EditTradePage = () => {
     getTradeCategory()
       .then(setTradeCategory)
       .catch((error) => console.error("Fetching error:", error));
+    fetchImageBase64();
   }, []);
+
+  const fetchImageBase64 = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/photo/board/upload/edit/${postId}`
+      );
+      if (response.ok) {
+        const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
+          setExistImageFile(base64Data);
+      } else {
+        console.error("이미지 로드 실패");
+      }
+    } catch (error) {
+      console.error("이미지 로드 에러:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -108,8 +126,6 @@ const EditTradePage = () => {
         setRegionSi(post.localSi);
         setRegionGu(post.localGu);
         setDescription(post.content);
-        setImageUrl(post.imageUrl);
-        setPreview(post.imageUrl);
         setPrice(post.tradePrice);
       } catch (err) {
         console.error("게시물 로드 실패:", err);
@@ -120,29 +136,15 @@ const EditTradePage = () => {
     fetchPostData();
   }, [postId]);
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+  const handleImageChange = async (event) => {
+    const files = Array.from(event.target.files);
+    if (!files) return;
 
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const uploadRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/board/trade`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-      if (uploadRes.ok) {
-        const result = await uploadRes.json();
-        setImageUrl(result.url);
-        setPreview(result.url);
-      }
-    } catch (error) {
-      console.error("이미지 업로드 실패:", error);
-    }
+    const newImages = files.map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }))
+    setNewImageFile(prev => [...prev, ...newImages]);
   };
 
   const handleSubmit = async (e) => {
@@ -159,10 +161,17 @@ const EditTradePage = () => {
       localSi: regionSi,
       localGu: regionGu,
       tradeCategory: Number(category),
-      post_photo: imageUrl,
       tradePrice: Number(price),
       update: new Date().toISOString(),
     };
+    const formData = new FormData();
+    newImageFile.forEach((img) => {
+      formData.append("file", img.file);
+    })
+    deletedImageFile.forEach((img) => {
+      formData.append("deleted", img.fileId)
+    })
+    formData.append("requestJson", JSON.stringify(updatedData));
     console.log("update", updatedData);
     try {
       const res = await fetch(
@@ -170,8 +179,8 @@ const EditTradePage = () => {
         {
           method: "PUT",
           credentials: "include",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
+          // headers: { "Content-Type": "application/json" },
+          body: formData,
         }
       );
 
@@ -185,6 +194,24 @@ const EditTradePage = () => {
       console.error("수정 오류:", error);
     }
   };
+
+  const handleNewImageDelete = async (event) => {
+    console.log(event);
+    if (!event) return;
+
+    const newFiles = newImageFile.filter((image) => image !== event);
+    setNewImageFile(newFiles);
+  };
+
+  const handleExistImageDelete = async (event) => {
+    console.log(event);
+    if (!event) return;
+
+    setDeletedImageFile((prev) => [...prev, event]);
+    const newFiles = existImageFile.filter((image) => image !== event);
+    setExistImageFile(newFiles);
+  };
+
   if (
     !regionMap ||
     regionMap.length === 0 ||
@@ -263,8 +290,11 @@ const EditTradePage = () => {
         </FormRow>
         <FormRow>
           <label>이미지 업로드</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
-          {preview && <PreviewImage src={preview} alt="preview" />}
+          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
+          {existImageFile.map((img, index) => img && <PreviewImage key={index} src={img.base64Name} alt="preview" 
+          onClick={() => handleExistImageDelete(img)} />)}
+          {newImageFile.map((img, index) => img && <PreviewImage key={index} src={img.preview} alt="preview" 
+          onClick={() => handleNewImageDelete(img)} />)}
         </FormRow>
         <SubmitButton type="submit">수정하기</SubmitButton>
       </form>

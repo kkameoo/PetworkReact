@@ -175,12 +175,34 @@ const TradeDetailPage = () => {
   const [newPost, setNewPost] = useState(null);
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [imageBase64, setImageBase64] = useState("");
+  const [imageBase64, setImageBase64] = useState([]);
   const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [category, setCategory] = useState([]);
   const [mapInfo, setMapInfo] = useState(null);
 
+
+  const fetchImageBase64 = async () => {
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${postId}`
+      );
+      if (response.ok) {
+        const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
+        if (Array.isArray(base64Data)) {
+          const images = base64Data.map((base64) => `data:image/jpeg;base64,${base64}`);
+          setImageBase64(images);
+        } else {
+          const image = `data:image/jpeg;base64,${base64Data}`;
+          setImageBase64([image]);
+        }
+      } else {
+        console.error("이미지 로드 실패");
+      }
+    } catch (error) {
+      console.error("이미지 로드 에러:", error);
+    }
+  };
   // 로그인 상태 확인
   const checkLoginStatus = async () => {
     try {
@@ -273,27 +295,6 @@ const TradeDetailPage = () => {
     }
   };
 
-  const fetchImageBase64 = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${postId}`
-      );
-      if (response.ok) {
-        const base64Data = await response.json();
-        const base64String = Array.isArray(base64Data)
-          ? base64Data[0]
-          : base64Data;
-
-        const mimeType = "image/jpeg";
-        const fullBase64 = `data:${mimeType};base64,${base64String}`;
-        setImageBase64(fullBase64);
-      } else {
-        console.error("이미지 로드 실패");
-      }
-    } catch (error) {
-      console.error("이미지 로드 에러:", error);
-    }
-  };
 
   const deletePost = async () => {
     if (!window.confirm("정말로 삭제하시겠습니까?")) return;
@@ -345,10 +346,6 @@ const TradeDetailPage = () => {
     <DetailWrapper>
       <ProductBody>
         <ProductLeft>
-          <ProductImage
-            src={imageBase64 || DEFAULT_IMAGE}
-            alt={newPost.title}
-          />
           <SellerInfo>
             <SellerLeft>
               <SellerImage
@@ -368,6 +365,12 @@ const TradeDetailPage = () => {
               <Report postId={postId} />
             </SellerLeft>
           </SellerInfo>
+          {imageBase64.map((image, index) => 
+          <ProductImage key={index}
+          src={image || DEFAULT_IMAGE}
+          alt={newPost.title}
+        />
+          )}
         </ProductLeft>
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>
