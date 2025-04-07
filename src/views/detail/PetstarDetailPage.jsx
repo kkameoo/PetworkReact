@@ -375,10 +375,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
         <SellerInfo>
           <SellerLeft>
-            <SellerImage
-              src="../src/assets/userimage.jpg"
-              alt="판매자 이미지"
-            />
+            <SellerImage src="/assets/userimage.jpg" alt="판매자 이미지" />
             <div
               onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
               style={{ cursor: "pointer" }}

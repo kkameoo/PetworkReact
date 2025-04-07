@@ -183,7 +183,7 @@ const DetailPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [category, setCategory] = useState([]);
   const [imageBase64, setImageBase64] = useState([]);
-  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [mapInfo, setMapInfo] = useState(null);
 
@@ -195,7 +195,9 @@ const DetailPage = () => {
       if (response.ok) {
         const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
         if (Array.isArray(base64Data)) {
-          const images = base64Data.map((base64) => `data:image/jpeg;base64,${base64}`);
+          const images = base64Data.map(
+            (base64) => `data:image/jpeg;base64,${base64}`
+          );
           setImageBase64(images);
         } else {
           const image = `data:image/jpeg;base64,${base64Data}`;
@@ -355,7 +357,7 @@ const DetailPage = () => {
         <ProductLeft>
           <SellerInfo>
             <SellerLeft>
-              <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
+              <SellerImage src="/assets/userimage.jpg" alt="판매자 이미지" />
               <div
                 onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
                 style={{ cursor: "pointer" }}
@@ -369,12 +371,13 @@ const DetailPage = () => {
               <Report postId={postId} />
             </SellerLeft>
           </SellerInfo>
-          {imageBase64.map((image, index) => 
-          <ProductImage key={index}
-          src={image || DEFAULT_IMAGE}
-          alt={newPost.title}
-        />
-          )}
+          {imageBase64.map((image, index) => (
+            <ProductImage
+              key={index}
+              src={image || DEFAULT_IMAGE}
+              alt={newPost.title}
+            />
+          ))}
         </ProductLeft>
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>

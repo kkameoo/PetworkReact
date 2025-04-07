@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
-import defaultProfile from "../../assets/userimage.jpg";
+import defaultProfile from "/assets/userimage.jpg";
 import { useNavigate } from "react-router-dom";
 import UserCheck from "../../components/UserCheck";
 

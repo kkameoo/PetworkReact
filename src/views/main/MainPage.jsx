@@ -157,7 +157,7 @@ function MainPage() {
   const [jobPosts, setJobPosts] = useState([]);
   const [petstarPosts, setPetstarPosts] = useState([]);
   const [imageMap, setImageMap] = useState({});
-  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [user, setUser] = useState(null);
   const [isLoggedin, setIsLoggedIn] = useState();
   const [regionMap, setRegionMap] = useState([]);
@@ -379,7 +379,7 @@ function MainPage() {
             rel="noopener noreferrer"
           >
             <img
-              src="src/assets/advertisement.jpg"
+              src="/assets/advertisement.jpg"
               alt="광고 이미지"
               className="ad-image"
             />

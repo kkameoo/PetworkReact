@@ -196,7 +196,7 @@ const JobContents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { user } = useAuth();
   const [imageMap, setImageMap] = useState({});
-  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [walkCategory, setWalkCategory] = useState([]);
 

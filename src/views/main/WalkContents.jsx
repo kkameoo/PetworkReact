@@ -198,7 +198,7 @@ const WalkContents = () => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [imageMap, setImageMap] = useState({}); // postId -> base64 이미지
-  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [walkCategory, setWalkCategory] = useState([]);
 
