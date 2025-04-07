@@ -438,7 +438,9 @@ const UserDetailPage = () => {
               >
                 <h3>
                   <img
-                    src={`http://localhost:8087/api/photo/pet/upload/${post.petId}`}
+                    src={`${
+                      import.meta.env.VITE_API_URL
+                    }/api/photo/pet/upload/${post.petId}`}
                     alt="펫 이미지"
                   />
                 </h3>
@@ -463,7 +465,9 @@ const UserDetailPage = () => {
         <ModalOverlay onClick={() => setIsModalOpen(false)}>
           <ModalContent onClick={(e) => e.stopPropagation()}>
             <img
-              src={`http://localhost:8087/api/photo/pet/upload/${selectedPet.petId}`}
+              src={`${import.meta.env.VITE_API_URL}/api/photo/pet/upload/${
+                selectedPet.petId
+              }`}
               alt="펫 이미지"
             />
             <h3>{selectedPet.petName}</h3>
@@ -478,7 +482,9 @@ const UserDetailPage = () => {
             <ModalButton
               onClick={async () => {
                 await fetch(
-                  `http://localhost:8087/api/pet/delete/${selectedPet.petId}`,
+                  `${import.meta.env.VITE_API_URL}/api/pet/delete/${
+                    selectedPet.petId
+                  }`,
                   {
                     method: "DELETE",
                     credentials: "include",

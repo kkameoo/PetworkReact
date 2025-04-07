@@ -166,7 +166,9 @@ const ViewMap = () => {
 
   const fetchPostDetail = async () => {
     try {
-      const response = await fetch(`http://localhost:8087/api/board/${postId}`);
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/board/${postId}`
+      );
       const data = await response.json();
 
       const postData = {
@@ -195,12 +197,15 @@ const ViewMap = () => {
       boardId: postId,
     };
     try {
-      const response = await fetch(`http://localhost:8087/api/map/${postId}`, {
-        method: "PUT",
-        credentials: "include",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedData),
-      });
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/map/${postId}`,
+        {
+          method: "PUT",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(updatedData),
+        }
+      );
       if (response.ok) {
         alert("좌표가 수정되었습니다.");
       } else {
