@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
+import UserCheck from "../../components/UserCheck";
 
 const FormContainer = styled.div`
   /* max-width: 600px; */
@@ -149,6 +150,8 @@ const PostPet = ({ onSubmitSuccess = () => {} }) => {
       alert("오류가 발생했습니다.");
     }
   };
+
+  if (!user) return <UserCheck />;
 
   return (
     <FormContainer>

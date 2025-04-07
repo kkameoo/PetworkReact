@@ -4,6 +4,7 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import UserCheck from "../../components/UserCheck";
 
 const ChatContainer = styled.div`
   min-height: 600px;
@@ -426,6 +427,7 @@ const RoomContents = () => {
     navigate(`/room/${postId}`);
     window.location.reload();
   };
+  if (!user) return <UserCheck />;
   if (!user) return <div>인증이 필요...</div>;
   if (!chatroom || !user || !connectedUser || !roomUserlist)
     return <div>로딩 중...</div>;

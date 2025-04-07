@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
 import { useAuth } from "../../hooks/useAuth";
+import UserCheck from "../../components/UserCheck";
 
 const FormContainer = styled.div`
   /* max-width: 600px; */
@@ -76,15 +77,14 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
   const [walkCategory, setWalkCategory] = useState([]);
 
   const handleImageChange = async (event) => {
-  
     const files = Array.from(event.target.files);
     if (!files) return;
 
-    const newImages = files.map(file => ({
+    const newImages = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
-    }))
-    setImageFile(prev => [...prev, ...newImages]);
+    }));
+    setImageFile((prev) => [...prev, ...newImages]);
   };
 
   const handleImageDelete = async (event) => {
@@ -135,7 +135,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     const formData = new FormData();
     imageFile.forEach((img) => {
       formData.append("file", img.file);
-    })
+    });
     // formData.append("file", imageFile);
     formData.append("requestJson", JSON.stringify(postData));
     try {
@@ -158,6 +158,8 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
       console.error("등록 중 오류:", err);
     }
   };
+
+  if (!user) return <UserCheck />;
 
   if (!walkCategory) return <div>...로딩중</div>;
 
@@ -217,9 +219,23 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
         </FormRow>
         <FormRow>
           <label>이미지 업로드</label>
-          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
-          {imageFile.map((img, index) => img && <PreviewImage key={index} src={img.preview} alt="preview" 
-          onClick={() => handleImageDelete(img)} />)}
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {imageFile.map(
+            (img, index) =>
+              img && (
+                <PreviewImage
+                  key={index}
+                  src={img.preview}
+                  alt="preview"
+                  onClick={() => handleImageDelete(img)}
+                />
+              )
+          )}
         </FormRow>
         <SubmitButton type="submit">등록</SubmitButton>
       </form>

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import UserCheck from "../../components/UserCheck";
 
 const OuterContainer = styled.div`
   display: flex;
@@ -203,6 +204,8 @@ function PostUserPet({ onSubmitSuccess }) {
       alert("오류가 발생했습니다.");
     }
   };
+
+  if (!user) return <UserCheck />;
 
   return (
     <OuterContainer>

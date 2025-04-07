@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
 import defaultProfile from "../../assets/userimage.jpg";
 import { useNavigate } from "react-router-dom";
+import UserCheck from "../../components/UserCheck";
 
 const Container = styled.div`
   display: flex;
@@ -353,6 +354,8 @@ const UserDetailPage = () => {
         return `/board/${id}`;
     }
   };
+
+  if (!user) return <UserCheck />;
 
   return (
     <Container>

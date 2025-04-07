@@ -4,6 +4,7 @@ import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // 스타일을 임포트
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
+import UserCheck from "../../components/UserCheck";
 
 const FormContainer = styled.div`
   width: 1600px;
@@ -89,7 +90,7 @@ const EditHirePage = () => {
       );
       if (response.ok) {
         const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
-          setExistImageFile(base64Data);
+        setExistImageFile(base64Data);
       } else {
         console.error("이미지 로드 실패");
       }
@@ -150,11 +151,11 @@ const EditHirePage = () => {
     const files = Array.from(event.target.files);
     if (!files) return;
 
-    const newImages = files.map(file => ({
+    const newImages = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
-    }))
-    setNewImageFile(prev => [...prev, ...newImages]);
+    }));
+    setNewImageFile((prev) => [...prev, ...newImages]);
   };
 
   const handleSubmit = async (e) => {
@@ -180,10 +181,10 @@ const EditHirePage = () => {
     const formData = new FormData();
     newImageFile.forEach((img) => {
       formData.append("file", img.file);
-    })
+    });
     deletedImageFile.forEach((img) => {
-      formData.append("deleted", img.fileId)
-    })
+      formData.append("deleted", img.fileId);
+    });
     formData.append("requestJson", JSON.stringify(updatedData));
     try {
       const res = await fetch(
@@ -223,6 +224,8 @@ const EditHirePage = () => {
     const newFiles = existImageFile.filter((image) => image !== event);
     setExistImageFile(newFiles);
   };
+
+  if (!user) return <UserCheck />;
 
   if (
     !regionMap ||
@@ -319,11 +322,34 @@ const EditHirePage = () => {
         </FormRow>
         <FormRow>
           <label>이미지 업로드</label>
-          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
-          {existImageFile.map((img, index) => img && <PreviewImage key={index} src={img.base64Name} alt="preview" 
-          onClick={() => handleExistImageDelete(img)} />)}
-          {newImageFile.map((img, index) => img && <PreviewImage key={index} src={img.preview} alt="preview" 
-          onClick={() => handleNewImageDelete(img)} />)}
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {existImageFile.map(
+            (img, index) =>
+              img && (
+                <PreviewImage
+                  key={index}
+                  src={img.base64Name}
+                  alt="preview"
+                  onClick={() => handleExistImageDelete(img)}
+                />
+              )
+          )}
+          {newImageFile.map(
+            (img, index) =>
+              img && (
+                <PreviewImage
+                  key={index}
+                  src={img.preview}
+                  alt="preview"
+                  onClick={() => handleNewImageDelete(img)}
+                />
+              )
+          )}
         </FormRow>
         <SubmitButton type="submit">등록</SubmitButton>
       </form>

@@ -37,6 +37,7 @@ import PostUserPet from "./views/post/PostUserPet";
 import ViewMap from "./views/map/ViewMap";
 import { connectSocket } from "./hooks/socket";
 import SideFilter from "./components/SideFilter";
+import UserCheck from "./components/UserCheck";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

@@ -280,21 +280,24 @@ function Header({
         <AuthButton onClick={() => navigate("/signup")}>회원가입</AuthButton>
       </AuthButtonContainer> */}
           {/* :종: 알림 벨 아이콘 + 드롭다운 */}
-          <div
-            style={{
-              position: "absolute",
-              top: 38,
-              right: 350,
-              cursor: "pointer",
-            }}
-            onClick={() => {
-              setDropdownOpen(!dropdownOpen);
-              updateIsRead();
-            }}
-          >
-            <BellIcon src={AlertImage} />
-            {!isRead && <span style={{ color: "red" }}> ●</span>}
-          </div>
+          {isLoggedIn && (
+            <div
+              style={{
+                position: "absolute",
+                top: 38,
+                right: 350,
+                cursor: "pointer",
+              }}
+              onClick={() => {
+                setDropdownOpen(!dropdownOpen);
+                updateIsRead();
+              }}
+            >
+              <BellIcon src={AlertImage} />
+              {!isRead && <span style={{ color: "red" }}> ●</span>}
+            </div>
+          )}
+
           {dropdownOpen && (
             <div
               ref={dropdownRef}

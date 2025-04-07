@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
+import UserCheck from "../../components/UserCheck";
 
 const FormContainer = styled.div`
   width: 1600px;
@@ -100,7 +101,7 @@ const EditWalkPage = () => {
       );
       if (response.ok) {
         const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
-          setExistImageFile(base64Data);
+        setExistImageFile(base64Data);
       } else {
         console.error("이미지 로드 실패");
       }
@@ -149,11 +150,11 @@ const EditWalkPage = () => {
     const files = Array.from(event.target.files);
     if (!files) return;
 
-    const newImages = files.map(file => ({
+    const newImages = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
-    }))
-    setNewImageFile(prev => [...prev, ...newImages]);
+    }));
+    setNewImageFile((prev) => [...prev, ...newImages]);
   };
 
   const handleSubmit = async (e) => {
@@ -162,7 +163,7 @@ const EditWalkPage = () => {
       alert("로그인이 필요합니다.");
       return;
     }
-    
+
     const updatedData = {
       userId: user.userId,
       title,
@@ -177,10 +178,10 @@ const EditWalkPage = () => {
     const formData = new FormData();
     newImageFile.forEach((img) => {
       formData.append("file", img.file);
-    })
+    });
     deletedImageFile.forEach((img) => {
-      formData.append("deleted", img.fileId)
-    })
+      formData.append("deleted", img.fileId);
+    });
     formData.append("requestJson", JSON.stringify(updatedData));
 
     try {
@@ -221,6 +222,8 @@ const EditWalkPage = () => {
     const newFiles = existImageFile.filter((image) => image !== event);
     setExistImageFile(newFiles);
   };
+
+  if (!user) return <UserCheck />;
 
   if (
     !isRegionLoaded ||
@@ -291,11 +294,34 @@ const EditWalkPage = () => {
         </FormRow>
         <FormRow>
           <label>이미지 업로드</label>
-          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
-          {existImageFile.map((img, index) => img && <PreviewImage key={index} src={img.base64Name} alt="preview" 
-          onClick={() => handleExistImageDelete(img)} />)}
-          {newImageFile.map((img, index) => img && <PreviewImage key={index} src={img.preview} alt="preview" 
-          onClick={() => handleNewImageDelete(img)} />)}
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {existImageFile.map(
+            (img, index) =>
+              img && (
+                <PreviewImage
+                  key={index}
+                  src={img.base64Name}
+                  alt="preview"
+                  onClick={() => handleExistImageDelete(img)}
+                />
+              )
+          )}
+          {newImageFile.map(
+            (img, index) =>
+              img && (
+                <PreviewImage
+                  key={index}
+                  src={img.preview}
+                  alt="preview"
+                  onClick={() => handleNewImageDelete(img)}
+                />
+              )
+          )}
         </FormRow>
         <SubmitButton type="submit">수정하기</SubmitButton>
       </form>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import UserCheck from "../../components/UserCheck";
 
 const Container = styled.div`
   max-width: 800px;
@@ -73,6 +74,8 @@ const ChatListPage = () => {
   const goToChatRoom = (boardId) => {
     navigate(`/room/${boardId}`);
   };
+
+  if (!user) return <UserCheck />;
 
   return (
     <Container>

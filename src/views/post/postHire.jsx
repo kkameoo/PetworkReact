@@ -4,6 +4,7 @@ import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import { useAuth } from "../../hooks/useAuth";
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
+import UserCheck from "../../components/UserCheck";
 
 const FormContainer = styled.div`
   /* max-width: 600px; */
@@ -84,11 +85,11 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
     const files = Array.from(event.target.files);
     if (!files) return;
 
-    const newImages = files.map(file => ({
+    const newImages = files.map((file) => ({
       file,
       preview: URL.createObjectURL(file),
-    }))
-    setImageFile(prev => [...prev, ...newImages]);
+    }));
+    setImageFile((prev) => [...prev, ...newImages]);
   };
 
   const handleImageDelete = async (event) => {
@@ -143,13 +144,13 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
       nickname: user.nickname,
     };
     const formData = new FormData();
-    
+
     // console.log(postData);
     const postData2 = JSON.stringify(postData);
     // console.log(postData2);
     imageFile.forEach((img) => {
       formData.append("file", img.file);
-    })
+    });
     formData.append("requestJson", postData2);
     // console.log(postData, "데이터");
     try {
@@ -174,6 +175,8 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
       alert("오류가 발생했습니다.");
     }
   };
+
+  if (!user) return <UserCheck />;
 
   return (
     <FormContainer>
@@ -257,9 +260,23 @@ const PostHire = ({ onSubmitSuccess = () => {} }) => {
         </FormRow>
         <FormRow>
           <label>이미지 업로드</label>
-          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
-          {imageFile.map((img, index) => img && <PreviewImage key={index} src={img.preview} alt="preview" 
-          onClick={() => handleImageDelete(img)} />)}
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={handleImageChange}
+          />
+          {imageFile.map(
+            (img, index) =>
+              img && (
+                <PreviewImage
+                  key={index}
+                  src={img.preview}
+                  alt="preview"
+                  onClick={() => handleImageDelete(img)}
+                />
+              )
+          )}
           {/* {preview && <PreviewImage src={preview} alt="preview" />} */}
         </FormRow>
         <SubmitButton type="submit">등록</SubmitButton>
