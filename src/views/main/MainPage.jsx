@@ -68,6 +68,43 @@ const Adver = styled.div`
   }
 `;
 
+const SimpleList = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 40px;
+`;
+
+const SimpleItem = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+const SimpleTitle = styled.span`
+  flex: 2;
+  margin-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+`;
+
+const SimplePrice = styled.span`
+  flex: 1;
+  font-size: 13px;
+  color: #555;
+  text-align: right;
+`;
+
+const SimpleNickname = styled.span`
+  flex: 1;
+  font-size: 13px;
+  color: #888;
+  text-align: right;
+`;
+
 const Thumbnail = styled.img`
   width: 100%;
   height: 150px;
@@ -236,6 +273,7 @@ function MainPage() {
         nickname: item.nickname,
         localSi: item.localSi,
         localGu: item.localGu,
+        price: item.hirePrice,
       }));
 
       setPosts(transformedData);
@@ -366,11 +404,20 @@ function MainPage() {
         </SectionWrapper>
         <SectionWrapper>
           <SectionTitle>알바 게시판 인기글 🤝</SectionTitle>
-          <PostsWrapper>
-            {jobPosts.map((post) =>
-              renderPostCard(post, imageMap[post.boardId], "hire")
-            )}
-          </PostsWrapper>
+          <SimpleList>
+            {jobPosts.slice(0, 10).map((post, index) => (
+              <SimpleItem key={post.boardId}>
+                <span>{index + 1}.</span>
+                <SimpleTitle onClick={() => navigate(`/hire/${post.boardId}`)}>
+                  {post.title}
+                </SimpleTitle>
+                <SimplePrice>
+                  {(post?.price ?? 0).toLocaleString()}원
+                </SimplePrice>
+                <SimpleNickname>{post.nickname}</SimpleNickname>
+              </SimpleItem>
+            ))}
+          </SimpleList>
         </SectionWrapper>
         <Adver>
           <a
