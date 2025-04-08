@@ -1,9 +1,82 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import styled from "styled-components";
+// import styled from "styled-components";
 import Report from "../report/Report";
 import { getLocalCategory, getTradeCategory } from "../../services/dataService";
 import OnlyViewMap from "../map/OnlyViewMap";
+import styled, { keyframes } from "styled-components";
+
+const fadeZoom = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+const ImageSliderWrapper = styled.div`
+  position: relative;
+  width: 750px;
+  height: 750px;
+  overflow: hidden;
+  border-radius: 25px;
+  margin-bottom: 30px;
+`;
+
+const SlideImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.5s ease-in-out;
+
+  &.active {
+    opacity: 1;
+    z-index: 2;
+    animation: ${fadeZoom} 0.5s ease-in-out;
+  }
+`;
+
+const ArrowButton = styled.button`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 3;
+  border-radius: 50%;
+
+  &.left {
+    left: 10px;
+  }
+
+  &.right {
+    right: 10px;
+  }
+`;
+const ImageCounter = styled.div`
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  z-index: 4;
+`;
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -176,10 +249,19 @@ const TradeDetailPage = () => {
   const [user, setUser] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [imageBase64, setImageBase64] = useState([]);
+  const [currentImage, setCurrentImage] = useState(0);
   const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [category, setCategory] = useState([]);
   const [mapInfo, setMapInfo] = useState(null);
+
+  const handlePrev = () => {
+    setCurrentImage((prev) => (prev === 0 ? imageBase64.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentImage((prev) => (prev === imageBase64.length - 1 ? 0 : prev + 1));
+  };
 
   const fetchImageBase64 = async () => {
     try {
@@ -362,13 +444,30 @@ const TradeDetailPage = () => {
               <Report postId={postId} />
             </SellerLeft>
           </SellerInfo>
-          {imageBase64.map((image, index) => (
-            <ProductImage
-              key={index}
-              src={image || DEFAULT_IMAGE}
-              alt={newPost.title}
-            />
-          ))}
+          <ImageSliderWrapper>
+            {imageBase64.map((image, index) => (
+              <SlideImage
+                key={index}
+                src={image || DEFAULT_IMAGE}
+                alt={newPost.title}
+                className={index === currentImage ? "active" : ""}
+              />
+            ))}
+            {imageBase64.length > 1 && (
+              <>
+                <ArrowButton className="left" onClick={handlePrev}>
+                  &lt;
+                </ArrowButton>
+                <ArrowButton className="right" onClick={handleNext}>
+                  &gt;
+                </ArrowButton>
+              </>
+            )}
+            <ImageCounter>
+              // {currentImage + 1} / {imageBase64.length}
+              //{" "}
+            </ImageCounter>
+          </ImageSliderWrapper>
         </ProductLeft>
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>
