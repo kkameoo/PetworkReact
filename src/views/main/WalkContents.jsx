@@ -355,7 +355,7 @@ const WalkContents = () => {
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{walkCategory[post.category]?.name}</Seller>
-                  {user?.iadmin && (
+                  {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}
                 </ProductCard>
