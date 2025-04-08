@@ -331,6 +331,7 @@ const JobContents = () => {
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{walkCategory[post.category]?.name}</Seller>
+                  <Seller>👁{post.clickCnt}</Seller>
                   {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}

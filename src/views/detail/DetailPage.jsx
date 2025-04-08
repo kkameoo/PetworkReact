@@ -481,7 +481,8 @@ const DetailPage = () => {
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>
           <ProductCategory>
-            {category[newPost.category].name} | {newPost.updateTime}
+            {category[newPost.category].name} | {newPost.updateTime} |👁
+            {newPost.clickCnt}
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
           <div

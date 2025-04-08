@@ -163,7 +163,7 @@ const ProductTitle = styled.h2`
 
 const ProductCategory = styled.p`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
-  font-size: 14px;
+  font-size: 20px;
   color: #007acc;
   margin-bottom: 10px;
 `;
@@ -171,7 +171,7 @@ const ProductCategory = styled.p`
 const ProductDescription = styled.p`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   min-height: 240px;
-  font-size: 18px;
+  font-size: 22px;
   margin-bottom: 20px;
   background-color: #f3f3f3;
   border-radius: 10px;
@@ -493,7 +493,8 @@ const HireDetailPage = () => {
           <ProductTitle>{newPost.title}</ProductTitle>
           <ProductCategory>
             {category[newPost.category].name}| {newPost.updateTime}{" "}
-            {newPost.price}원
+            {newPost.price}원 |👁
+            {newPost.clickCnt}
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
           <div

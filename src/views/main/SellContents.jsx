@@ -125,7 +125,6 @@ const ProductList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
-  /* flex-grow: 1; */
   align-content: start;
   justify-content: center;
 `;
@@ -401,6 +400,7 @@ const SellContents = () => {
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{tradeCategory[post.category].name}</Seller>
+                  <Seller>👁{post.clickCnt}</Seller>
                   {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}

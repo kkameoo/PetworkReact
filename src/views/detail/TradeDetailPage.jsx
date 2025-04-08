@@ -157,14 +157,14 @@ const ProductTitle = styled.h2`
 `;
 
 const ProductCategory = styled.p`
-  font-size: 14px;
+  font-size: 20px;
   color: #007acc;
   margin-bottom: 10px;
 `;
 
 const ProductDescription = styled.p`
   min-height: 240px;
-  font-size: 18px;
+  font-size: 22px;
   margin-bottom: 20px;
   background-color: #f3f3f3;
   border-radius: 10px;
@@ -473,7 +473,8 @@ const TradeDetailPage = () => {
           <ProductTitle>{newPost.title}</ProductTitle>
           <ProductCategory>
             {category[newPost.category].name} | {newPost.updateTime}{" "}
-            {newPost.price}원
+            {newPost.price}원 |👁
+            {newPost.clickCnt}
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
           <div
