@@ -77,9 +77,11 @@ const ProductList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
-  flex-grow: 1;
+  align-content: start;
+  justify-content: center;
 `;
 const ProductCard = styled.div`
+  width: 321px;
   background-color: white;
   height: 310px;
   border-radius: 10px;
