@@ -112,7 +112,7 @@ function App() {
 
   // 처음 컴포넌트가 임포트 될 때 유저세션을 가져오는 메서드
   useEffect(() => {
-    checkLoginStatus();
+    // checkLoginStatus();
     if (user) {
       console.log("여기");
       connectSocket(user.userId, (noti) => {
@@ -122,6 +122,10 @@ function App() {
       getAlarms();
     }
   }, [user]);
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
