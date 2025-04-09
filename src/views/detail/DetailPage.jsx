@@ -472,10 +472,12 @@ const DetailPage = () => {
                 </ArrowButton>
               </>
             )}
-            <ImageCounter>
-              // {currentImage + 1} / {imageBase64.length}
-              //{" "}
-            </ImageCounter>
+            {imageBase64.length > 1 && (
+              <ImageCounter>
+                // {currentImage + 1} / {imageBase64.length}
+                //{" "}
+              </ImageCounter>
+            )}
           </ImageSliderWrapper>
         </ProductLeft>
         <ProductRight>
