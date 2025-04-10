@@ -11,7 +11,7 @@ const ReportButton = styled.button`
   border: 1px solid black;
   border-radius: 5px;
   cursor: pointer;
-  /* margin-left: 28rem; */
+
   /* margin-top: 50px; */
   display: flex;
   justify-content: flex-end;
