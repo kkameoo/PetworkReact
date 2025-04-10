@@ -1,18 +1,75 @@
 import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
+const GooeyButton = styled.button`
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(to right, #a2e4b8, #00f2fe);
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  margin-bottom: 20px;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    animation: bubble 1.5s infinite ease-in-out;
+    pointer-events: none;
+  }
+
+  &::before {
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 30%;
+  }
+
+  &::after {
+    width: 15px;
+    height: 15px;
+    bottom: 0;
+    right: 25%;
+    animation-delay: 0.75s;
+  }
+
+  @keyframes bubble {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5) translateY(-20px);
+      opacity: 0;
+    }
+  }
+`;
+
 const SignupContainer = styled.div`
-  width: 100%;
-  max-width: 600px;
-  padding: 20px;
-  margin: 0 auto;
-  min-height: 10vh;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
+  height: 100vh;
   background-color: #f9f9f9;
-  box-sizing: border-box;
-  overflow: hidden;
 `;
 const Title = styled.h2`
   font-size: 60px;
@@ -20,14 +77,14 @@ const Title = styled.h2`
   margin-bottom: 20px;
 `;
 const Form = styled.form`
-  width: 100%;
-  background: white;
-  border-radius: 10px;
-  padding: 20px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  box-sizing: border-box;
+  width: 600px;
+  padding: 20px;
+  height: 60%;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 `;
 const Label = styled.label`
   font-size: 14px;
@@ -35,13 +92,11 @@ const Label = styled.label`
   margin-bottom: 5px;
 `;
 const Input = styled.input`
-  width: 100%;
   padding: 12px;
-  font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 6px;
   margin-bottom: 20px;
-  box-sizing: border-box;
+  font-size: 14px;
   &:focus {
     outline: none;
     border-color: #93c572;
@@ -62,17 +117,14 @@ const Select = styled.select`
 `;
 
 const Button = styled.button`
-  width: 100%;
+  background-color: #a2e4b8;
+  color: white;
   padding: 12px;
   font-size: 16px;
   border: none;
   border-radius: 6px;
-  background-color: #a2e4b8;
-  color: white;
   cursor: pointer;
   transition: background 0.3s ease;
-  box-sizing: border-box;
-
   &:hover {
     background-color: #6dbe92;
   }
@@ -438,13 +490,13 @@ const SignupContents = () => {
     <SignupContainer>
       <Title>회원가입</Title>
       <Form onSubmit={handleSubmit}>
-        <button
+        <GooeyButton
           type="button"
           onClick={() => setModalVisible(true)}
           disabled={isEmailVerified}
         >
           이메일 인증
-        </button>
+        </GooeyButton>
         {/* 이메일 입력 */}
         <Input
           type="email"
