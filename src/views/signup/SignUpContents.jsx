@@ -2,12 +2,17 @@ import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 const SignupContainer = styled.div`
+  width: 100%;
+  max-width: 600px;
+  padding: 20px;
+  margin: 0 auto;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  height: 100vh;
   background-color: #f9f9f9;
+  box-sizing: border-box;
+  overflow: hidden;
 `;
 const Title = styled.h2`
   font-size: 60px;
@@ -15,14 +20,14 @@ const Title = styled.h2`
   margin-bottom: 20px;
 `;
 const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-  width: 600px;
-  padding: 20px;
-  height: 60%;
+  width: 100%;
   background: white;
   border-radius: 10px;
+  padding: 20px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 `;
 const Label = styled.label`
   font-size: 14px;
@@ -30,11 +35,13 @@ const Label = styled.label`
   margin-bottom: 5px;
 `;
 const Input = styled.input`
+  width: 100%;
   padding: 12px;
+  font-size: 14px;
   border: 1px solid #ddd;
   border-radius: 6px;
   margin-bottom: 20px;
-  font-size: 14px;
+  box-sizing: border-box;
   &:focus {
     outline: none;
     border-color: #93c572;
@@ -55,14 +62,17 @@ const Select = styled.select`
 `;
 
 const Button = styled.button`
-  background-color: #a2e4b8;
-  color: white;
+  width: 100%;
   padding: 12px;
   font-size: 16px;
   border: none;
   border-radius: 6px;
+  background-color: #a2e4b8;
+  color: white;
   cursor: pointer;
   transition: background 0.3s ease;
+  box-sizing: border-box;
+
   &:hover {
     background-color: #6dbe92;
   }
