@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
 
 const ReportButton = styled.button`
+  /* width: 80rem; */
   font-size: 13px;
   background-color: #ff4d4d;
   color: white;
@@ -10,7 +11,7 @@ const ReportButton = styled.button`
   border: 1px solid black;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: 470px;
+  /* margin-left: 28rem; */
   /* margin-top: 50px; */
   display: flex;
   justify-content: flex-end;

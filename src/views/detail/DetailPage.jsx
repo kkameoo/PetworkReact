@@ -107,6 +107,7 @@ const ProductImage = styled.img`
 
 const SellerInfo = styled.div`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
+  width: 55rem;
   margin-bottom: 70px;
   font-size: 20px;
   text-align: left;
@@ -122,7 +123,7 @@ const SellerLeft = styled.div`
   position: absolute;
   top: 0;
   display: flex;
-  align-items: center;
+  /* justify-content: space-evenly; */
 `;
 
 const SellerImage = styled.img`
@@ -133,8 +134,9 @@ const SellerImage = styled.img`
 `;
 
 const Nickname = styled.p`
-  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  /* font-family: "Ownglyph_meetme-Rg", sans-serif; */
   font-weight: bold;
+  width: 37.5rem;
   line-height: 25px;
   margin: 0;
 `;
@@ -482,7 +484,7 @@ const DetailPage = () => {
                 onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
                 style={{ cursor: "pointer" }}
               >
-                작성자: {newPost.seller}
+                <Nickname>작성자: {newPost.seller}</Nickname>
                 <Location>
                   {regionMap[newPost.regionSi].name}{" "}
                   {regionMap[newPost.regionSi].gu[newPost.regionGu].name}
