@@ -89,7 +89,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${API_USER_URL}/login`, {
+      const response = await fetch(`${API_USER_URL}/login/jwt`, {
         credentials: "include",
         method: "POST",
         headers: {
@@ -102,6 +102,8 @@ const Login = () => {
       if (!response.ok) {
         throw new Error("로그인 실패");
       }
+      console.log(data);
+      localStorage.setItem("user", JSON.stringify(data));
       setUser(data);
       navigate("/");
     } catch (error) {

@@ -46,13 +46,49 @@ function App() {
   // const value = useMemo(() => ({ user }), [user]);
   const navigate = useNavigate();
 
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/user/session`,
+  //       {
+  //         method: "GET",
+  //         credentials: "include",
+  //       }
+  //     );
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setIsLoggedIn(true);
+  //       // 기존 user와 값이 다를 때만 업데이트
+  //       if (JSON.stringify(user) !== JSON.stringify(data)) {
+  //         setUser(data);
+  //       }
+  //       console.log("세션 체크" + user);
+  //     } else {
+  //       setIsLoggedIn(false);
+  //       setUser(null);
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 상태 확인 중 오류 발생:", error);
+  //     setIsLoggedIn(false);
+  //     setUser(null);
+  //   }
+  // };
+
   const checkLoginStatus = async () => {
+    // console.log(localStorage.getItem("user"));
+    if (localStorage.getItem("user") == null) {
+      console.log("비로그인 상태");
+      return;
+    }
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        `${import.meta.env.VITE_API_URL}/api/user/token`,
         {
-          method: "GET",
+          method: "POST",
           credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: localStorage.getItem("user"),
         }
       );
 
@@ -75,27 +111,54 @@ function App() {
     }
   };
 
-  const invalidSession = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/logout`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
+  // const invalidSession = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/user/logout`,
+  //       {
+  //         method: "GET",
+  //         credentials: "include",
+  //       }
+  //     );
 
-      if (response.ok) {
-        console.log("로그아웃 성공");
-        setIsLoggedIn(false);
-        setUser(null);
-        navigate("/");
-      } else {
-        console.log("에러발생");
-      }
-    } catch (error) {
-      console.error("로그인 상태 확인 중 오류 발생:", error);
-    }
+  //     if (response.ok) {
+  //       console.log("로그아웃 성공");
+  //       setIsLoggedIn(false);
+  //       setUser(null);
+  //       navigate("/");
+  //     } else {
+  //       console.log("에러발생");
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 상태 확인 중 오류 발생:", error);
+  //   }
+  // };
+
+  const invalidSession = async () => {
+    //  try {
+    //    const response = await fetch(
+    //     `${import.meta.env.VITE_API_URL}/api/user/logout`,
+    //     {
+    //       method: "GET",
+    //       credentials: "include",
+    //     }
+    //   );
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+    setUser(null);
+    window.location.reload();
+
+    //   if (response.ok) {
+    //     console.log("로그아웃 성공");
+    //     setIsLoggedIn(false);
+    //     setUser(null);
+    //     navigate("/");
+    //   } else {
+    //     console.log("에러발생");
+    //   }
+    // } catch (error) {
+    //   console.error("로그인 상태 확인 중 오류 발생:", error);
+    // }
   };
 
   const getAlarms = async () => {
@@ -112,16 +175,21 @@ function App() {
 
   // 처음 컴포넌트가 임포트 될 때 유저세션을 가져오는 메서드
   useEffect(() => {
-    checkLoginStatus();
+    // checkLoginStatus();
     if (user) {
-      console.log("여기");
+      setIsLoggedIn(true);
+      // console.log("여기");
       connectSocket(user.userId, (noti) => {
-        console.log("abc");
+        // console.log("abc");
         setNotifications((prev) => [noti, ...prev]);
       });
       getAlarms();
     }
   }, [user]);
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
