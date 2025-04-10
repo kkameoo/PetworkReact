@@ -238,7 +238,7 @@ const UserDetailPage = () => {
         setPosts(formattedData);
       })
       .catch((err) => console.error("게시글 불러오기 오류:", err));
-  }, []);
+  }, [user]);
 
   const filteredPosts =
     selectedBoard === "mypet"
@@ -252,9 +252,10 @@ const UserDetailPage = () => {
         });
 
   const fetchPets = async () => {
+    if (!user) return;
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/pet/list`,
+        `${import.meta.env.VITE_API_URL}/api/pet/list/${user.userId}`,
         {
           credentials: "include",
         }
@@ -283,7 +284,7 @@ const UserDetailPage = () => {
   };
   useEffect(() => {
     fetchPets();
-  }, []);
+  }, [user]);
 
   const openEditModal = (pet) => {
     setEditForm({
