@@ -379,7 +379,11 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
       );
 
       if (response.ok) {
-        setNewComment([...newComment, postData2]);
+        const formattedComment = {
+          ...postData2,
+          regDate: new Date(postData2.regDate).toLocaleString(), // 👈 변환된 시간으로
+        };
+        setNewComment([...newComment, formattedComment]);
         setDescription("");
       } else {
         alert("댓글 등록 실패. 다시 시도해주세요.");

@@ -171,7 +171,8 @@ const ProductCategory = styled.p`
 const ProductDescription = styled.p`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   min-height: 240px;
-  font-size: 22px;
+  font-size: 28px;
+  padding: 20px;
   margin-bottom: 20px;
   background-color: #f3f3f3;
   border-radius: 10px;
