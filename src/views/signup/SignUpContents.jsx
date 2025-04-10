@@ -1,6 +1,68 @@
 import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+
+const GooeyButton = styled.button`
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(to right, #a2e4b8, #00f2fe);
+  color: white;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  margin-bottom: 20px;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    animation: bubble 1.5s infinite ease-in-out;
+    pointer-events: none;
+  }
+
+  &::before {
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 30%;
+  }
+
+  &::after {
+    width: 15px;
+    height: 15px;
+    bottom: 0;
+    right: 25%;
+    animation-delay: 0.75s;
+  }
+
+  @keyframes bubble {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5) translateY(-20px);
+      opacity: 0;
+    }
+  }
+`;
+
 const SignupContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -428,13 +490,13 @@ const SignupContents = () => {
     <SignupContainer>
       <Title>회원가입</Title>
       <Form onSubmit={handleSubmit}>
-        <button
+        <GooeyButton
           type="button"
           onClick={() => setModalVisible(true)}
           disabled={isEmailVerified}
         >
           이메일 인증
-        </button>
+        </GooeyButton>
         {/* 이메일 입력 */}
         <Input
           type="email"
