@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const Container = styled.div`
-  height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100vh;
   background-color: #f8f9fa;
 `;
 
@@ -15,14 +16,14 @@ const FormWrapper = styled.div`
   width: 100%;
   max-width: 700px;
   padding: 40px;
+  height: 600px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 600px;
-  margin-top: inherit;
+  box-sizing: border-box;
 `;
 
 const Title = styled.h1`
@@ -112,6 +113,12 @@ const Login = () => {
     }
   };
 
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   return (
     <Container>
       <FormWrapper>
@@ -124,6 +131,7 @@ const Login = () => {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
+            onKeyDown={handleKeyPress}
           />
           <Input
             type="password"
@@ -132,6 +140,7 @@ const Login = () => {
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
+            onKeyDown={handleKeyPress}
           />
         </InputWrapper>
         {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}
