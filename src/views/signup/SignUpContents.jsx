@@ -3,12 +3,13 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 const GooeyButton = styled.button`
+  width: 100%;
   position: relative;
   display: inline-block;
   background: linear-gradient(to right, #a2e4b8, #00f2fe);
   color: white;
   padding: 12px 24px;
-  font-size: 16px;
+  font-size: 20px;
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   border: none;
   border-radius: 50px;
