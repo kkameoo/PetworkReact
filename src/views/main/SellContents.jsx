@@ -327,9 +327,9 @@ const SellContents = () => {
         const postData = Object.values(data).map((item) => ({
           id: item.boardId,
           sellerUid: item.userId,
-          regionSi: regionMap[item.localSi].name || "알 수 없음",
+          regionSi: regionMap[item.localSi]?.name || "알 수 없음",
           regionGu:
-            regionMap[item.localSi].gu[item.localGu].name || "알 수 없음",
+            regionMap[item.localSi]?.gu[item.localGu]?.name || "알 수 없음",
           title: item.title,
           content: item.content,
           category: item.tradeCategory,
@@ -337,13 +337,12 @@ const SellContents = () => {
           clickCnt: item.clickCount,
           reportCnt: item.reportCount,
           nickname: item.nickname,
-          regionDong: `${regionMap[item.localSi].name || ""} ${
-            regionMap[item.localSi].gu[item.localGu].name || ""
+          regionDong: `${regionMap[item.localSi]?.name || ""} ${
+            regionMap[item.localSi]?.gu[item.localGu]?.name || ""
           }`,
           image: item.image || "/no-image.png",
           price: item.tradePrice,
         }));
-        console.log("데이터:", data);
         setPosts(postData);
         setFilteredPosts(postData);
         postData.forEach((post) => fetchImage(post.id));
@@ -414,7 +413,6 @@ const SellContents = () => {
 
           <ProductList>
             {displayedPosts.map((post) => {
-              console.log(post);
               const opacity = user?.admin
                 ? Math.min(post.reportCnt / 20, 1)
                 : 0;
@@ -434,7 +432,7 @@ const SellContents = () => {
                   <ProductTitle>{post.title}</ProductTitle>
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
-                  <Seller>{tradeCategory[post.category].name}</Seller>
+                  <Seller>{tradeCategory[post.category]?.name}</Seller>
                   <Seller>👁{post.clickCnt}</Seller>
                   {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>

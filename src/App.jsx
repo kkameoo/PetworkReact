@@ -43,8 +43,6 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
   const [notifications, setNotifications] = useState([]);
-  // const value = useMemo(() => ({ user }), [user]);
-  const navigate = useNavigate();
 
   // const checkLoginStatus = async () => {
   //   try {
@@ -76,7 +74,6 @@ function App() {
   // };
 
   const checkLoginStatus = async () => {
-    // console.log(localStorage.getItem("user"));
     if (localStorage.getItem("user") == null) {
       console.log("비로그인 상태");
       return;

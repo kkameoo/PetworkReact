@@ -212,7 +212,6 @@ const JobContents = () => {
   }, []);
 
   useEffect(() => {
-    console.log("발생");
     if (!regionMap || Object.keys(regionMap).length === 0) return;
     fetch(API_POST_URL)
       .then((res) => res.json())
@@ -237,7 +236,6 @@ const JobContents = () => {
           }`,
           image: item.image || "/no-image.png",
         }));
-        console.log("데이터:", data);
         setPosts(postData);
         setFilteredPosts(postData);
         postData.forEach((post) => fetchImage(post.id));
@@ -310,7 +308,6 @@ const JobContents = () => {
 
           <ProductList>
             {displayedPosts.map((post) => {
-              console.log(post);
               const opacity = user?.admin
                 ? Math.min(post.reportCnt / 20, 1)
                 : 0;

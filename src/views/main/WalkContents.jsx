@@ -296,7 +296,6 @@ const WalkContents = () => {
           }`,
           image: item.image || "/no-image.png",
         }));
-        console.log("데이터:", data);
         setPosts(postData);
         setFilteredPosts(postData);
         postData.forEach((post) => fetchImage(post.id));
@@ -369,7 +368,6 @@ const WalkContents = () => {
           {/* 게시글 리스트 */}
           <ProductList>
             {displayedPosts.map((post) => {
-              console.log(post);
               const opacity = user?.admin
                 ? Math.min(post.reportCnt / 20, 1)
                 : 0;
