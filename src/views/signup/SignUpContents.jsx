@@ -64,7 +64,7 @@ const GooeyButton = styled.button`
   }
 `;
 
-const FormWrapper = styled.div`
+const FormWrapper = styled.form`
   width: 100%;
   max-width: 700px;
   min-height: 800px;
