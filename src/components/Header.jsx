@@ -373,7 +373,7 @@ function Header({
                 onClick={() => handleImageClick("/petshow")}
               />
               <BoardButtonText onClick={() => handleTextClick("/petshow")}>
-                게스타그램
+                펫스타그램
               </BoardButtonText>
             </BoardButtonWrapper>
           </BoardButtonContainer>
