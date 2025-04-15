@@ -373,12 +373,10 @@ const SignupContents = () => {
     import.meta.env.VITE_API_URL
   }/api/email/verify`;
 
-  // const [passwordStrength, setPasswordStrength] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
-  // const [emailVerificationSent, setEmailVerificationSent] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const navigate = useNavigate();
 

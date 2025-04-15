@@ -411,18 +411,6 @@ const RoomContents = () => {
     setMessage("");
   };
 
-  // const sendMessage = () => {
-  //   if (inputText.trim() === "" || !currentUser) return;
-  //   setMessages([
-  //     ...messages,
-  //     {
-  //       sender: "USER1",
-  //       text: inputText,
-  //       timestamp: new Date().toLocaleTimeString(),
-  //     },
-  //   ]);
-  //   setInputText("");
-  // };
   const goToDetail = (postId) => {
     navigate(`/room/${postId}`);
     window.location.reload();
@@ -434,19 +422,6 @@ const RoomContents = () => {
 
   return (
     <ChatContainer>
-      {/*
-      <MessageList>
-        {messages.map((msg, index) => (
-          <Message key={index} isUser1={msg.sender === "USER1"}>
-            {msg.sender === "USER2" && <UserName>{msg.sender}</UserName>}
-            <Bubble isUser1={msg.sender === "USER1"}>{msg.text}</Bubble>
-            <Timestamp isUser1={msg.sender === "USER1"}>
-              {msg.timestamp}
-            </Timestamp>
-          </Message>
-        ))}
-      </MessageList>
-      */}
       <UserContainer>
         <h2>유저</h2>
         <div>

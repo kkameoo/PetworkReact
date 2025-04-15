@@ -263,8 +263,6 @@ function MainPage() {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${boardId}`
       );
-      // const responseText = await response.text();
-      // console.log(responseText);
       if (response.ok) {
         const base64Data = await response.json();
         const base64String = Array.isArray(base64Data)

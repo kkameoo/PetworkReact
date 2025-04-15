@@ -309,7 +309,6 @@ const HireDetailPage = () => {
   // };
 
   const checkLoginStatus = async () => {
-    // console.log(localStorage.getItem("user"));
     if (localStorage.getItem("user") == null) {
       console.log("비로그인 상태");
       return;
