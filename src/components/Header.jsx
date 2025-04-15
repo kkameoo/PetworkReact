@@ -2,13 +2,13 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../hooks/useAuth";
-import WalkButtonImage from "../assets/KakaoTalk_20250320_191922332.jpg";
-import SellButtonImage from "../assets/KakaoTalk_20250320_183321982.jpg";
-import JobButtonImage from "../assets/KakaoTalk_20250320_184745054.jpg";
-import PetStarImage from "../assets/KakaoTalk_20250320_174016642.jpg";
-import LogoImage from "../assets/TalkMedia_i_2a4ebc04392c.png.png";
-import AlertImage from "../assets/bell.png";
-import GlobalStyle from "../data/GlobalStyle";
+import WalkButtonImage from "/assets/KakaoTalk_20250320_191922332.jpg";
+import SellButtonImage from "/assets/KakaoTalk_20250320_183321982.jpg";
+import JobButtonImage from "/assets/KakaoTalk_20250320_184745054.jpg";
+import PetStarImage from "/assets/KakaoTalk_20250320_174016642.jpg";
+import LogoImage from "/assets/TalkMedia_i_2a4ebc04392c.png.png";
+import AlertImage from "/assets/bell.png";
+import GlobalStyle from "../../public/data/GlobalStyle";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
@@ -373,7 +373,7 @@ function Header({
                 onClick={() => handleImageClick("/petshow")}
               />
               <BoardButtonText onClick={() => handleTextClick("/petshow")}>
-                게스타그램
+                펫스타그램
               </BoardButtonText>
             </BoardButtonWrapper>
           </BoardButtonContainer>

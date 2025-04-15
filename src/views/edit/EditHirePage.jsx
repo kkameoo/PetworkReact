@@ -71,8 +71,6 @@ const EditHirePage = () => {
   const [regionSi, setRegionSi] = useState("서울시");
   const [regionGu, setRegionGu] = useState("강남구");
   const [description, setDescription] = useState("");
-  // const [imageUrl, setImageUrl] = useState("");
-  // const [preview, setPreview] = useState(null);
   const [price, setPrice] = useState("");
   const [condition, setCondition] = useState("");
   const [hireDate, setHireDate] = useState(new Date());
@@ -134,8 +132,6 @@ const EditHirePage = () => {
         setRegionSi(post.localSi);
         setRegionGu(post.localGu);
         setDescription(post.content);
-        // setImageUrl(post.imageUrl);
-        // setPreview(post.imageUrl);
         setPrice(post.hirePrice);
         setCondition(post.hireCondition);
       } catch (err) {
@@ -192,7 +188,6 @@ const EditHirePage = () => {
         {
           method: "PUT",
           credentials: "include",
-          // headers: { "Content-Type": "application/json" },
           body: formData,
         }
       );

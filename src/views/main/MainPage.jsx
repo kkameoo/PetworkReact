@@ -68,6 +68,43 @@ const Adver = styled.div`
   }
 `;
 
+const SimpleList = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 40px;
+`;
+
+const SimpleItem = styled.div`
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+const SimpleTitle = styled.span`
+  flex: 2;
+  margin-left: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+`;
+
+const SimplePrice = styled.span`
+  flex: 1;
+  font-size: 13px;
+  color: #555;
+  text-align: right;
+`;
+
+const SimpleNickname = styled.span`
+  flex: 1;
+  font-size: 13px;
+  color: #888;
+  text-align: right;
+`;
+
 const Thumbnail = styled.img`
   width: 100%;
   height: 150px;
@@ -157,32 +194,67 @@ function MainPage() {
   const [jobPosts, setJobPosts] = useState([]);
   const [petstarPosts, setPetstarPosts] = useState([]);
   const [imageMap, setImageMap] = useState({});
-  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [user, setUser] = useState(null);
   const [isLoggedin, setIsLoggedIn] = useState();
   const [regionMap, setRegionMap] = useState([]);
 
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/user/session`,
+  //       {
+  //         method: "GET",
+  //         credentials: "include",
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log("유저", data);
+  //       setIsLoggedIn(true);
+  //       setUser(data);
+  //       console.log(data + "세션정보");
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 상태 확인 실패:", error);
+  //     setIsLoggedIn(false);
+  //   }
+  // };
+
   const checkLoginStatus = async () => {
+    if (localStorage.getItem("user") == null) {
+      console.log("비로그인 상태");
+      return;
+    }
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        `${import.meta.env.VITE_API_URL}/api/user/token`,
         {
-          method: "GET",
+          method: "POST",
           credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: localStorage.getItem("user"),
         }
       );
+
       if (response.ok) {
         const data = await response.json();
-        console.log("유저", data);
         setIsLoggedIn(true);
-        setUser(data);
-        console.log(data + "세션정보");
+        // 기존 user와 값이 다를 때만 업데이트
+        if (JSON.stringify(user) !== JSON.stringify(data)) {
+          setUser(data);
+        }
+        console.log("세션 체크" + user);
       } else {
         setIsLoggedIn(false);
+        setUser(null);
       }
     } catch (error) {
-      console.error("로그인 상태 확인 실패:", error);
+      console.error("로그인 상태 확인 중 오류 발생:", error);
       setIsLoggedIn(false);
+      setUser(null);
     }
   };
 
@@ -191,8 +263,6 @@ function MainPage() {
       const response = await fetch(
         `${import.meta.env.VITE_API_URL}/api/photo/board/upload/${boardId}`
       );
-      // const responseText = await response.text();
-      // console.log(responseText);
       if (response.ok) {
         const base64Data = await response.json();
         const base64String = Array.isArray(base64Data)
@@ -236,6 +306,7 @@ function MainPage() {
         nickname: item.nickname,
         localSi: item.localSi,
         localGu: item.localGu,
+        price: item.hirePrice,
       }));
 
       setPosts(transformedData);
@@ -366,11 +437,20 @@ function MainPage() {
         </SectionWrapper>
         <SectionWrapper>
           <SectionTitle>알바 게시판 인기글 🤝</SectionTitle>
-          <PostsWrapper>
-            {jobPosts.map((post) =>
-              renderPostCard(post, imageMap[post.boardId], "hire")
-            )}
-          </PostsWrapper>
+          <SimpleList>
+            {jobPosts.slice(0, 10).map((post, index) => (
+              <SimpleItem key={post.boardId}>
+                <span>{index + 1}.</span>
+                <SimpleTitle onClick={() => navigate(`/hire/${post.boardId}`)}>
+                  {post.title}
+                </SimpleTitle>
+                <SimplePrice>
+                  {(post?.price ?? 0).toLocaleString()}원
+                </SimplePrice>
+                <SimpleNickname>{post.nickname}</SimpleNickname>
+              </SimpleItem>
+            ))}
+          </SimpleList>
         </SectionWrapper>
         <Adver>
           <a
@@ -379,7 +459,7 @@ function MainPage() {
             rel="noopener noreferrer"
           >
             <img
-              src="src/assets/advertisement.jpg"
+              src="/assets/advertisement.jpg"
               alt="광고 이미지"
               className="ad-image"
             />

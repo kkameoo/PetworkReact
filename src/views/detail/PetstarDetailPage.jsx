@@ -232,26 +232,62 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
     }
   };
 
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/user/session`,
+  //       {
+  //         method: "GET",
+  //         credentials: "include",
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setIsLoggedIn(true);
+  //       setUser(data);
+  //       console.log(data + "세션정보");
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 상태 확인 실패:", error);
+  //     setIsLoggedIn(false);
+  //   }
+  // };
+
   const checkLoginStatus = async () => {
+    // console.log(localStorage.getItem("user"));
+    if (localStorage.getItem("user") == null) {
+      console.log("비로그인 상태");
+      return;
+    }
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        `${import.meta.env.VITE_API_URL}/api/user/token`,
         {
-          method: "GET",
+          method: "POST",
           credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: localStorage.getItem("user"),
         }
       );
+
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
-        setUser(data);
-        console.log(data + "세션정보");
+        // 기존 user와 값이 다를 때만 업데이트
+        if (JSON.stringify(user) !== JSON.stringify(data)) {
+          setUser(data);
+        }
+        console.log("세션 체크" + user);
       } else {
         setIsLoggedIn(false);
+        setUser(null);
       }
     } catch (error) {
-      console.error("로그인 상태 확인 실패:", error);
+      console.error("로그인 상태 확인 중 오류 발생:", error);
       setIsLoggedIn(false);
+      setUser(null);
     }
   };
 
@@ -343,7 +379,11 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
       );
 
       if (response.ok) {
-        setNewComment([...newComment, postData2]);
+        const formattedComment = {
+          ...postData2,
+          regDate: new Date(postData2.regDate).toLocaleString(), // 👈 변환된 시간으로
+        };
+        setNewComment([...newComment, formattedComment]);
         setDescription("");
       } else {
         alert("댓글 등록 실패. 다시 시도해주세요.");
@@ -375,10 +415,7 @@ function PetstarDetailPage({ onSubmitSuccess = () => {} }) {
 
         <SellerInfo>
           <SellerLeft>
-            <SellerImage
-              src="../src/assets/userimage.jpg"
-              alt="판매자 이미지"
-            />
+            <SellerImage src="/assets/userimage.jpg" alt="판매자 이미지" />
             <div
               onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
               style={{ cursor: "pointer" }}

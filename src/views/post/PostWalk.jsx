@@ -6,14 +6,11 @@ import { useAuth } from "../../hooks/useAuth";
 import UserCheck from "../../components/UserCheck";
 
 const FormContainer = styled.div`
-  /* max-width: 600px; */
   width: 1600px;
   margin: 40px auto;
   padding: 20px;
-  /* border: 2px solid #00bfff; */
-  /* border-radius: 20px; */
+
   background-color: #a2e4b8;
-  /* box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1); */
 `;
 
 const FormRow = styled.div`
@@ -136,7 +133,7 @@ const PostWalk = ({ onSubmitSuccess = () => {} }) => {
     imageFile.forEach((img) => {
       formData.append("file", img.file);
     });
-    // formData.append("file", imageFile);
+
     formData.append("requestJson", JSON.stringify(postData));
     try {
       const response = await fetch(

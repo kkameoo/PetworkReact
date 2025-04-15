@@ -76,9 +76,11 @@ const ProductList = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 15px;
-  flex-grow: 1;
+  align-content: start;
+  justify-content: center;
 `;
 const ProductCard = styled.div`
+  width: 321px;
   height: 310px;
   background-color: white;
   border-radius: 10px;
@@ -196,7 +198,7 @@ const JobContents = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const { user } = useAuth();
   const [imageMap, setImageMap] = useState({});
-  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [walkCategory, setWalkCategory] = useState([]);
 
@@ -210,7 +212,6 @@ const JobContents = () => {
   }, []);
 
   useEffect(() => {
-    console.log("발생");
     if (!regionMap || Object.keys(regionMap).length === 0) return;
     fetch(API_POST_URL)
       .then((res) => res.json())
@@ -235,7 +236,6 @@ const JobContents = () => {
           }`,
           image: item.image || "/no-image.png",
         }));
-        console.log("데이터:", data);
         setPosts(postData);
         setFilteredPosts(postData);
         postData.forEach((post) => fetchImage(post.id));
@@ -308,7 +308,6 @@ const JobContents = () => {
 
           <ProductList>
             {displayedPosts.map((post) => {
-              console.log(post);
               const opacity = user?.admin
                 ? Math.min(post.reportCnt / 20, 1)
                 : 0;
@@ -329,6 +328,7 @@ const JobContents = () => {
                   <Seller>판매자: {post.nickname}</Seller>
                   <Seller>{post.regionDong}</Seller>
                   <Seller>{walkCategory[post.category]?.name}</Seller>
+                  <Seller>👁{post.clickCnt}</Seller>
                   {user?.admin && (
                     <ReportCount>신고: {post.reportCnt}회</ReportCount>
                   )}

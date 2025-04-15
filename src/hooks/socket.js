@@ -1,6 +1,6 @@
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
-const socket = new SockJS("http://localhost:8087/ws/alarm");
+const socket = new SockJS(`${import.meta.env.VITE_API_URL}/ws/alarm`);
 const stompClient = new Client({
   webSocketFactory: () => socket,
   reconnectDelay: 5000,

@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import Walkdog from "/assets/walkdog.png";
 
 const Container = styled.div`
   display: flex;
@@ -56,7 +57,6 @@ const DogImage = styled.img`
 
 function UserCheck() {
   const navigate = useNavigate();
-  const DEFAULT_IMAGE = "/src/assets/walkdog.png";
 
   const goToLogin = () => {
     navigate("/login");
@@ -64,7 +64,7 @@ function UserCheck() {
 
   return (
     <Container>
-      <DogImage src={DEFAULT_IMAGE} />
+      <DogImage src={Walkdog} />
       <Title>로그인이 필요합니다</Title>
       <Message>
         이 페이지를 보려면 로그인이 필요해요. 로그인 페이지로 이동해 주세요.

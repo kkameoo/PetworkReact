@@ -55,7 +55,7 @@ const MessageList = styled.div`
 const Message = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: ${(props) => (props.isUser1 ? "flex-end" : "flex-start")};
+  align-items: ${(props) => (props.isMine ? "flex-end" : "flex-start")};
 `;
 
 const UserName = styled.div`
@@ -411,18 +411,6 @@ const RoomContents = () => {
     setMessage("");
   };
 
-  // const sendMessage = () => {
-  //   if (inputText.trim() === "" || !currentUser) return;
-  //   setMessages([
-  //     ...messages,
-  //     {
-  //       sender: "USER1",
-  //       text: inputText,
-  //       timestamp: new Date().toLocaleTimeString(),
-  //     },
-  //   ]);
-  //   setInputText("");
-  // };
   const goToDetail = (postId) => {
     navigate(`/room/${postId}`);
     window.location.reload();
@@ -434,34 +422,8 @@ const RoomContents = () => {
 
   return (
     <ChatContainer>
-      {/*
-      <MessageList>
-        {messages.map((msg, index) => (
-          <Message key={index} isUser1={msg.sender === "USER1"}>
-            {msg.sender === "USER2" && <UserName>{msg.sender}</UserName>}
-            <Bubble isUser1={msg.sender === "USER1"}>{msg.text}</Bubble>
-            <Timestamp isUser1={msg.sender === "USER1"}>
-              {msg.timestamp}
-            </Timestamp>
-          </Message>
-        ))}
-      </MessageList>
-      */}
       <UserContainer>
         <h2>유저</h2>
-        <div>
-          ------------ (Redis 저장소)
-          {connectedUser.length === 0 ? (
-            <p>접속 중인 유저 없음</p>
-          ) : (
-            <div>
-              {connectedUser.map((user, idx) => (
-                <div key={idx}>{user.userName}</div>
-              ))}
-            </div>
-          )}
-          ------------
-        </div>
         <div>
           {displayUserList.length === 0 ? (
             <p>유저 없음</p>
@@ -504,7 +466,7 @@ const RoomContents = () => {
         ) : (
           <MessageList>
             {messages.map((msg, idx) => (
-              <Message key={idx}>
+              <Message key={idx} isMine={msg.sender === user.nickname}>
                 <b>{msg.sender}: </b> {msg.content}
                 <Timestamp>{msg.regDate}</Timestamp>
               </Message>

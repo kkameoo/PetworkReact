@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import defaultProfile from "../assets/basic.jpg";
+import defaultProfile from "/assets/basic.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Container = styled.div`

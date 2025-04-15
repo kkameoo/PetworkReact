@@ -304,28 +304,63 @@ const PetShowcasePage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [imageMap, setImageMap] = useState({});
   const [petPosts, setPetPosts] = useState([]);
-  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
+
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/user/session`,
+  //       {
+  //         method: "GET",
+  //         credentials: "include",
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setIsLoggedIn(true);
+  //       setUser(data);
+  //       console.log(data + "세션정보");
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 상태 확인 실패:", error);
+  //     setIsLoggedIn(false);
+  //   }
+  // };
 
   const checkLoginStatus = async () => {
+    if (localStorage.getItem("user") == null) {
+      console.log("비로그인 상태");
+      return;
+    }
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        `${import.meta.env.VITE_API_URL}/api/user/token`,
         {
-          method: "GET",
+          method: "POST",
           credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: localStorage.getItem("user"),
         }
       );
+
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
-        setUser(data);
-        console.log(data + "세션정보");
+        // 기존 user와 값이 다를 때만 업데이트
+        if (JSON.stringify(user) !== JSON.stringify(data)) {
+          setUser(data);
+        }
+        console.log("세션 체크" + user);
       } else {
         setIsLoggedIn(false);
+        setUser(null);
       }
     } catch (error) {
-      console.error("로그인 상태 확인 실패:", error);
+      console.error("로그인 상태 확인 중 오류 발생:", error);
       setIsLoggedIn(false);
+      setUser(null);
     }
   };
 

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useAuth } from "../../hooks/useAuth";
-import defaultProfile from "../../assets/userimage.jpg";
+import defaultProfile from "/assets/userimage.jpg";
 import { useNavigate } from "react-router-dom";
 import UserCheck from "../../components/UserCheck";
 
@@ -75,7 +75,9 @@ const BoardNav = styled.div`
   margin-top: 20px;
 `;
 
-const BoardButton = styled.button`
+const BoardButton = styled.button.attrs((props) => ({
+  "data-active": props.isActive,
+}))`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   padding: 10px 15px;
   border: none;
@@ -187,7 +189,7 @@ const CloseButton = styled(ModalButton)`
 `;
 
 const UserDetailPage = () => {
-  const { user } = useAuth();
+  const { user, setUser } = useAuth();
   const [selectedBoard, setSelectedBoard] = useState("community");
   const [posts, setPosts] = useState([]);
   const [pets, setPets] = useState([]);
@@ -195,6 +197,8 @@ const UserDetailPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+  const [isUserEditModalOpen, setIsUserEditModalOpen] = useState(false);
+  const [userEditForm, setUserEditForm] = useState(null);
   const [editForm, setEditForm] = useState({
     petId: "",
     petName: "",
@@ -238,7 +242,7 @@ const UserDetailPage = () => {
         setPosts(formattedData);
       })
       .catch((err) => console.error("게시글 불러오기 오류:", err));
-  }, []);
+  }, [user]);
 
   const filteredPosts =
     selectedBoard === "mypet"
@@ -251,10 +255,56 @@ const UserDetailPage = () => {
           return [];
         });
 
+  const handleUserInfoUpdate = async () => {
+    if (!user || !user.userId) {
+      alert("로그인 정보가 없습니다.");
+      return;
+    }
+
+    try {
+      const data = {
+        userId: user.userId,
+        name: userEditForm.name,
+        nickname: userEditForm.nickname,
+        telNumber: userEditForm.telNumber,
+      };
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/user/update`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      if (!response.ok) throw new Error("회원 정보 수정 실패");
+
+      alert("회원 정보가 수정되었습니다.");
+      const updatedUser = {
+        ...user,
+        name: data.name || user.name,
+        nickname: data.nickname || user.nickname,
+        telNumber: data.telNumber || user.telNumber,
+      };
+
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      setIsUserEditModalOpen(false);
+      location.reload();
+    } catch (err) {
+      console.error(err);
+      alert("수정 중 오류가 발생했습니다.");
+    }
+  };
+
   const fetchPets = async () => {
+    if (!user) return;
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/pet/list`,
+        `${import.meta.env.VITE_API_URL}/api/pet/list/${user.userId}`,
         {
           credentials: "include",
         }
@@ -283,7 +333,12 @@ const UserDetailPage = () => {
   };
   useEffect(() => {
     fetchPets();
-  }, []);
+    setUserEditForm({
+      name: user?.name || "",
+      nickname: user?.nickname || "",
+      telNumber: user?.telNumber || "",
+    });
+  }, [user]);
 
   const openEditModal = (pet) => {
     setEditForm({
@@ -375,6 +430,9 @@ const UserDetailPage = () => {
               <ActionButton onClick={() => setIsProfileModalOpen(true)}>
                 프로필 이미지 선택
               </ActionButton>
+              <ActionButton onClick={() => setIsUserEditModalOpen(true)}>
+                회원 정보 수정
+              </ActionButton>
             </ButtonSection>
           </ProfileSection>
         </ContentWrapper>
@@ -404,6 +462,41 @@ const UserDetailPage = () => {
                 닫기
               </ModalButton>
             </div>
+          </ModalContent>
+        </ModalOverlay>
+      )}
+      {isUserEditModalOpen && (
+        <ModalOverlay onClick={() => setIsUserEditModalOpen(false)}>
+          <ModalContent onClick={(e) => e.stopPropagation()}>
+            <h3>회원 정보 수정</h3>
+            <input
+              type="text"
+              placeholder="이름"
+              value={userEditForm.name}
+              onChange={(e) =>
+                setUserEditForm({ ...userEditForm, name: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="닉네임"
+              value={userEditForm.nickname}
+              onChange={(e) =>
+                setUserEditForm({ ...userEditForm, nickname: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="전화번호"
+              value={userEditForm.telNumber}
+              onChange={(e) =>
+                setUserEditForm({ ...userEditForm, telNumber: e.target.value })
+              }
+            />
+            <ModalButton onClick={handleUserInfoUpdate}>수정 완료</ModalButton>
+            <CloseButton onClick={() => setIsUserEditModalOpen(false)}>
+              닫기
+            </CloseButton>
           </ModalContent>
         </ModalOverlay>
       )}

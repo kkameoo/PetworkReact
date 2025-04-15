@@ -1,7 +1,6 @@
-const url = "/src/data/category.json";
-const localUrl = "/src/data/localCategory.json";
-const cityUrl = "/src/data/cityCategory.json";
-// import cityUrl from "../data/cityCategory.json";
+const url = "/data/category.json";
+const localUrl = "/data/localCategory.json";
+const cityUrl = "/data/cityCategory.json";
 
 export const getWalkCategory = async () => {
     try {

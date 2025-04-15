@@ -4,10 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
 const Container = styled.div`
-  height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100vh;
   background-color: #f8f9fa;
 `;
 
@@ -15,14 +16,14 @@ const FormWrapper = styled.div`
   width: 100%;
   max-width: 700px;
   padding: 40px;
+  height: 600px;
   background: white;
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 600px;
-  margin-top: inherit;
+  box-sizing: border-box;
 `;
 
 const Title = styled.h1`
@@ -89,7 +90,7 @@ const Login = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${API_USER_URL}/login`, {
+      const response = await fetch(`${API_USER_URL}/login/jwt`, {
         credentials: "include",
         method: "POST",
         headers: {
@@ -102,11 +103,19 @@ const Login = () => {
       if (!response.ok) {
         throw new Error("로그인 실패");
       }
+      console.log(data);
+      localStorage.setItem("user", JSON.stringify(data));
       setUser(data);
       navigate("/");
     } catch (error) {
       console.error("로그인 오류", error);
       setError("이메일 또는 비밀번호 재확인 해주세요.");
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter") {
+      handleLogin();
     }
   };
 
@@ -122,6 +131,7 @@ const Login = () => {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
+            onKeyDown={handleKeyPress}
           />
           <Input
             type="password"
@@ -130,6 +140,7 @@ const Login = () => {
             onChange={(e) =>
               setFormData({ ...formData, password: e.target.value })
             }
+            onKeyDown={handleKeyPress}
           />
         </InputWrapper>
         {error && <p style={{ color: "red", fontSize: "14px" }}>{error}</p>}

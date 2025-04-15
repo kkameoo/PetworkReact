@@ -1,9 +1,82 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import styled from "styled-components";
+// import styled from "styled-components";
 import { getLocalCategory, getWalkCategory } from "../../services/dataService";
 import Report from "../report/Report";
 import OnlyViewMap from "../map/OnlyViewMap";
+import styled, { keyframes } from "styled-components";
+
+const fadeZoom = keyframes`
+  0% {
+    opacity: 0;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+const ImageSliderWrapper = styled.div`
+  position: relative;
+  width: 750px;
+  height: 750px;
+  overflow: hidden;
+  border-radius: 25px;
+  margin-bottom: 30px;
+`;
+
+const SlideImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  z-index: 1;
+  transition: opacity 0.5s ease-in-out;
+
+  &.active {
+    opacity: 1;
+    z-index: 2;
+    animation: ${fadeZoom} 0.5s ease-in-out;
+  }
+`;
+
+const ArrowButton = styled.button`
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 18px;
+  cursor: pointer;
+  z-index: 3;
+  border-radius: 50%;
+
+  &.left {
+    left: 10px;
+  }
+
+  &.right {
+    right: 10px;
+  }
+`;
+const ImageCounter = styled.div`
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 12px;
+  font-size: 14px;
+  z-index: 4;
+`;
 
 const DetailWrapper = styled.div`
   width: 1600px;
@@ -34,6 +107,7 @@ const ProductImage = styled.img`
 
 const SellerInfo = styled.div`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
+  width: 55rem;
   margin-bottom: 70px;
   font-size: 20px;
   text-align: left;
@@ -49,7 +123,7 @@ const SellerLeft = styled.div`
   position: absolute;
   top: 0;
   display: flex;
-  align-items: center;
+  /* justify-content: space-evenly; */
 `;
 
 const SellerImage = styled.img`
@@ -60,8 +134,9 @@ const SellerImage = styled.img`
 `;
 
 const Nickname = styled.p`
-  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  /* font-family: "Ownglyph_meetme-Rg", sans-serif; */
   font-weight: bold;
+  width: 37.5rem;
   line-height: 25px;
   margin: 0;
 `;
@@ -96,9 +171,11 @@ const ProductCategory = styled.p`
 const ProductDescription = styled.p`
   font-family: "Ownglyph_meetme-Rg", sans-serif;
   min-height: 240px;
-  font-size: 22px;
+  font-size: 28px;
+  padding: 20px;
   margin-bottom: 20px;
   background-color: #f3f3f3;
+  /* border: 2px solid #c7c0c0; */
   border-radius: 10px;
 `;
 
@@ -183,9 +260,18 @@ const DetailPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [category, setCategory] = useState([]);
   const [imageBase64, setImageBase64] = useState([]);
-  const DEFAULT_IMAGE = "src/assets/TalkMedia_i_2a4ebc04392c.png.png";
+  const [currentImage, setCurrentImage] = useState(0);
+  const DEFAULT_IMAGE = "/assets/TalkMedia_i_2a4ebc04392c.png.png";
   const [regionMap, setRegionMap] = useState([]);
   const [mapInfo, setMapInfo] = useState(null);
+
+  const handlePrev = () => {
+    setCurrentImage((prev) => (prev === 0 ? imageBase64.length - 1 : prev - 1));
+  };
+
+  const handleNext = () => {
+    setCurrentImage((prev) => (prev === imageBase64.length - 1 ? 0 : prev + 1));
+  };
 
   const fetchImageBase64 = async () => {
     try {
@@ -195,7 +281,9 @@ const DetailPage = () => {
       if (response.ok) {
         const base64Data = await response.json(); // 서버가 JSON으로 배열 반환하는 경우
         if (Array.isArray(base64Data)) {
-          const images = base64Data.map((base64) => `data:image/jpeg;base64,${base64}`);
+          const images = base64Data.map(
+            (base64) => `data:image/jpeg;base64,${base64}`
+          );
           setImageBase64(images);
         } else {
           const image = `data:image/jpeg;base64,${base64Data}`;
@@ -209,25 +297,61 @@ const DetailPage = () => {
     }
   };
   // 로그인 상태 확인
+  // const checkLoginStatus = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${import.meta.env.VITE_API_URL}/api/user/session`,
+  //       {
+  //         method: "GET",
+  //         credentials: "include",
+  //       }
+  //     );
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setIsLoggedIn(true);
+  //       setUser(data);
+  //     } else {
+  //       setIsLoggedIn(false);
+  //     }
+  //   } catch (error) {
+  //     console.error("로그인 상태 확인 실패:", error);
+  //     setIsLoggedIn(false);
+  //   }
+  // };
+
   const checkLoginStatus = async () => {
+    // console.log(localStorage.getItem("user"));
+    if (localStorage.getItem("user") == null) {
+      console.log("비로그인 상태");
+      return;
+    }
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/user/session`,
+        `${import.meta.env.VITE_API_URL}/api/user/token`,
         {
-          method: "GET",
+          method: "POST",
           credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: localStorage.getItem("user"),
         }
       );
+
       if (response.ok) {
         const data = await response.json();
         setIsLoggedIn(true);
-        setUser(data);
+        // 기존 user와 값이 다를 때만 업데이트
+        if (JSON.stringify(user) !== JSON.stringify(data)) {
+          setUser(data);
+        }
+        console.log("세션 체크" + user);
       } else {
         setIsLoggedIn(false);
+        setUser(null);
       }
     } catch (error) {
-      console.error("로그인 상태 확인 실패:", error);
+      console.error("로그인 상태 확인 중 오류 발생:", error);
       setIsLoggedIn(false);
+      setUser(null);
     }
   };
 
@@ -355,12 +479,12 @@ const DetailPage = () => {
         <ProductLeft>
           <SellerInfo>
             <SellerLeft>
-              <SellerImage src="src/assets/userimage.jpg" alt="판매자 이미지" />
+              <SellerImage src="/assets/userimage.jpg" alt="판매자 이미지" />
               <div
                 onClick={() => navigate(`/profile/${newPost.sellerUid}`)}
                 style={{ cursor: "pointer" }}
               >
-                작성자: {newPost.seller}
+                <Nickname>작성자: {newPost.seller}</Nickname>
                 <Location>
                   {regionMap[newPost.regionSi].name}{" "}
                   {regionMap[newPost.regionSi].gu[newPost.regionGu].name}
@@ -369,17 +493,38 @@ const DetailPage = () => {
               <Report postId={postId} />
             </SellerLeft>
           </SellerInfo>
-          {imageBase64.map((image, index) => 
-          <ProductImage key={index}
-          src={image || DEFAULT_IMAGE}
-          alt={newPost.title}
-        />
-          )}
+          <ImageSliderWrapper>
+            {imageBase64.map((image, index) => (
+              <SlideImage
+                key={index}
+                src={image || DEFAULT_IMAGE}
+                alt={newPost.title}
+                className={index === currentImage ? "active" : ""}
+              />
+            ))}
+            {imageBase64.length > 1 && (
+              <>
+                <ArrowButton className="left" onClick={handlePrev}>
+                  &lt;
+                </ArrowButton>
+                <ArrowButton className="right" onClick={handleNext}>
+                  &gt;
+                </ArrowButton>
+              </>
+            )}
+            {imageBase64.length > 1 && (
+              <ImageCounter>
+                // {currentImage + 1} / {imageBase64.length}
+                //{" "}
+              </ImageCounter>
+            )}
+          </ImageSliderWrapper>
         </ProductLeft>
         <ProductRight>
           <ProductTitle>{newPost.title}</ProductTitle>
           <ProductCategory>
-            {category[newPost.category].name} | {newPost.updateTime}
+            {category[newPost.category].name} | {newPost.updateTime} |👁
+            {newPost.clickCnt}
           </ProductCategory>
           <ProductDescription>{newPost.content}</ProductDescription>
           <div

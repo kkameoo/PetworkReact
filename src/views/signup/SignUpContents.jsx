@@ -1,18 +1,105 @@
 import { React, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-const SignupContainer = styled.div`
+
+const GooeyButton = styled.button`
+  width: 100%;
+  position: relative;
+  display: inline-block;
+  background: linear-gradient(to right, #a2e4b8, #00f2fe);
+  color: white;
+  padding: 12px 24px;
+  font-size: 20px;
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: transform 0.2s ease;
+  margin-bottom: 20px;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+  }
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    animation: bubble 1.5s infinite ease-in-out;
+    pointer-events: none;
+  }
+
+  &::before {
+    width: 20px;
+    height: 20px;
+    top: 0;
+    left: 30%;
+  }
+
+  &::after {
+    width: 15px;
+    height: 15px;
+    bottom: 0;
+    right: 25%;
+    animation-delay: 0.75s;
+  }
+
+  @keyframes bubble {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.5) translateY(-20px);
+      opacity: 0;
+    }
+  }
+`;
+
+const FormWrapper = styled.form`
+  width: 100%;
+  max-width: 700px;
+  min-height: 800px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 40px;
+  box-sizing: border-box;
+  overflow-y: auto;
+`;
+
+const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #f9f9f9;
+  background-color: #f8f9fa;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
 `;
+const SignupContainer = styled(Container)``;
+const SignupFormWrapper = styled(FormWrapper)``;
 const Title = styled.h2`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
   font-size: 60px;
-  color: #6dbe92;
-  margin-bottom: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #a2e4b8;
 `;
 const Form = styled.form`
   display: flex;
@@ -29,15 +116,29 @@ const Label = styled.label`
   color: #555;
   margin-bottom: 5px;
 `;
-const Input = styled.input`
-  padding: 12px;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+
+const InputWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
   margin-bottom: 20px;
-  font-size: 14px;
+`;
+const Input = styled.input`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  width: 100%;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 20px;
+  background-color: white;
+  box-sizing: border-box;
+  transition: border 0.3s;
+  margin-bottom: 20px;
+
   &:focus {
+    border-color: #f1f0e8;
     outline: none;
-    border-color: #93c572;
   }
 `;
 
@@ -55,18 +156,25 @@ const Select = styled.select`
 `;
 
 const Button = styled.button`
+  font-family: "Ownglyph_meetme-Rg", sans-serif;
+  width: 100%;
   background-color: #a2e4b8;
   color: white;
-  padding: 12px;
-  font-size: 16px;
   border: none;
-  border-radius: 6px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 20px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: background-color 0.3s;
+  margin-top: auto;
+  margin-bottom: 20px;
+
   &:hover {
     background-color: #6dbe92;
   }
 `;
+
 const ErrorMessage = styled.p`
   color: red;
   font-size: 14px;
@@ -121,6 +229,7 @@ const ModalBackdrop = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 10;
 `;
 
 const ModalContainer = styled.div`
@@ -252,17 +361,9 @@ const SignupContents = () => {
     confirmPassword: "",
     telNumber: "",
     email: "",
-    // birthdate: "",
-    // gender: "",
     preference: 1,
     localSi: "", // 첫 번째 지역으로 기본값 설정
     localGu: "", // 첫 번째 군/구로 기본값 설정
-    // recommend_uid: "",
-    // register_date: new Date().toISOString(),
-    // is_deleted: false,
-    // is_admin: false,
-    // upd_date: new Date().toISOString(),
-    // verificationCode: "", // ✅ 인증 코드 추가
   });
   const API_USER_URL = `${import.meta.env.VITE_API_URL}/api/user/register`;
   const API_EMAIL_VERIFICATION_URL = `${
@@ -272,17 +373,12 @@ const SignupContents = () => {
     import.meta.env.VITE_API_URL
   }/api/email/verify`;
 
-  // const [passwordStrength, setPasswordStrength] = useState("");
   const [isEmailVerified, setIsEmailVerified] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [verificationCode, setVerificationCode] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
-  // const [emailVerificationSent, setEmailVerificationSent] = useState(false);
   const [emailInput, setEmailInput] = useState("");
   const navigate = useNavigate();
-
-  // const regionSiText = regions[user.localSi - 1]; // '서울시'
-  // const regionGuText = allSis[regionSiText]?.[user.localGu - 1]; // '강남구'
 
   useEffect(() => {
     fetch(API_USER_URL)
@@ -302,18 +398,6 @@ const SignupContents = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 회원가입 시 변환
-  // const handleSignUp = () => {
-  //   const userData = {
-  //     userId,
-  //     password,
-  //     nickname,
-  //     localSi: regions.indexOf(regionSi) + 1,
-  //     localGu: allSis[regionSi]?.indexOf(regionGu) + 1,
-  //   };
-
-  //   console.log("회원가입 데이터:", userData);
-  // };
   // 회원 정보 조회 시 변환
   const user = { localSi: 1, localGu: 3 }; // DB에서 가져온 데이터
 
@@ -378,27 +462,9 @@ const SignupContents = () => {
       localSi: parseInt(formData.localSi), // 숫자로 변환
       localGu: formData.localGu ? parseInt(formData.localGu) : null,
     };
-    // const userData = {
-    //   ...formData,
-    //   localSi: regions.includes(formData.localSi)
-    //     ? regions.indexOf(formData.localSi) + 1
-    //     : null,
-    //   localGu: allSis[formData.localSi]?.includes(formData.localGu)
-    //     ? allSis[formData.localSi].indexOf(formData.localGu) + 1
-    //     : null,
-    // };
 
     console.log("회원가입 데이터:", userData);
 
-    // if (
-    //   !formData.name.trim() ||
-    //   !formData.nickname.trim() ||
-    //   !formData.tel_number.trim() ||
-    //   !formData.email.trim()
-    // ) {
-    //   alert("모든 필수 입력란을 채워주세요.");
-    //   return;
-    // }
     if (!isEmailVerified) {
       alert("이메일 인증을 완료해주세요.");
       return;
@@ -426,15 +492,15 @@ const SignupContents = () => {
   };
   return (
     <SignupContainer>
-      <Title>회원가입</Title>
-      <Form onSubmit={handleSubmit}>
-        <button
+      <SignupFormWrapper onSubmit={handleSubmit}>
+        <Title>회원가입</Title>
+        <GooeyButton
           type="button"
           onClick={() => setModalVisible(true)}
           disabled={isEmailVerified}
         >
           이메일 인증
-        </button>
+        </GooeyButton>
         {/* 이메일 입력 */}
         <Input
           type="email"
@@ -457,7 +523,6 @@ const SignupContents = () => {
               <Button type="button" onClick={handleSendEmailVerification}>
                 인증 코드 보내기
               </Button>
-
               <Input
                 type="text"
                 placeholder="인증 코드 입력"
@@ -467,7 +532,6 @@ const SignupContents = () => {
               <Button type="button" onClick={handleVerifyCode}>
                 인증 확인
               </Button>
-
               <Button type="button" onClick={() => setModalVisible(false)}>
                 닫기
               </Button>
@@ -477,7 +541,6 @@ const SignupContents = () => {
 
         {isEmailVerified && <p>이메일 인증 완료 </p>}
 
-        {/* 비밀번호 입력 */}
         <Input
           type="password"
           name="password"
@@ -485,7 +548,6 @@ const SignupContents = () => {
           value={formData.password}
           onChange={handleChange}
         />
-        {/* 비밀번호 확인 입력 */}
         <Input
           type="password"
           name="confirmPassword"
@@ -496,7 +558,6 @@ const SignupContents = () => {
         {!passwordMatch && (
           <ErrorMessage>비밀번호가 일치하지 않습니다.</ErrorMessage>
         )}
-        {/* 이름 입력 */}
         <Input
           type="text"
           name="name"
@@ -504,7 +565,6 @@ const SignupContents = () => {
           value={formData.name}
           onChange={handleChange}
         />
-        {/* 닉네임 입력 */}
         <Input
           type="text"
           name="nickname"
@@ -512,7 +572,6 @@ const SignupContents = () => {
           value={formData.nickname}
           onChange={handleChange}
         />
-        {/* 전화번호 입력 */}
         <Input
           type="text"
           name="telNumber"
@@ -520,25 +579,14 @@ const SignupContents = () => {
           value={formData.telNumber}
           onChange={handleChange}
         />
-        {/* 생년월일 입력 */}
-        {/* <Input
-          type="date"
-          name="birthdate"
-          value={formData.birthdate}
-          // onChange={handleChange}
-          onChange={handleChange}
-        /> */}
-
-        {/* 시 선택 */}
         <SelectBox
           name="localSi"
           value={formData.localSi}
-          // onChange={handleRegionChange}
           onChange={(e) => {
             setFormData((prev) => ({
               ...prev,
               localSi: e.target.value,
-              localGu: "", //  시 변경 시 군/구 초기화
+              localGu: "",
             }));
           }}
         >
@@ -549,8 +597,6 @@ const SignupContents = () => {
             </Option>
           ))}
         </SelectBox>
-
-        {/* 군구 선택 */}
         {formData.localSi && allSis[formData.localSi] && (
           <SelectBox
             name="localGu"
@@ -558,7 +604,7 @@ const SignupContents = () => {
             onChange={(e) => {
               setFormData((prev) => ({
                 ...prev,
-                localGu: e.target.value, // 문자열 그대로 저장 (나중에 숫자로 변환)
+                localGu: e.target.value,
               }));
             }}
           >
@@ -570,9 +616,8 @@ const SignupContents = () => {
             ))}
           </SelectBox>
         )}
-        {/* 회원가입 버튼 */}
         <Button type="submit">가입하기</Button>
-      </Form>
+      </SignupFormWrapper>
     </SignupContainer>
   );
 };
