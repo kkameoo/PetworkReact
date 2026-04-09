@@ -14,6 +14,15 @@
 
 <br/>
 
+## 🖥️ Frontend Tech Stack
+
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
+![Styled Components](https://img.shields.io/badge/Styled_Components-DB7093?style=for-the-badge&logo=styled-components&logoColor=white)
+![STOMP](https://img.shields.io/badge/STOMP-000000?style=for-the-badge&logo=socket.io&logoColor=white)
+![SockJS](https://img.shields.io/badge/SockJS-000000?style=for-the-badge&logo=socket.io&logoColor=white)
+
 ## 🚀 Frontend 실행 방법
 
 ### 1. 실행 환경
